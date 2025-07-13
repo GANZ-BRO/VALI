@@ -1,88 +1,52 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Villamosságtan Alapjai gyakorlás</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7fc;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-    }
-
-    .subtitle {
-      font-size: 24px;
-      font-weight: bold;
-      color: #3578e5;
-    }
-
-    button, select {
-      background-color: #3578e5;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover, select:hover {
-      background-color: #2c68c2;
-    }
-
-    label {
-      display: block;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    #time {
-      font-weight: bold;
-      color: #e53935;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Villamosságtan Alapjai</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <p class="subtitle">Villamosságtan Alapjai gyakorlás</p>
-    <button id="theme-toggle" aria-label="Téma váltása">🌗</button>
-  </header>
+<main>
+    <header>
+        <h1>Villamosságtan Alapjai gyakorlás</h1>
+        <button id="theme-toggle" title="Téma váltás">🌓</button>
+    </header>
 
-  <label for="category">Kategória:</label>
-  <select id="category" name="category">
-    <option value="alapfogalmak">Alapfogalmak</option>
-    <option value="elektronikai_alkatreszek">Elektronikai alkatrészek</option>
-    <option value="soros_parhuzamos">Soros - Párhuzamos kapcsolások</option>
-    <option value="ohm_torveny">Ohm törvény</option>
-    <option value="hurok_torveny">Hurok Törvény</option>
-    <option value="csomoponti_torveny">Csomóponti Törvény</option>
-    <option value="mind_a_harom">Mind a Három</option>
-    <option value="proba_panel">Próba panel bekötés</option>
-  </select>
+    <div class="settings">
+        <div>
+            <label for="category">Kategória:</label>
+            <select id="category">
+                <option value="alapfogalmak">Alapfogalmak</option>
+                <option value="elektronikai_alkatreszek">Elektronikai alkatrészek</option>
+                <option value="soros_parhuzamos">Soros / Párhuzamos kapcsolások</option>
+                <option value="ohm_torveny">Ohm törvény</option>
+                <option value="hurok_torveny">Hurok törvény</option>
+                <option value="csomoponti_torveny">Csomóponti törvény</option>
+                <option value="mind_a_harom">Mind a három</option>
+                <option value="proba_panel">Próba panel bekötés</option>
+            </select>
+        </div>
+        <div>
+            <label for="difficulty">Nehézség:</label>
+            <select id="difficulty">
+                <option value="konnyu">Könnyű</option>
+                <option value="kozepes">Közepes</option>
+                <option value="nehez">Nehéz</option>
+            </select>
+        </div>
+    </div>
 
-  <label for="difficulty">Nehézségi szint:</label>
-  <select id="difficulty" name="difficulty">
-    <option value="konnyu">Könnyű</option>
-    <option value="kozepes">Közepes</option>
-    <option value="nehez">Nehéz</option>
-  </select>
+    <div class="game-stats">
+        <div id="time">⏱️ Idő: 0 mp</div>
+        <div id="best-stats" class="best"></div>
+    </div>
 
-  <button onclick="startGame()">Játék indítása</button>
+    <button onclick="startGame()">Játék indítása</button>
+    <button id="restart-btn" style="display:none;">Újrajátszás</button>
 
-  <p>⏱️ Idő: <span id="time">0</span> mp</p>
+    <div id="quiz"></div>
+</main>
 
-  <button onclick="restartGame()">Újrajátszás</button>
-
-  <script src="script.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

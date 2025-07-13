@@ -88,7 +88,7 @@ function categoryLabel() {
 
 // --- TÉMA VÁLTÁS ---
 function applyTheme() {
-  const dark = localStorage.getItem("vali-theme") !== "light";
+  const dark = localStorage.getItem("vali-theme") !== "light" || !localStorage.getItem("vali-theme");
   document.body.classList.toggle("light", !dark);
 }
 
