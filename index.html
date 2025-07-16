@@ -1,36 +1,42 @@
 <!DOCTYPE html>
-
 <html lang="hu">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport"/>
-<title>VILLMA</title>
-<link href="manifest.json" rel="manifest"/>
-<link href="icon-192.png" rel="icon"/>
-<meta content="#3578e5" name="theme-color"/>
-<link href="style.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Villamosmérnöki feladatok gyakorlása középiskolás diákok számára">
+    <title>VALI - Villamosmérnöki Gyakorló</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<header>
-<p class="subtitle">VILMA gyakorlás</p>
-<button aria-label="Téma váltása" id="theme-toggle">🌗</button>
-</header>
-<label for="category">Kategória:</label>
-<select id="category" name="category">
-<!-- Kategóriák JavaScriptből töltődnek be -->
-</select>
-<label for="difficulty">Nehézségi szint:</label>
-<select id="difficulty" name="difficulty">
-<option value="easy">Könnyű</option>
-<option value="medium">Közepes</option>
-<option value="hard">Kihívás</option>
-</select>
-<button onclick="startGame()">Játék indítása</button>
-<p>⏱️ Idő: <span id="time">0</span> mp</p>
-<button id="restart-btn" style="display: none;">Újrajátszás</button>
-<div id="best-stats"></div>
-<div id="quiz"></div>
-<div class="numpad" id="numpad-container"></div>
-<script src="app.js"></script>
+<body class="dark">
+    <header>
+        <h1>VALI</h1>
+        <p>Villamosmérnöki feladatok gyakorlása</p>
+    </header>
+    <main>
+        <div class="controls">
+            <div>
+                <label for="difficulty">Nehézségi szint:</label>
+                <select id="difficulty">
+                    <option value="easy">Könnyű</option>
+                    <option value="medium">Közepes</option>
+                    <option value="hard">Kihívás</option>
+                </select>
+            </div>
+            <div>
+                <label for="category">Feladat típusa:</label>
+                <select id="category">
+                    <!-- Kategóriák az app.js-ből töltődnek be -->
+                </select>
+            </div>
+            <button onclick="startGame()">Start</button>
+            <button id="restart-btn" style="display: none;">Újra</button>
+        </div>
+        <p id="best-stats" style="display: none;"></p>
+        <p><b>Eltelt idő:</b> <span id="time">0</span> mp</p>
+        <div id="quiz"></div>
+        <div id="numpad-container"></div>
+    </main>
+    <button id="theme-toggle" title="Téma váltása">🌙</button>
+    <script src="app.js"></script>
 </body>
 </html>
