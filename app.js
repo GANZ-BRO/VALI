@@ -1,9 +1,9 @@
 // --- ALAPBEÁLLÍTÁSOK ---
 const QUESTIONS = 5;
 const DIFFICULTY_SETTINGS = {
-  easy: { min: 10, max: 100 }, // Könnyű: kis ellenállások
+  easy: { min: 10, max: 100 }, // Könnyű: kis ellenállások, egyszerű áram/feszültség
   medium: { min: 10, max: 500 }, // Közepes: nagyobb tartomány
-  hard: { min: 10, max: 1000 } // Kihívás: komplex kapcsolások
+  hard: { min: 10, max: 1000 } // Kihívás: komplex kapcsolások, nagyobb értékek
 };
 
 // --- MOTIVÁLÓ ÜZENETEK ---
@@ -80,8 +80,6 @@ const taskTypes = [
             answer: answer.toString(),
             answerType: "number"
           };
- Araújo
-
         }
       } else {
         // Kihívás: komplex vegyes kapcsolások, 3-4 ellenállás
@@ -120,11 +118,57 @@ const taskTypes = [
   {
     name: "Ohm-törvény",
     value: "ohm_torveny",
-    generate: () => ({
-      display: "Kidolgozás alatt",
-      answer: null,
-      answerType: "number"
-    })
+    generate: (difficulty) => {
+      const { min, max } = DIFFICULTY_SETTINGS[difficulty];
+      let maxI = difficulty === "easy" ? 10 : difficulty === "medium" ? 20 : 50;
+      let maxR = difficulty === "easy" ? 10 : difficulty === "medium" ? 50 : 200;
+      let I = getRandomInt(1, maxI);
+      let R = getRandomInt(1, maxR);
+      let U = I * R;
+      let type = getRandomInt(0, 2);
+      if (difficulty === "hard") {
+        let R2 = getRandomInt(1, maxR);
+        U = I * (R + R2);
+        if (type === 0) {
+          return {
+            display: `Mennyi a feszültség, ha <b>I = ${I} A</b> és <b>R = ${R} Ω + ${R2} Ω</b> sorosan van?`,
+            answer: U.toString(),
+            answerType: "number"
+          };
+        } else if (type === 1) {
+          return {
+            display: `Mennyi az áram, ha <b>U = ${U} V</b> és <b>R = ${R} Ω + ${R2} Ω</b> sorosan van?`,
+            answer: I.toString(),
+            answerType: "number"
+          };
+        } else {
+          return {
+            display: `Mennyi az ellenállás, ha <b>U = ${U} V</b> és <b>I = ${I} A</b>?`,
+            answer: (R + R2).toString(),
+            answerType: "number"
+          };
+        }
+      }
+      if (type === 0) {
+        return {
+          display: `Mennyi a feszültség, ha <b>I = ${I} A</b> és <b>R = ${R} Ω</b>?`,
+          answer: U.toString(),
+          answerType: "number"
+        };
+      } else if (type === 1) {
+        return {
+          display: `Mennyi az áram, ha <b>U = ${U} V</b> és <b>R = ${R} Ω</b>?`,
+          answer: I.toString(),
+          answerType: "number"
+        };
+      } else {
+        return {
+          display: `Mennyi az ellenállás, ha <b>U = ${U} V</b> és <b>I = ${I} A</b>?`,
+          answer: R.toString(),
+          answerType: "number"
+        };
+      }
+    }
   },
   {
     name: "Hurok-törvény",
@@ -156,15 +200,14 @@ const taskTypes = [
 ];
 
 // --- HTML ELEMEK ---
-const quizContainer = document.getElementById("quiz");
+const questionContainer = document.getElementById("question");
 const timerDisplay = document.getElementById("time");
-const bestStats = document.getElementById("best-stats");
 const difficultySelect = document.getElementById("difficulty");
 const categorySelect = document.getElementById("category");
 const startBtn = document.querySelector("button[onclick='startGame()']");
-const restartBtn = document.getElementById("restart-btn");
+const replayBtn = document.getElementById("replay");
 const themeToggle = document.getElementById("theme-toggle");
-const numpadContainer = document.getElementById("numpad-container");
+const numpadContainer = document.getElementById("numpad");
 
 // --- KATEGÓRIÁK BETÖLTÉSE ---
 function loadCategories() {
@@ -189,14 +232,8 @@ function loadLastSelection() {
   if (lastDiff) difficultySelect.value = lastDiff;
 }
 
-categorySelect.addEventListener("change", function () {
-  saveLastSelection();
-  loadBest();
-});
-difficultySelect.addEventListener("change", function () {
-  saveLastSelection();
-  loadBest();
-});
+categorySelect.addEventListener("change", saveLastSelection);
+difficultySelect.addEventListener("change", saveLastSelection);
 
 // --- LEGJOBB EREDMÉNY MENTÉSE/BETÖLTÉSE ---
 function loadBest() {
@@ -206,7 +243,6 @@ function loadBest() {
     const bestRaw = localStorage.getItem("vali-best-" + cat + "-" + diff);
     best = bestRaw ? JSON.parse(bestRaw) : { score: 0, time: null };
   } catch { best = { score: 0, time: null }; }
-  showBest();
 }
 
 function saveBest(newScore, time) {
@@ -215,30 +251,7 @@ function saveBest(newScore, time) {
   if (newScore > best.score || (newScore === best.score && (best.time === null || time < best.time))) {
     best = { score: newScore, time: time };
     localStorage.setItem("vali-best-" + cat + "-" + diff, JSON.stringify(best));
-    showBest();
   }
-}
-
-function showBest() {
-  if (best.score > 0) {
-    bestStats.innerHTML = `🏆 <b>Legjobb eredmény:</b> ${best.time} mp (${categoryLabel()} / ${difficultyLabel()})`;
-    bestStats.style.display = "";
-  } else {
-    bestStats.style.display = "none";
-  }
-}
-
-function difficultyLabel() {
-  switch (difficultySelect.value) {
-    case "easy": return "Könnyű";
-    case "medium": return "Közepes";
-    case "hard": return "Kihívás";
-    default: return "";
-  }
-}
-
-function categoryLabel() {
-  return categorySelect.options[categorySelect.selectedIndex].textContent;
 }
 
 // --- TÉMA VÁLTÁS ---
@@ -381,7 +394,7 @@ function renderNumpad(answerState, onChange) {
 
 // --- JÁTÉK LOGIKA ---
 function showQuestion(index) {
-  quizContainer.innerHTML = "";
+  questionContainer.innerHTML = "";
   if (index >= QUESTIONS) {
     finishGame();
     return;
@@ -392,7 +405,7 @@ function showQuestion(index) {
   div.className = "question-container";
   div.innerHTML =
     `<div class="question-number">${QUESTIONS} / ${index + 1}. feladat:</div>
-     <div class="question-text">${q.display} = </div>`;
+     <div class="question-text">${q.display}</div>`;
   let answerState = { value: "" };
   const answerView = document.createElement("div");
   answerView.className = "answer-view";
@@ -406,7 +419,7 @@ function showQuestion(index) {
   numpadContainer.innerHTML = "";
   numpadContainer.appendChild(numpad);
   numpadContainer.classList.add("active");
-  quizContainer.appendChild(div);
+  questionContainer.appendChild(div);
 
   div.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -425,9 +438,8 @@ function startGame() {
   categorySelect.disabled = true;
   difficultySelect.disabled = true;
 
-  restartBtn.style.display = "none";
+  replayBtn.style.display = "none";
   startBtn.style.display = "none";
-  bestStats.style.opacity = "0.55";
 }
 
 function finishGame() {
@@ -435,19 +447,18 @@ function finishGame() {
   clearInterval(timerInterval);
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.textContent = `${elapsed} (Vége)`;
-  quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.</p>`;
+  questionContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.</p>`;
   numpadContainer.innerHTML = "";
   numpadContainer.classList.remove("active");
   saveBest(score, elapsed);
 
-  restartBtn.style.display = "";
+  replayBtn.style.display = "";
   startBtn.style.display = "";
-  bestStats.style.opacity = "1";
   categorySelect.disabled = false;
   difficultySelect.disabled = false;
 }
 
-restartBtn.onclick = startGame;
+replayBtn.onclick = startGame;
 startBtn.onclick = startGame;
 
 // --- INDÍTÁS ---
