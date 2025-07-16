@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vill-math-v1';
+const CACHE_NAME = 'Vali gyakorló';
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
