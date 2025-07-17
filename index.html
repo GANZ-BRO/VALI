@@ -6,17 +6,18 @@
     <title>VALI gyakorlás</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark">
+    <button id="theme-toggle" title="Téma váltása">🌗</button>
     <div class="container">
         <h1>VALI gyakorlás</h1>
         <div class="controls">
-            <div>
+            <div class="control-group">
                 <label for="category">Kategória:</label>
                 <select id="category">
-                    <!-- Kategóriák az app.js-ből töltődnek be -->
+                    <!-- Kategóriák az app.js-ből töltődnek -->
                 </select>
             </div>
-            <div>
+            <div class="control-group">
                 <label for="difficulty">Nehézségi szint:</label>
                 <select id="difficulty">
                     <option value="easy">Könnyű</option>
@@ -24,15 +25,12 @@
                     <option value="hard">Kihívás</option>
                 </select>
             </div>
-        </div>
-        <div class="game">
             <button onclick="startGame()">Játék indítása</button>
-            <button onclick="startGame()" id="replay" style="display: none;">Újrajátszás</button>
-            <p>⏱️ Idő: <span id="time">0</span> mp</p>
-            <div id="question"></div>
-            <div id="numpad"></div>
+            <button id="replay" style="display: none;">Újrajátszás</button>
         </div>
-        <button id="theme-toggle">🌗</button>
+        <p class="timer">⏱️ Idő: <span id="time">0</span> mp</p>
+        <div id="question"></div>
+        <div id="numpad"></div>
     </div>
     <script src="app.js"></script>
 </body>

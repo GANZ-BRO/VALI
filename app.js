@@ -3,13 +3,13 @@ const QUESTIONS = 5;
 const DIFFICULTY_SETTINGS = {
   easy: { min: 10, max: 100 }, // Könnyű: kis ellenállások, egyszerű áram/feszültség
   medium: { min: 10, max: 500 }, // Közepes: nagyobb tartomány
-  hard: { min: 10, max: 1000 } // Kihívás: komplex kapcsolások, nagyobb értékek
+  hard: { min: 10, max: 1000 } // Kihívás: komplex kapcsolások
 };
 
 // --- MOTIVÁLÓ ÜZENETEK ---
 const motivationalMessages = [
   "Szuper munka, igazi áramkör-mester vagy!",
-  "Fantasztikus, tökéletesen kapcsoltad az ellenállásokat!",
+  "Fantasztikus, tökéletesen azonosítottad az alkatrészt!",
   "Látom, nem lehet téged megállítani, csak így tovább!",
   "Bravó, ezt a nehéz áramkört is megoldottad!",
   "Kiváló, a villamosmérnöki tudásod lenyűgöző!",
@@ -17,6 +17,91 @@ const motivationalMessages = [
   "Nagyszerű, az áramkörök királya vagy!",
   "Remekül teljesítesz, folytasd ebben a szellemben!"
 ];
+
+// --- SVG GENERÁLÓ FÜGGVÉNYEK ---
+function generateSorosCircuitSVG(r1, r2) {
+  return `
+    <svg width="200" height="100" viewBox="0 0 200 100">
+      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
+      <rect x="50" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <text x="70" y="35" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
+      <line x1="90" y1="50" x2="110" y1="50" stroke="black" stroke-width="2"/>
+      <rect x="110" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <text x="130" y="35" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
+      <line x1="150" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+    </svg>
+  `;
+}
+
+function generateParhuzamosCircuitSVG(r1, r2) {
+  return `
+    <svg width="200" height="120" viewBox="0 0 200 120">
+      <line x1="10" y1="60" x2="50" y1="60" stroke="black" stroke-width="2"/>
+      <line x1="50" y1="60" x2="50" y1="30" stroke="black" stroke-width="2"/>
+      <line x1="50" y1="60" x2="50" y1="90" stroke="black" stroke-width="2"/>
+      <rect x="50" y="20" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <text x="70" y="15" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
+      <rect x="50" y="80" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <text x="70" y="75" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
+      <line x1="90" y1="30" x2="90" y1="60" stroke="black" stroke-width="2"/>
+      <line x1="90" y1="90" x2="90" y1="60" stroke="black" stroke-width="2"/>
+      <line x1="90" y1="60" x2="190" y1="60" stroke="black" stroke-width="2"/>
+    </svg>
+  `;
+}
+
+function generateOhmCircuitSVG(I, R, type) {
+  return `
+    <svg width="200" height="100" viewBox="0 0 200 100">
+      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
+      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+      <text x="50" y="45" font-size="12" text-anchor="middle">${type === 0 ? `U=?` : type === 1 ? `I=${I}A` : `U=${I*R}V`}</text>
+      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <text x="100" y="35" font-size="12" text-anchor="middle">R=${R}Ω</text>
+      <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+    </svg>
+  `;
+}
+
+function generateComponentSVG(component) {
+  switch (component) {
+    case "LED":
+      return `
+        <svg width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+          <circle cx="100" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+          <path d="M95 45 L105 55 M95 55 L105 45" stroke="black" stroke-width="2"/>
+          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        </svg>`;
+    case "Kapcsoló":
+      return `
+        <svg width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+          <circle cx="80" cy="50" r="5" fill="black"/>
+          <line x1="80" y1="50" x2="100" y1="30" stroke="black" stroke-width="2"/>
+          <circle cx="120" cy="50" r="5" fill="black"/>
+          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        </svg>`;
+    case "Lámpa":
+      return `
+        <svg width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+          <circle cx="100" cy="50" r="15" fill="none" stroke="black" stroke-width="2"/>
+          <path d="M90 40 L110 60 M90 60 L110 40" stroke="black" stroke-width="2"/>
+          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        </svg>`;
+    case "Ellenállás":
+      return `
+        <svg width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+          <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        </svg>`;
+    default:
+      return "";
+  }
+}
 
 // --- FELADATTÍPUSOK ---
 const taskTypes = [
@@ -26,93 +111,144 @@ const taskTypes = [
     generate: () => ({
       display: "Kidolgozás alatt",
       answer: null,
-      answerType: "number"
+      options: ["N/A", "N/A", "N/A", "N/A"],
+      answerType: "choice"
     })
   },
   {
     name: "Elektronikai alkatrészek",
     value: "elektronikai_alkatreszek",
-    generate: () => ({
-      display: "Kidolgozás alatt",
-      answer: null,
-      answerType: "number"
-    })
+    generate: (difficulty) => {
+      const components = ["LED", "Kapcsoló", "Lámpa", "Ellenállás"];
+      const correct = components[getRandomInt(0, components.length - 1)];
+      let options = [correct];
+      while (options.length < 4) {
+        const randomComponent = components[getRandomInt(0, components.length - 1)];
+        if (!options.includes(randomComponent)) options.push(randomComponent);
+      }
+      options = shuffleArray(options);
+      return {
+        display: `Milyen alkatrész látható az alábbi áramkörben?<br>${generateComponentSVG(correct)}`,
+        answer: correct,
+        options: options,
+        answerType: "choice"
+      };
+    }
   },
   {
     name: "Soros / Párhuzamos kapcsolások",
     value: "soros_parhuzamos",
     generate: (difficulty) => {
       const { min, max } = DIFFICULTY_SETTINGS[difficulty];
+      let correctAnswer, display, options;
       if (difficulty === "easy") {
-        // Csak soros kapcsolás, 2 ellenállás
         let r1 = getRandomInt(min, max);
         let r2 = getRandomInt(min, max);
-        let answer = r1 + r2;
-        return {
-          display: `Mennyi a teljes ellenállás, ha <b>R1 = ${r1} Ω</b> és <b>R2 = ${r2} Ω</b> sorosan vannak kapcsolva?`,
-          answer: answer.toString(),
-          answerType: "number"
-        };
+        correctAnswer = r1 + r2;
+        display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>${generateSorosCircuitSVG(r1, r2)}`;
+        options = generateNumberOptions(correctAnswer, min, max);
       } else if (difficulty === "medium") {
-        // Soros és párhuzamos kombináció, 2-3 ellenállás
         let type = getRandomInt(0, 1);
         if (type === 0) {
-          // R1 sorosan, R2 || R3
           let r1 = getRandomInt(min, max);
           let r2 = getRandomInt(min, max);
           let r3 = getRandomInt(min, max);
           let parallel = Math.round(1 / (1 / r2 + 1 / r3));
-          let answer = r1 + parallel;
-          return {
-            display: `Mennyi a teljes ellenállás, ha <b>R1 = ${r1} Ω</b> sorosan van <b>R2 = ${r2} Ω</b> || <b>R3 = ${r3} Ω</b> párhuzamos kapcsolásával?`,
-            answer: answer.toString(),
-            answerType: "number"
-          };
+          correctAnswer = r1 + parallel;
+          display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>
+                    <svg width="300" height="120" viewBox="0 0 300 120">
+                      <line x1="10" y1="60" x2="50" y1="60" stroke="black" stroke-width="2"/>
+                      <rect x="50" y="50" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="70" y="45" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
+                      <line x1="90" y1="60" x2="110" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="30" stroke="black" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="90" stroke="black" stroke-width="2"/>
+                      <rect x="110" y="20" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="130" y="15" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
+                      <rect x="110" y="80" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="130" y="75" font-size="12" text-anchor="middle">R3=${r3}Ω</text>
+                      <line x1="150" y1="30" x2="150" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="150" y1="90" x2="150" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="150" y1="60" x2="290" y1="60" stroke="black" stroke-width="2"/>
+                    </svg>`;
+          options = generateNumberOptions(correctAnswer, min, max);
         } else {
-          // R1 || R2 sorosan R3
           let r1 = getRandomInt(min, max);
           let r2 = getRandomInt(min, max);
           let r3 = getRandomInt(min, max);
           let parallel = Math.round(1 / (1 / r1 + 1 / r2));
-          let answer = parallel + r3;
-          return {
-            display: `Mennyi a teljes ellenállás, ha <b>R1 = ${r1} Ω</b> || <b>R2 = ${r2} Ω</b> párhuzamosan van, majd sorosan <b>R3 = ${r3} Ω</b>-val?`,
-            answer: answer.toString(),
-            answerType: "number"
-          };
+          correctAnswer = parallel + r3;
+          display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>${generateParhuzamosCircuitSVG(r1, r2)}<br>R3=${r3}Ω sorosan`;
+          options = generateNumberOptions(correctAnswer, min, max);
         }
       } else {
-        // Kihívás: komplex vegyes kapcsolások, 3-4 ellenállás
         let type = getRandomInt(0, 1);
         if (type === 0) {
-          // R1 sorosan (R2 || R3) + R4
           let r1 = getRandomInt(min, max);
           let r2 = getRandomInt(min, max);
           let r3 = getRandomInt(min, max);
           let r4 = getRandomInt(min, max);
           let parallel = Math.round(1 / (1 / r2 + 1 / r3));
-          let answer = r1 + parallel + r4;
-          return {
-            display: `Mennyi a teljes ellenállás, ha <b>R1 = ${r1} Ω</b> sorosan van (<b>R2 = ${r2} Ω</b> || <b>R3 = ${r3} Ω</b>) + <b>R4 = ${r4} Ω</b> kapcsolásával?`,
-            answer: answer.toString(),
-            answerType: "number"
-          };
+          correctAnswer = r1 + parallel + r4;
+          display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>
+                    <svg width="300" height="120" viewBox="0 0 300 120">
+                      <line x1="10" y1="60" x2="50" y1="60" stroke="black" stroke-width="2"/>
+                      <rect x="50" y="50" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="70" y="45" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
+                      <line x1="90" y1="60" x2="110" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="30" stroke="black" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="90" stroke="black" stroke-width="2"/>
+                      <rect x="110" y="20" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="130" y="15" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
+                      <rect x="110" y="80" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="130" y="75" font-size="12" text-anchor="middle">R3=${r3}Ω</text>
+                      <line x1="150" y1="30" x2="150" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="150" y1="90" x2="150" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="150" y1="60" x2="190" y1="60" stroke="black" stroke-width="2"/>
+                      <rect x="190" y="50" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="210" y="45" font-size="12" text-anchor="middle">R4=${r4}Ω</text>
+                      <line x1="230" y1="60" x2="290" y1="60" stroke="black" stroke-width="2"/>
+                    </svg>`;
+          options = generateNumberOptions(correctAnswer, min, max);
         } else {
-          // (R1 || R2) sorosan (R3 || R4)
           let r1 = getRandomInt(min, max);
           let r2 = getRandomInt(min, max);
           let r3 = getRandomInt(min, max);
           let r4 = getRandomInt(min, max);
           let parallel1 = Math.round(1 / (1 / r1 + 1 / r2));
           let parallel2 = Math.round(1 / (1 / r3 + 1 / r4));
-          let answer = parallel1 + parallel2;
-          return {
-            display: `Mennyi a teljes ellenállás, ha (<b>R1 = ${r1} Ω</b> || <b>R2 = ${r2} Ω</b>) sorosan van (<b>R3 = ${r3} Ω</b> || <b>R4 = ${r4} Ω</b>) kapcsolásával?`,
-            answer: answer.toString(),
-            answerType: "number"
-          };
+          correctAnswer = parallel1 + parallel2;
+          display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>
+                    <svg width="300" height="140" viewBox="0 0 300 140">
+                      <line x1="10" y1="70" x2="50" y1="70" stroke="black" stroke-width="2"/>
+                      <line x1="50" y1="70" x2="50" y1="40" stroke="black" stroke-width="2"/>
+                      <line x1="50" y1="70" x2="50" y1="100" stroke="black" stroke-width="2"/>
+                      <rect x="50" y="30" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="70" y="25" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
+                      <rect x="50" y="90" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="70" y="85" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
+                      <line x1="90" y1="40" x2="90" y1="70" stroke="black" stroke-width="2"/>
+                      <line x1="90" y1="100" x2="90" y1="70" stroke="black" stroke-width="2"/>
+                      <line x1="90" y1="70" x2="130" y1="70" stroke="black" stroke-width="2"/>
+                      <line x1="130" y1="70" x2="130" y1="40" stroke="black" stroke-width="2"/>
+                      <line x1="130" y1="70" x2="130" y1="100" stroke="black" stroke-width="2"/>
+                      <rect x="130" y="30" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="150" y="25" font-size="12" text-anchor="middle">R3=${r3}Ω</text>
+                      <rect x="130" y="90" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="150" y="85" font-size="12" text-anchor="middle">R4=${r4}Ω</text>
+                      <line x1="170" y1="40" x2="170" y1="70" stroke="black" stroke-width="2"/>
+                      <line x1="170" y1="100" x2="170" y1="70" stroke="black" stroke-width="2"/>
+                      <line x1="170" y1="70" x2="290" y1="70" stroke="black" stroke-width="2"/>
+                    </svg>`;
+          options = generateNumberOptions(correctAnswer, min, max);
         }
       }
+      return {
+        display,
+        answer: correctAnswer.toString(),
+        options,
+        answerType: "choice"
+      };
     }
   },
   {
@@ -126,48 +262,83 @@ const taskTypes = [
       let R = getRandomInt(1, maxR);
       let U = I * R;
       let type = getRandomInt(0, 2);
+      let correctAnswer, display, options;
       if (difficulty === "hard") {
         let R2 = getRandomInt(1, maxR);
         U = I * (R + R2);
         if (type === 0) {
-          return {
-            display: `Mennyi a feszültség, ha <b>I = ${I} A</b> és <b>R = ${R} Ω + ${R2} Ω</b> sorosan van?`,
-            answer: U.toString(),
-            answerType: "number"
-          };
+          correctAnswer = U;
+          display = `Mennyi a feszültség az alábbi áramkörben?<br>
+                    <svg width="300" height="100" viewBox="0 0 300 100">
+                      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
+                      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="50" y="45" font-size="12" text-anchor="middle">U=?</text>
+                      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+                      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="100" y="35" font-size="12" text-anchor="middle">R1=${R}Ω</text>
+                      <line x1="120" y1="50" x2="140" y1="50" stroke="black" stroke-width="2"/>
+                      <rect x="140" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="160" y="35" font-size="12" text-anchor="middle">R2=${R2}Ω</text>
+                      <line x1="180" y1="50" x2="290" y1="50" stroke="black" stroke-width="2"/>
+                      <text x="230" y="45" font-size="12" text-anchor="middle">I=${I}A</text>
+                    </svg>`;
+          options = generateNumberOptions(correctAnswer, min, max * 2);
         } else if (type === 1) {
-          return {
-            display: `Mennyi az áram, ha <b>U = ${U} V</b> és <b>R = ${R} Ω + ${R2} Ω</b> sorosan van?`,
-            answer: I.toString(),
-            answerType: "number"
-          };
+          correctAnswer = I;
+          display = `Mennyi az áram az alábbi áramkörben?<br>
+                    <svg width="300" height="100" viewBox="0 0 300 100">
+                      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
+                      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="50" y="45" font-size="12" text-anchor="middle">U=${U}V</text>
+                      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+                      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="100" y="35" font-size="12" text-anchor="middle">R1=${R}Ω</text>
+                      <line x1="120" y1="50" x2="140" y1="50" stroke="black" stroke-width="2"/>
+                      <rect x="140" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="160" y="35" font-size="12" text-anchor="middle">R2=${R2}Ω</text>
+                      <line x1="180" y1="50" x2="290" y1="50" stroke="black" stroke-width="2"/>
+                      <text x="230" y="45" font-size="12" text-anchor="middle">I=?</text>
+                    </svg>`;
+          options = generateNumberOptions(correctAnswer, 1, maxI);
         } else {
-          return {
-            display: `Mennyi az ellenállás, ha <b>U = ${U} V</b> és <b>I = ${I} A</b>?`,
-            answer: (R + R2).toString(),
-            answerType: "number"
-          };
+          correctAnswer = R + R2;
+          display = `Mennyi az ellenállás az alábbi áramkörben?<br>
+                    <svg width="300" height="100" viewBox="0 0 300 100">
+                      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
+                      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="50" y="45" font-size="12" text-anchor="middle">U=${U}V</text>
+                      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
+                      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="100" y="35" font-size="12" text-anchor="middle">R1=?</text>
+                      <line x1="120" y1="50" x2="140" y1="50" stroke="black" stroke-width="2"/>
+                      <rect x="140" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <text x="160" y="35" font-size="12" text-anchor="middle">R2=${R2}Ω</text>
+                      <line x1="180" y1="50" x2="290" y1="50" stroke="black" stroke-width="2"/>
+                      <text x="230" y="45" font-size="12" text-anchor="middle">I=${I}A</text>
+                    </svg>`;
+          options = generateNumberOptions(correctAnswer, min, max * 2);
+        }
+      } else {
+        if (type === 0) {
+          correctAnswer = U;
+          display = `Mennyi a feszültség az alábbi áramkörben?<br>${generateOhmCircuitSVG(I, R, 0)}`;
+          options = generateNumberOptions(correctAnswer, min, max * 2);
+        } else if (type === 1) {
+          correctAnswer = I;
+          display = `Mennyi az áram az alábbi áramkörben?<br>${generateOhmCircuitSVG(I, R, 1)}`;
+          options = generateNumberOptions(correctAnswer, 1, maxI);
+        } else {
+          correctAnswer = R;
+          display = `Mennyi az ellenállás az alábbi áramkörben?<br>${generateOhmCircuitSVG(I, R, 2)}`;
+          options = generateNumberOptions(correctAnswer, min, max);
         }
       }
-      if (type === 0) {
-        return {
-          display: `Mennyi a feszültség, ha <b>I = ${I} A</b> és <b>R = ${R} Ω</b>?`,
-          answer: U.toString(),
-          answerType: "number"
-        };
-      } else if (type === 1) {
-        return {
-          display: `Mennyi az áram, ha <b>U = ${U} V</b> és <b>R = ${R} Ω</b>?`,
-          answer: I.toString(),
-          answerType: "number"
-        };
-      } else {
-        return {
-          display: `Mennyi az ellenállás, ha <b>U = ${U} V</b> és <b>I = ${I} A</b>?`,
-          answer: R.toString(),
-          answerType: "number"
-        };
-      }
+      return {
+        display,
+        answer: correctAnswer.toString(),
+        options,
+        answerType: "choice"
+      };
     }
   },
   {
@@ -176,7 +347,8 @@ const taskTypes = [
     generate: () => ({
       display: "Kidolgozás alatt",
       answer: null,
-      answerType: "number"
+      options: ["N/A", "N/A", "N/A", "N/A"],
+      answerType: "choice"
     })
   },
   {
@@ -185,7 +357,8 @@ const taskTypes = [
     generate: () => ({
       display: "Kidolgozás alatt",
       answer: null,
-      answerType: "number"
+      options: ["N/A", "N/A", "N/A", "N/A"],
+      answerType: "choice"
     })
   },
   {
@@ -194,7 +367,8 @@ const taskTypes = [
     generate: () => ({
       display: "Kidolgozás alatt",
       answer: null,
-      answerType: "number"
+      options: ["N/A", "N/A", "N/A", "N/A"],
+      answerType: "choice"
     })
   }
 ];
@@ -208,6 +382,30 @@ const startBtn = document.querySelector("button[onclick='startGame()']");
 const replayBtn = document.getElementById("replay");
 const themeToggle = document.getElementById("theme-toggle");
 const numpadContainer = document.getElementById("numpad");
+
+// --- SEGÉDFÜGGVÉNYEK ---
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function generateNumberOptions(correctAnswer, min, max) {
+  let options = [correctAnswer];
+  while (options.length < 4) {
+    const randomValue = getRandomInt(min, max);
+    if (!options.includes(randomValue) && randomValue !== correctAnswer) {
+      options.push(randomValue);
+    }
+  }
+  return shuffleArray(options.map(String));
+}
 
 // --- KATEGÓRIÁK BETÖLTÉSE ---
 function loadCategories() {
@@ -267,19 +465,10 @@ themeToggle.addEventListener("click", function () {
   applyTheme();
 });
 
-// --- NEHÉZSÉG ÉS KATEGÓRIA KEZELÉSE ---
-difficultySelect.addEventListener("change", loadBest);
-categorySelect.addEventListener("change", loadBest);
-
 // --- IDŐZÍTŐ ---
 function updateTimer() {
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.textContent = `${elapsed}`;
-}
-
-// --- SEGÉDFÜGGVÉNYEK ---
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // --- FELADATSOR GENERÁLÁSA ---
@@ -289,110 +478,20 @@ function generateQuestions() {
   questions = [];
   const taskType = taskTypes.find(t => t.value === category);
   if (!taskType) {
-    questions.push({ display: "Hiba: kategória nincs implementálva", answer: null, answerType: "number" });
+    questions.push({ display: "Hiba: kategória nincs implementálva", answer: null, options: ["N/A", "N/A", "N/A", "N/A"], answerType: "choice" });
     return;
   }
   for (let i = 0; i < QUESTIONS; i++) {
     const task = taskType.generate(difficulty);
-    if (!task.answer || task.answer === "?") {
+    if (!task.answer) {
       task.display = "Kidolgozás alatt";
-      task.answer = null;
+      task.options = ["N/A", "N/A", "N/A", "N/A"];
     }
     questions.push(task);
   }
 }
 
-// --- SZÁMBILLENTYŰZET ---
-function renderNumpad(answerState, onChange) {
-  const rows = [
-    ['1', '2', '3', '←'],
-    ['4', '5', '6', 'submit'],
-    ['7', '8', '9', '0']
-  ];
-  const numpadDiv = document.createElement('div');
-  numpadDiv.className = 'numpad active';
-
-  rows.forEach((row) => {
-    const rowDiv = document.createElement('div');
-    rowDiv.className = 'numpad-row';
-    row.forEach((key) => {
-      if (key === 'submit') {
-        const enterIcon = `<svg viewBox="0 0 48 48" width="1.2em" height="1.2em" style="display:block;margin:auto;" aria-hidden="true" focusable="false"><path d="M40 6v23H14.83l6.58-6.59L19 20l-10 10 10 10 2.41-2.41L14.83 31H44V6z" fill="currentColor"/></svg>`;
-        const submitBtn = document.createElement("button");
-        submitBtn.type = "button";
-        submitBtn.className = "numpad-btn numpad-submit-btn";
-        submitBtn.setAttribute("aria-label", "Küldés (Enter)");
-        submitBtn.innerHTML = `<span>${enterIcon}</span>`;
-        submitBtn.onclick = () => {
-          if (!gameActive) return;
-          let val = answerState.value.trim();
-          if (val === "") {
-            alert("Írj be egy választ!");
-            return;
-          }
-          let correct = false;
-          const currentTask = questions[currentQuestion] || {};
-          if (!currentTask.answer) {
-            alert("Ez a feladat még kidolgozás alatt áll!");
-            currentQuestion++;
-            showQuestion(currentQuestion);
-            return;
-          }
-
-          // Normalizáljuk az inputot: vesszőt tizedes törtet jelző pontra cseréljük
-          val = val.replace(',', '.');
-
-          if (currentTask.answerType === "number") {
-            const correctAnswer = parseInt(currentTask.answer);
-            const userAnswer = parseFloat(val);
-            if (isNaN(userAnswer)) {
-              alert("Érvénytelen szám! Írj be egy egész számot.");
-              return;
-            }
-            if (Math.round(userAnswer) === correctAnswer) {
-              correct = true;
-            }
-          }
-
-          if (correct) {
-            score++;
-            // Motiváló üzenetek
-            if (difficultySelect.value === "hard") {
-              const message = motivationalMessages[getRandomInt(0, motivationalMessages.length - 1)];
-              alert(message);
-            } else if (difficultySelect.value === "medium" && currentQuestion === QUESTIONS - 2) {
-              alert("Gratulálok, csak így tovább, mindjárt a végére érsz!");
-            }
-            currentQuestion++;
-            showQuestion(currentQuestion);
-          } else {
-            alert("Nem jó válasz, próbáld újra!");
-          }
-        };
-        rowDiv.appendChild(submitBtn);
-      } else {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'numpad-btn';
-        btn.textContent = key;
-        btn.tabIndex = -1;
-        btn.onclick = () => {
-          if (key === '←') {
-            answerState.value = answerState.value.slice(0, -1);
-          } else {
-            answerState.value += key;
-          }
-          onChange(answerState.value);
-        };
-        rowDiv.appendChild(btn);
-      }
-    });
-    numpadDiv.appendChild(rowDiv);
-  });
-  return numpadDiv;
-}
-
-// --- JÁTÉK LOGIKA ---
+// --- KÉRDÉS MEGJELENÍTÉSE ---
 function showQuestion(index) {
   questionContainer.innerHTML = "";
   if (index >= QUESTIONS) {
@@ -406,24 +505,40 @@ function showQuestion(index) {
   div.innerHTML =
     `<div class="question-number">${QUESTIONS} / ${index + 1}. feladat:</div>
      <div class="question-text">${q.display}</div>`;
-  let answerState = { value: "" };
-  const answerView = document.createElement("div");
-  answerView.className = "answer-view";
-  answerView.textContent = "";
-  div.appendChild(answerView);
+  
+  if (q.answer) {
+    const optionsDiv = document.createElement("div");
+    optionsDiv.className = "options";
+    q.options.forEach(option => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.textContent = option;
+      btn.onclick = () => {
+        if (!gameActive) return;
+        const correct = option === q.answer;
+        if (correct) {
+          score++;
+          if (difficultySelect.value === "hard") {
+            alert(motivationalMessages[getRandomInt(0, motivationalMessages.length - 1)]);
+          } else if (difficultySelect.value === "medium" && currentQuestion === QUESTIONS - 2) {
+            alert("Gratulálok, csak így tovább, mindjárt a végére érsz!");
+          }
+          currentQuestion++;
+          showQuestion(currentQuestion);
+        } else {
+          alert("Nem jó válasz, próbáld újra!");
+        }
+      };
+      optionsDiv.appendChild(btn);
+    });
+    div.appendChild(optionsDiv);
+  }
 
-  const numpad = renderNumpad(answerState, function (val) {
-    answerView.textContent = val;
-  });
-
-  numpadContainer.innerHTML = "";
-  numpadContainer.appendChild(numpad);
-  numpadContainer.classList.add("active");
   questionContainer.appendChild(div);
-
   div.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// --- JÁTÉK LOGIKA ---
 function startGame() {
   gameActive = true;
   score = 0;
@@ -437,9 +552,9 @@ function startGame() {
 
   categorySelect.disabled = true;
   difficultySelect.disabled = true;
-
   replayBtn.style.display = "none";
   startBtn.style.display = "none";
+  numpadContainer.innerHTML = "";
 }
 
 function finishGame() {
@@ -447,11 +562,8 @@ function finishGame() {
   clearInterval(timerInterval);
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.textContent = `${elapsed} (Vége)`;
-  questionContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.</p>`;
-  numpadContainer.innerHTML = "";
-  numpadContainer.classList.remove("active");
+  questionContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél. Pontszám: ${score}/${QUESTIONS}</p>`;
   saveBest(score, elapsed);
-
   replayBtn.style.display = "";
   startBtn.style.display = "";
   categorySelect.disabled = false;
