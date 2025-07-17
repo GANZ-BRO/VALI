@@ -20,83 +20,91 @@ const motivationalMessages = [
 
 // --- SVG GENERÁLÓ FÜGGVÉNYEK ---
 function generateSorosCircuitSVG(r1, r2) {
+  const isLightTheme = document.body.classList.contains("light");
+  const svgClass = isLightTheme ? "svg-light" : "svg-dark";
   return `
-    <svg width="200" height="100" viewBox="0 0 200 100">
-      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
-      <rect x="50" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+    <svg class="${svgClass}" width="200" height="100" viewBox="0 0 200 100">
+      <line x1="10" y1="50" x2="50" y1="50" stroke-width="2"/>
+      <rect x="50" y="40" width="40" height="20" fill="none" stroke-width="2"/>
       <text x="70" y="35" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
-      <line x1="90" y1="50" x2="110" y1="50" stroke="black" stroke-width="2"/>
-      <rect x="110" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <line x1="90" y1="50" x2="110" y1="50" stroke-width="2"/>
+      <rect x="110" y="40" width="40" height="20" fill="none" stroke-width="2"/>
       <text x="130" y="35" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
-      <line x1="150" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+      <line x1="150" y1="50" x2="190" y1="50" stroke-width="2"/>
     </svg>
   `;
 }
 
 function generateParhuzamosCircuitSVG(r1, r2) {
+  const isLightTheme = document.body.classList.contains("light");
+  const svgClass = isLightTheme ? "svg-light" : "svg-dark";
   return `
-    <svg width="200" height="120" viewBox="0 0 200 120">
-      <line x1="10" y1="60" x2="50" y1="60" stroke="black" stroke-width="2"/>
-      <line x1="50" y1="60" x2="50" y1="30" stroke="black" stroke-width="2"/>
-      <line x1="50" y1="60" x2="50" y1="90" stroke="black" stroke-width="2"/>
-      <rect x="50" y="20" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+    <svg class="${svgClass}" width="200" height="120" viewBox="0 0 200 120">
+      <line x1="10" y1="60" x2="50" y1="60" stroke-width="2"/>
+      <line x1="50" y1="60" x2="50" y1="30" stroke-width="2"/>
+      <line x1="50" y1="60" x2="50" y1="90" stroke-width="2"/>
+      <rect x="50" y="20" width="40" height="20" fill="none" stroke-width="2"/>
       <text x="70" y="15" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
-      <rect x="50" y="80" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <rect x="50" y="80" width="40" height="20" fill="none" stroke-width="2"/>
       <text x="70" y="75" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
-      <line x1="90" y1="30" x2="90" y1="60" stroke="black" stroke-width="2"/>
-      <line x1="90" y1="90" x2="90" y1="60" stroke="black" stroke-width="2"/>
-      <line x1="90" y1="60" x2="190" y1="60" stroke="black" stroke-width="2"/>
+      <line x1="90" y1="30" x2="90" y1="60" stroke-width="2"/>
+      <line x1="90" y1="90" x2="90" y1="60" stroke-width="2"/>
+      <line x1="90" y1="60" x2="190" y1="60" stroke-width="2"/>
     </svg>
   `;
 }
 
 function generateOhmCircuitSVG(I, R, type) {
+  const isLightTheme = document.body.classList.contains("light");
+  const svgClass = isLightTheme ? "svg-light" : "svg-dark";
   return `
-    <svg width="200" height="100" viewBox="0 0 200 100">
-      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
-      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+    <svg class="${svgClass}" width="200" height="100" viewBox="0 0 200 100">
+      <line x1="10" y1="50" x2="50" y1="50" stroke-width="2"/>
+      <circle cx="50" cy="50" r="10" fill="none" stroke-width="2"/>
       <text x="50" y="45" font-size="12" text-anchor="middle">${type === 0 ? `U=?` : type === 1 ? `I=${I}A` : `U=${I*R}V`}</text>
-      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+      <line x1="60" y1="50" x2="80" y1="50" stroke-width="2"/>
+      <rect x="80" y="40" width="40" height="20" fill="none" stroke-width="2"/>
       <text x="100" y="35" font-size="12" text-anchor="middle">R=${R}Ω</text>
-      <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+      <line x1="120" y1="50" x2="190" y1="50" stroke-width="2"/>
     </svg>
   `;
 }
 
 function generateComponentSVG(component) {
+  const isLightTheme = document.body.classList.contains("light");
+  const svgClass = isLightTheme ? "svg-light" : "svg-dark";
   switch (component) {
     case "LED":
       return `
-        <svg width="200" height="100" viewBox="0 0 200 100">
-          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-          <circle cx="100" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
-          <path d="M95 45 L105 55 M95 55 L105 45" stroke="black" stroke-width="2"/>
-          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        <svg class="${svgClass}" width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke-width="2"/>
+          <circle cx="100" cy="50" r="10" fill="none" stroke-width="2"/>
+          <path d="M95 45 L105 55 M95 55 L105 45" stroke-width="2"/>
+          <line x1="120" y1="50" x2="190" y1="50" stroke-width="2"/>
         </svg>`;
     case "Kapcsoló":
       return `
-        <svg width="200" height="100" viewBox="0 0 200 100">
-          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-          <circle cx="80" cy="50" r="5" fill="black"/>
-          <line x1="80" y1="50" x2="100" y1="30" stroke="black" stroke-width="2"/>
-          <circle cx="120" cy="50" r="5" fill="black"/>
-          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        <svg class="${svgClass}" width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke-width="2"/>
+          <circle cx="80" cy="50" r="5" fill="none" stroke-width="2"/>
+          <line x1="80" y1="50" x2="100" y1="50" stroke-width="2"/>
+          <circle cx="100" cy="50" r="5" fill="none" stroke-width="2"/>
+          <line x1="100" y1="50" x2="190" y1="50" stroke-width="2"/>
         </svg>`;
     case "Lámpa":
       return `
-        <svg width="200" height="100" viewBox="0 0 200 100">
-          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-          <circle cx="100" cy="50" r="15" fill="none" stroke="black" stroke-width="2"/>
-          <path d="M90 40 L110 60 M90 60 L110 40" stroke="black" stroke-width="2"/>
-          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        <svg class="${svgClass}" width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke-width="2"/>
+          <circle cx="100" cy="50" r="15" fill="none" stroke-width="2"/>
+          <path d="M90 40 L110 60 M90 60 L110 40" stroke-width="2"/>
+          <line x1="120" y1="50" x2="190" y1="50" stroke-width="2"/>
         </svg>`;
     case "Ellenállás":
       return `
-        <svg width="200" height="100" viewBox="0 0 200 100">
-          <line x1="10" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-          <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
-          <line x1="120" y1="50" x2="190" y1="50" stroke="black" stroke-width="2"/>
+        <svg class="${svgClass}" width="200" height="100" viewBox="0 0 200 100">
+          <line x1="10" y1="50" x2="80" y1="50" stroke-width="2"/>
+          <rect x="80" y="40" width="40" height="20" fill="none" stroke-width="2"/>
+          <line x1="120" y1="50" x2="190" y1="50" stroke-width="2"/>
         </svg>`;
     default:
       return "";
@@ -140,6 +148,8 @@ const taskTypes = [
     value: "soros_parhuzamos",
     generate: (difficulty) => {
       const { min, max } = DIFFICULTY_SETTINGS[difficulty];
+      const isLightTheme = document.body.classList.contains("light");
+      const svgClass = isLightTheme ? "svg-light" : "svg-dark";
       let correctAnswer, display, options;
       if (difficulty === "easy") {
         let r1 = getRandomInt(min, max);
@@ -156,20 +166,20 @@ const taskTypes = [
           let parallel = Math.round(1 / (1 / r2 + 1 / r3));
           correctAnswer = r1 + parallel;
           display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>
-                    <svg width="300" height="120" viewBox="0 0 300 120">
-                      <line x1="10" y1="60" x2="50" y1="60" stroke="black" stroke-width="2"/>
-                      <rect x="50" y="50" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                    <svg class="${svgClass}" width="300" height="120" viewBox="0 0 300 120">
+                      <line x1="10" y1="60" x2="50" y1="60" stroke-width="2"/>
+                      <rect x="50" y="50" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="70" y="45" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
-                      <line x1="90" y1="60" x2="110" y1="60" stroke="black" stroke-width="2"/>
-                      <line x1="110" y1="60" x2="110" y1="30" stroke="black" stroke-width="2"/>
-                      <line x1="110" y1="60" x2="110" y1="90" stroke="black" stroke-width="2"/>
-                      <rect x="110" y="20" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="90" y1="60" x2="110" y1="60" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="30" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="90" stroke-width="2"/>
+                      <rect x="110" y="20" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="130" y="15" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
-                      <rect x="110" y="80" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <rect x="110" y="80" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="130" y="75" font-size="12" text-anchor="middle">R3=${r3}Ω</text>
-                      <line x1="150" y1="30" x2="150" y1="60" stroke="black" stroke-width="2"/>
-                      <line x1="150" y1="90" x2="150" y1="60" stroke="black" stroke-width="2"/>
-                      <line x1="150" y1="60" x2="290" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="150" y1="30" x2="150" y1="60" stroke-width="2"/>
+                      <line x1="150" y1="90" x2="150" y1="60" stroke-width="2"/>
+                      <line x1="150" y1="60" x2="290" y1="60" stroke-width="2"/>
                     </svg>`;
           options = generateNumberOptions(correctAnswer, min, max);
         } else {
@@ -191,23 +201,23 @@ const taskTypes = [
           let parallel = Math.round(1 / (1 / r2 + 1 / r3));
           correctAnswer = r1 + parallel + r4;
           display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>
-                    <svg width="300" height="120" viewBox="0 0 300 120">
-                      <line x1="10" y1="60" x2="50" y1="60" stroke="black" stroke-width="2"/>
-                      <rect x="50" y="50" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                    <svg class="${svgClass}" width="300" height="120" viewBox="0 0 300 120">
+                      <line x1="10" y1="60" x2="50" y1="60" stroke-width="2"/>
+                      <rect x="50" y="50" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="70" y="45" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
-                      <line x1="90" y1="60" x2="110" y1="60" stroke="black" stroke-width="2"/>
-                      <line x1="110" y1="60" x2="110" y1="30" stroke="black" stroke-width="2"/>
-                      <line x1="110" y1="60" x2="110" y1="90" stroke="black" stroke-width="2"/>
-                      <rect x="110" y="20" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="90" y1="60" x2="110" y1="60" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="30" stroke-width="2"/>
+                      <line x1="110" y1="60" x2="110" y1="90" stroke-width="2"/>
+                      <rect x="110" y="20" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="130" y="15" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
-                      <rect x="110" y="80" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <rect x="110" y="80" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="130" y="75" font-size="12" text-anchor="middle">R3=${r3}Ω</text>
-                      <line x1="150" y1="30" x2="150" y1="60" stroke="black" stroke-width="2"/>
-                      <line x1="150" y1="90" x2="150" y1="60" stroke="black" stroke-width="2"/>
-                      <line x1="150" y1="60" x2="190" y1="60" stroke="black" stroke-width="2"/>
-                      <rect x="190" y="50" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="150" y1="30" x2="150" y1="60" stroke-width="2"/>
+                      <line x1="150" y1="90" x2="150" y1="60" stroke-width="2"/>
+                      <line x1="150" y1="60" x2="190" y1="60" stroke-width="2"/>
+                      <rect x="190" y="50" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="210" y="45" font-size="12" text-anchor="middle">R4=${r4}Ω</text>
-                      <line x1="230" y1="60" x2="290" y1="60" stroke="black" stroke-width="2"/>
+                      <line x1="230" y1="60" x2="290" y1="60" stroke-width="2"/>
                     </svg>`;
           options = generateNumberOptions(correctAnswer, min, max);
         } else {
@@ -219,26 +229,26 @@ const taskTypes = [
           let parallel2 = Math.round(1 / (1 / r3 + 1 / r4));
           correctAnswer = parallel1 + parallel2;
           display = `Mennyi a teljes ellenállás az alábbi áramkörben?<br>
-                    <svg width="300" height="140" viewBox="0 0 300 140">
-                      <line x1="10" y1="70" x2="50" y1="70" stroke="black" stroke-width="2"/>
-                      <line x1="50" y1="70" x2="50" y1="40" stroke="black" stroke-width="2"/>
-                      <line x1="50" y1="70" x2="50" y1="100" stroke="black" stroke-width="2"/>
-                      <rect x="50" y="30" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                    <svg class="${svgClass}" width="300" height="140" viewBox="0 0 300 140">
+                      <line x1="10" y1="70" x2="50" y1="70" stroke-width="2"/>
+                      <line x1="50" y1="70" x2="50" y1="40" stroke-width="2"/>
+                      <line x1="50" y1="70" x2="50" y1="100" stroke-width="2"/>
+                      <rect x="50" y="30" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="70" y="25" font-size="12" text-anchor="middle">R1=${r1}Ω</text>
-                      <rect x="50" y="90" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <rect x="50" y="90" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="70" y="85" font-size="12" text-anchor="middle">R2=${r2}Ω</text>
-                      <line x1="90" y1="40" x2="90" y1="70" stroke="black" stroke-width="2"/>
-                      <line x1="90" y1="100" x2="90" y1="70" stroke="black" stroke-width="2"/>
-                      <line x1="90" y1="70" x2="130" y1="70" stroke="black" stroke-width="2"/>
-                      <line x1="130" y1="70" x2="130" y1="40" stroke="black" stroke-width="2"/>
-                      <line x1="130" y1="70" x2="130" y1="100" stroke="black" stroke-width="2"/>
-                      <rect x="130" y="30" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="90" y1="40" x2="90" y1="70" stroke-width="2"/>
+                      <line x1="90" y1="100" x2="90" y1="70" stroke-width="2"/>
+                      <line x1="90" y1="70" x2="130" y1="70" stroke-width="2"/>
+                      <line x1="130" y1="70" x2="130" y1="40" stroke-width="2"/>
+                      <line x1="130" y1="70" x2="130" y1="100" stroke-width="2"/>
+                      <rect x="130" y="30" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="150" y="25" font-size="12" text-anchor="middle">R3=${r3}Ω</text>
-                      <rect x="130" y="90" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <rect x="130" y="90" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="150" y="85" font-size="12" text-anchor="middle">R4=${r4}Ω</text>
-                      <line x1="170" y1="40" x2="170" y1="70" stroke="black" stroke-width="2"/>
-                      <line x1="170" y1="100" x2="170" y1="70" stroke="black" stroke-width="2"/>
-                      <line x1="170" y1="70" x2="290" y1="70" stroke="black" stroke-width="2"/>
+                      <line x1="170" y1="40" x2="170" y1="70" stroke-width="2"/>
+                      <line x1="170" y1="100" x2="170" y1="70" stroke-width="2"/>
+                      <line x1="170" y1="70" x2="290" y1="70" stroke-width="2"/>
                     </svg>`;
           options = generateNumberOptions(correctAnswer, min, max);
         }
@@ -256,6 +266,8 @@ const taskTypes = [
     value: "ohm_torveny",
     generate: (difficulty) => {
       const { min, max } = DIFFICULTY_SETTINGS[difficulty];
+      const isLightTheme = document.body.classList.contains("light");
+      const svgClass = isLightTheme ? "svg-light" : "svg-dark";
       let maxI = difficulty === "easy" ? 10 : difficulty === "medium" ? 20 : 50;
       let maxR = difficulty === "easy" ? 10 : difficulty === "medium" ? 50 : 200;
       let I = getRandomInt(1, maxI);
@@ -269,51 +281,51 @@ const taskTypes = [
         if (type === 0) {
           correctAnswer = U;
           display = `Mennyi a feszültség az alábbi áramkörben?<br>
-                    <svg width="300" height="100" viewBox="0 0 300 100">
-                      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
-                      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+                    <svg class="${svgClass}" width="300" height="100" viewBox="0 0 300 100">
+                      <line x1="10" y1="50" x2="50" y1="50" stroke-width="2"/>
+                      <circle cx="50" cy="50" r="10" fill="none" stroke-width="2"/>
                       <text x="50" y="45" font-size="12" text-anchor="middle">U=?</text>
-                      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-                      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="60" y1="50" x2="80" y1="50" stroke-width="2"/>
+                      <rect x="80" y="40" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="100" y="35" font-size="12" text-anchor="middle">R1=${R}Ω</text>
-                      <line x1="120" y1="50" x2="140" y1="50" stroke="black" stroke-width="2"/>
-                      <rect x="140" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="120" y1="50" x2="140" y1="50" stroke-width="2"/>
+                      <rect x="140" y="40" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="160" y="35" font-size="12" text-anchor="middle">R2=${R2}Ω</text>
-                      <line x1="180" y1="50" x2="290" y1="50" stroke="black" stroke-width="2"/>
+                      <line x1="180" y1="50" x2="290" y1="50" stroke-width="2"/>
                       <text x="230" y="45" font-size="12" text-anchor="middle">I=${I}A</text>
                     </svg>`;
           options = generateNumberOptions(correctAnswer, min, max * 2);
         } else if (type === 1) {
           correctAnswer = I;
           display = `Mennyi az áram az alábbi áramkörben?<br>
-                    <svg width="300" height="100" viewBox="0 0 300 100">
-                      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
-                      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+                    <svg class="${svgClass}" width="300" height="100" viewBox="0 0 300 100">
+                      <line x1="10" y1="50" x2="50" y1="50" stroke-width="2"/>
+                      <circle cx="50" cy="50" r="10" fill="none" stroke-width="2"/>
                       <text x="50" y="45" font-size="12" text-anchor="middle">U=${U}V</text>
-                      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-                      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="60" y1="50" x2="80" y1="50" stroke-width="2"/>
+                      <rect x="80" y="40" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="100" y="35" font-size="12" text-anchor="middle">R1=${R}Ω</text>
-                      <line x1="120" y1="50" x2="140" y1="50" stroke="black" stroke-width="2"/>
-                      <rect x="140" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="120" y1="50" x2="140" y1="50" stroke-width="2"/>
+                      <rect x="140" y="40" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="160" y="35" font-size="12" text-anchor="middle">R2=${R2}Ω</text>
-                      <line x1="180" y1="50" x2="290" y1="50" stroke="black" stroke-width="2"/>
+                      <line x1="180" y1="50" x2="290" y1="50" stroke-width="2"/>
                       <text x="230" y="45" font-size="12" text-anchor="middle">I=?</text>
                     </svg>`;
           options = generateNumberOptions(correctAnswer, 1, maxI);
         } else {
           correctAnswer = R + R2;
           display = `Mennyi az ellenállás az alábbi áramkörben?<br>
-                    <svg width="300" height="100" viewBox="0 0 300 100">
-                      <line x1="10" y1="50" x2="50" y1="50" stroke="black" stroke-width="2"/>
-                      <circle cx="50" cy="50" r="10" fill="none" stroke="black" stroke-width="2"/>
+                    <svg class="${svgClass}" width="300" height="100" viewBox="0 0 300 100">
+                      <line x1="10" y1="50" x2="50" y1="50" stroke-width="2"/>
+                      <circle cx="50" cy="50" r="10" fill="none" stroke-width="2"/>
                       <text x="50" y="45" font-size="12" text-anchor="middle">U=${U}V</text>
-                      <line x1="60" y1="50" x2="80" y1="50" stroke="black" stroke-width="2"/>
-                      <rect x="80" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="60" y1="50" x2="80" y1="50" stroke-width="2"/>
+                      <rect x="80" y="40" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="100" y="35" font-size="12" text-anchor="middle">R1=?</text>
-                      <line x1="120" y1="50" x2="140" y1="50" stroke="black" stroke-width="2"/>
-                      <rect x="140" y="40" width="40" height="20" fill="none" stroke="black" stroke-width="2"/>
+                      <line x1="120" y1="50" x2="140" y1="50" stroke-width="2"/>
+                      <rect x="140" y="40" width="40" height="20" fill="none" stroke-width="2"/>
                       <text x="160" y="35" font-size="12" text-anchor="middle">R2=${R2}Ω</text>
-                      <line x1="180" y1="50" x2="290" y1="50" stroke="black" stroke-width="2"/>
+                      <line x1="180" y1="50" x2="290" y1="50" stroke-width="2"/>
                       <text x="230" y="45" font-size="12" text-anchor="middle">I=${I}A</text>
                     </svg>`;
           options = generateNumberOptions(correctAnswer, min, max * 2);
@@ -414,6 +426,7 @@ function loadCategories() {
 
 // --- ÁLLAPOTVÁLTOZÓK ---
 let score = 0, startTime = 0, timerInterval = null, currentQuestion = 0, questions = [];
+let wrongAttempts = 0; // Helytelen próbálkozások számlálása
 let best = { score: 0, time: null };
 let gameActive = false;
 
@@ -457,6 +470,10 @@ function applyTheme() {
   const theme = localStorage.getItem("vali-theme") || "dark";
   const isLight = theme === "light";
   document.body.classList.toggle("light", isLight);
+  // Frissítjük az SVG-ket a kérdésnél, ha van aktuális kérdés
+  if (currentQuestion < questions.length) {
+    showQuestion(currentQuestion);
+  }
 }
 
 themeToggle.addEventListener("click", function () {
@@ -526,6 +543,7 @@ function showQuestion(index) {
           currentQuestion++;
           showQuestion(currentQuestion);
         } else {
+          wrongAttempts++; // Helytelen válasz számlálása
           alert("Nem jó válasz, próbáld újra!");
         }
       };
@@ -542,6 +560,7 @@ function showQuestion(index) {
 function startGame() {
   gameActive = true;
   score = 0;
+  wrongAttempts = 0; // Számláló visszaállítása játék indításakor
   currentQuestion = 0;
   generateQuestions();
   showQuestion(0);
@@ -562,7 +581,7 @@ function finishGame() {
   clearInterval(timerInterval);
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.textContent = `${elapsed} (Vége)`;
-  questionContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél. Pontszám: ${score}/${QUESTIONS}</p>`;
+  questionContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél. Pontszám: ${score}/${QUESTIONS}. Helytelen próbálkozások: ${wrongAttempts}</p>`;
   saveBest(score, elapsed);
   replayBtn.style.display = "";
   startBtn.style.display = "";

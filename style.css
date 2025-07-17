@@ -115,6 +115,23 @@ body.light .question-container {
     max-width: 100%;
 }
 
+/* SVG vonalak színe témától függően */
+.svg-dark line, .svg-dark rect, .svg-dark circle, .svg-dark path {
+    stroke: white;
+}
+
+.svg-dark text {
+    fill: white;
+}
+
+.svg-light line, .svg-light rect, .svg-light circle, .svg-light path {
+    stroke: black;
+}
+
+.svg-light text {
+    fill: black;
+}
+
 .options {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
