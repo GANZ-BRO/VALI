@@ -1,51 +1,44 @@
-const CACHE_NAME = 'Vali gyakorló';
-const FILES_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/app.js',
-  '/sw-reg.js',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/manifest.json'
+const CACHE_NAME = 'VALI-gyakorlas-v1';
+const urlsToCache = [
+  './',
+  './index.html',
+  './app.js',
+  './style.css',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-maskable.png'
 ];
 
-// Telepítés: cache-eli az alap fájlokat
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
   );
-  self.skipWaiting();
 });
 
-// Aktiválás: törli a régi cache-t, ha van
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) return caches.delete(key);
-        })
-      )
-    )
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames
+          .filter(name => name !== CACHE_NAME)
+          .map(name => caches.delete(name))
+      );
+    })
   );
-  self.clients.claim();
 });
 
-// Fetch: cache-ből szolgálja ki, vagy hálózatról
 self.addEventListener('fetch', event => {
-  // Csak GET kéréseket cache-elünk
-  if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then(response =>
-      response ||
-      fetch(event.request).then(fetchRes => {
-        // Dinamikus cache: csak az alap fájlokat cache-eljük
-        return fetchRes;
-      }).catch(() => {
-        // Itt adhatsz vissza offline oldalt, ha szeretnél
-        return caches.match('/index.html');
+    caches.match(event.request)
+      .then(response => {
+        if (response) return response;
+        return fetch(event.request).catch(() => {
+          return new Response('Offline tartalom nem elérhető.', {
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
+        });
       })
-    )
   );
 });

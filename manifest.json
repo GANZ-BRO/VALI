@@ -1,11 +1,12 @@
 {
-  "name": "Villamosságtan ALapjaI gyakorlás",
+  "name": "Villamosságtan ALapjai gyakorlás",
   "short_name": "VALI",
-  "start_url": ".",
+  "description": "Villamosságtan gyakorló alkalmazás diákok számára",
+  "start_url": "index.html",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#121212",
-  "theme_color": "#3578e5",
-  "description": "Villamosságtan gyakorló alkalmazás offline móddal.",
+  "background_color": "#1C2526",
+  "theme_color": "#D32F2F",
   "icons": [
     {
       "src": "icon-192.png",
@@ -16,6 +17,12 @@
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "icon-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
