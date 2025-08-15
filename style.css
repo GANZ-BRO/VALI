@@ -546,3 +546,45 @@ body.dark .numpad-submit-btn:hover, body.dark .numpad-submit-btn:focus {
     padding: 0.1em 0.2em;
   }
 }
+/* SVG képek méretének és elrendezésének javítása */
+.blue-percent img {
+  width: 120px; /* Növelt méret az olvashatóság érdekében */
+  height: auto;
+  vertical-align: middle;
+  margin: 5px; /* Kis térköz a jobb elrendezéshez */
+  max-width: 100%; /* Megakadályozza a túlcsordulást */
+  border: 1px solid var(--input-border-light); /* Opcionális: keret a jobb láthatóságért */
+}
+
+body.dark .blue-percent img {
+  border-color: var(--input-border-dark); /* Sötét módban illeszkedő keret */
+}
+
+/* Kérdés tartályának finomhangolása */
+.question-container {
+  min-width: 300px; /* Minimális szélesség biztosítása */
+  padding: 1em; /* Több belső tér */
+  box-sizing: border-box; /* Padding ne növelje a méretet */
+}
+
+@media (max-width: 600px) {
+  .blue-percent img {
+    width: 90px; /* Kisebb képernyőkön enyhén csökkentett méret */
+    margin: 3px; /* Kevesebb térköz mobil nézetben */
+  }
+  .question-container {
+    min-width: 250px; /* Mobil nézetben kisebb minimális szélesség */
+    padding: 0.75em; /* Csökkentett padding */
+  }
+}
+
+@media (max-width: 400px) {
+  .blue-percent img {
+    width: 70px; /* Még kisebb méret nagyon szűk képernyőkön */
+    margin: 2px;
+  }
+  .question-container {
+    min-width: 200px; /* További csökkentés */
+    padding: 0.5em;
+  }
+}

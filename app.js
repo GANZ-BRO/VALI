@@ -126,6 +126,121 @@ function generateOptions(correctAnswer, answerType, difficulty, unit) {
 // --- FELADATTÍPUSOK ---
 const taskTypes = [
 
+{
+    name: "Elektronikai alkatrészek",
+    value: "elektronikai_alkatreszek",
+    generate: (difficulty) => {
+      const components = {
+        easy: [
+          { 
+            name: "Vezeték", 
+            symbol: "wire.svg", 
+            description: "Elektromos áram vezetésére szolgál", 
+            example: "Áramkörök összekötésére" 
+          },
+          { 
+            name: "Elem", 
+            symbol: "battery.svg", 
+            description: "Elektromos energiát biztosít", 
+            example: "Távirányítókban használják" 
+          },
+          { 
+            name: "Kapcsoló", 
+            symbol: "switch.svg", 
+            description: "Áramkör nyitására vagy zárására szolgál", 
+            example: "Lámpák be- és kikapcsolására" 
+          },
+          { 
+            name: "Izzó", 
+            symbol: "bulb.svg", 
+            description: "Fényt és hőt termel áram hatására", 
+            example: "Régi típusú lámpákban" 
+          },
+          { 
+            name: "Nyomógomb", 
+            symbol: "pushbutton.svg", 
+            description: "Ideiglenesen zárja az áramkört", 
+            example: "Kapucsengőkben használják" 
+          }
+        ],
+        medium: [],
+        hard: []
+      };
+
+      const selectedComponents = components[difficulty];
+      const component = selectedComponents[getRandomInt(0, selectedComponents.length - 1)];
+      const taskType = getRandomInt(0, 3);
+
+      let options = [];
+      let correctAnswer;
+      const wrongOptions = {
+        names: components[difficulty].map(c => c.name),
+        symbols: components[difficulty].map(c => c.symbol),
+        descriptions: components[difficulty].map(c => c.description),
+        examples: components[difficulty].map(c => c.example)
+      };
+
+      if (taskType === 0) { // Mi az alkatrész neve, ha a jele: ...
+        options = [component.name];
+        const wrongNames = wrongOptions.names.filter(name => name !== component.name);
+        while (options.length < 3) {
+          const wrongName = wrongNames[getRandomInt(0, wrongNames.length - 1)];
+          if (!options.includes(wrongName)) options.push(wrongName);
+        }
+        options = shuffleArray(options);
+        correctAnswer = (options.indexOf(component.name) + 1).toString();
+        return {
+          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" style="width: 120px; height: auto; vertical-align: middle;" onerror="this.onerror=null; this.src='fallback.svg'; console.log('Hiba: ${component.symbol} nem található');"></span> ?<br>1.&nbsp;&nbsp;&nbsp;${options[0]}<br>2.&nbsp;&nbsp;&nbsp;${options[1]}<br>3.&nbsp;&nbsp;&nbsp;${options[2]}`,
+          answer: correctAnswer,
+          answerType: "number"
+        };
+      } else if (taskType === 1) { // Mi az alkatrész jele, ha a neve: ...
+        options = [component.symbol];
+        const wrongSymbols = wrongOptions.symbols.filter(symbol => symbol !== component.symbol);
+        while (options.length < 3) {
+          const wrongSymbol = wrongSymbols[getRandomInt(0, wrongSymbols.length - 1)];
+          if (!options.includes(wrongSymbol)) options.push(wrongSymbol);
+        }
+        options = shuffleArray(options);
+        correctAnswer = (options.indexOf(component.symbol) + 1).toString();
+        return {
+          display: `Mi az alkatrész jele, ha a neve: <span class="blue-percent">${component.name}</span> ?<br>1.&nbsp;&nbsp;&nbsp;<img src="${options[0]}" alt="Opció 1 szimbólum" style="width: 120px; height: auto; vertical-align: middle;" onerror="this.onerror=null; this.src='fallback.svg'; console.log('Hiba: ${options[0]} nem található');"><br>2.&nbsp;&nbsp;&nbsp;<img src="${options[1]}" alt="Opció 2 szimbólum" style="width: 120px; height: auto; vertical-align: middle;" onerror="this.onerror=null; this.src='fallback.svg'; console.log('Hiba: ${options[1]} nem található');"><br>3.&nbsp;&nbsp;&nbsp;<img src="${options[2]}" alt="Opció 3 szimbólum" style="width: 120px; height: auto; vertical-align: middle;" onerror="this.onerror=null; this.src='fallback.svg'; console.log('Hiba: ${options[2]} nem található');">`,
+          answer: correctAnswer,
+          answerType: "number"
+        };
+      } else if (taskType === 2) { // Mi az alkatrész leírása, ha a neve: ...
+        options = [component.description];
+        const wrongDescriptions = wrongOptions.descriptions.filter(desc => desc !== component.description);
+        while (options.length < 3) {
+          const wrongDesc = wrongDescriptions[getRandomInt(0, wrongDescriptions.length - 1)];
+          if (!options.includes(wrongDesc)) options.push(wrongDesc);
+        }
+        options = shuffleArray(options);
+        correctAnswer = (options.indexOf(component.description) + 1).toString();
+        return {
+          display: `Mi az alkatrész leírása, ha a neve: <span class="blue-percent">${component.name}</span> ?<br>1.&nbsp;&nbsp;&nbsp;${options[0]}<br>2.&nbsp;&nbsp;&nbsp;${options[1]}<br>3.&nbsp;&nbsp;&nbsp;${options[2]}`,
+          answer: correctAnswer,
+          answerType: "number"
+        };
+      } else { // Hol használják az alkatrészt, ha a neve: ...
+        options = [component.example];
+        const wrongExamples = wrongOptions.examples.filter(example => example !== component.example);
+        while (options.length < 3) {
+          const wrongExample = wrongExamples[getRandomInt(0, wrongExamples.length - 1)];
+          if (!options.includes(wrongExample)) options.push(wrongExample);
+        }
+        options = shuffleArray(options);
+        correctAnswer = (options.indexOf(component.example) + 1).toString();
+        return {
+          display: `Hol használják az alkatrészt, ha a neve: <span class="blue-percent">${component.name}</span> ?<br>1.&nbsp;&nbsp;&nbsp;${options[0]}<br>2.&nbsp;&nbsp;&nbsp;${options[1]}<br>3.&nbsp;&nbsp;&nbsp;${options[2]}`,
+          answer: correctAnswer,
+          answerType: "number"
+        };
+      }
+    }
+  },
+
+
 	{
   name: "Mértékegység előtagok",
   value: "mertekegyseg_elotagok",
