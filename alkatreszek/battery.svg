@@ -1,0 +1,18 @@
+<svg width="99.99999999999999" height="49.99999999999999" xmlns="http://www.w3.org/2000/svg" stroke="null" style="vector-effect: non-scaling-stroke;">
+ <g stroke="null">
+  <title stroke="null">Layer 1</title>
+  <path stroke="black" stroke-width="1.5" id="svg_1" d="m10.14795,25l19.52283,0l-19.52283,0z" opacity="undefined"/>
+  <line stroke="black" stroke-width="1.5" id="svg_3" y2="25.39506" x2="94.06725" y1="25.39506" x1="70.13955"/>
+  <line style="vector-effect: non-scaling-stroke;" stroke="black" stroke-width="3" x1="46.74995" y1="7.919" x2="46.74995" y2="41.8811" id="svg_7" fill="none"/>
+  <line stroke="black" id="svg_2" y2="15.91362" x2="53.43856" y1="34.08637" x1="53.24103" stroke-width="3" fill="none"/>
+  <line stroke="black" transform="translate(-0.499998 0.187499) rotate(-90 19.9749 37.6205)" id="svg_8" y2="37.64241" x2="24.46704" y1="37.59855" x1="15.48284" fill="none"/>
+  <path stroke="black" id="svg_5" d="m15.17034,37.66105l8.9842,0.04385" opacity="undefined" fill="none"/>
+  <text stroke="black" transform="matrix(0.697602 0 0 1 23.6093 -25.3124)" x="69.71143" y="43.3456" id="svg_4" fill="#000000" font-size="17" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" stroke-width="0">12V</text>
+  <line stroke="black" stroke-width="3" x1="46.74995" y1="8.01895" x2="46.74995" y2="41.98105" id="svg_10" fill="none"/>
+  <line stroke="black" stroke-width="3" x1="60.77456" y1="7.72266" x2="60.77456" y2="42.27735" id="svg_12" fill="none"/>
+  <line stroke="black" id="svg_13" y2="15.91363" x2="38.62383" y1="34.08638" x1="38.4263" stroke-width="3" fill="none"/>
+  <line stroke="black" stroke-width="3" x1="30.75004" y1="8.01895" x2="30.75004" y2="41.98105" id="svg_14" fill="none"/>
+  <line stroke="black" id="svg_15" y2="15.91363" x2="68.84588" y1="34.08638" x1="68.64835" stroke-width="3" fill="none"/>
+ </g>
+
+</svg>
