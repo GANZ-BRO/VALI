@@ -1,0 +1,6 @@
+<svg width="120" height="50" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="25" x2="30" y2="25" stroke="black" />
+  <path d="M30,25 q5,-10 10,0 q5,-10 10,0 q5,-10 10,0 q5,-10 10,0" stroke="black" fill="none" />
+  <line x1="70" y1="25" x2="90" y2="25" stroke="black" />
+  <text x="35" y="45" font-size="12">100 mH</text>
+</svg>

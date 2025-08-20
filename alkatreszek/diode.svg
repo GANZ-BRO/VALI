@@ -1,0 +1,10 @@
+<svg width="100" height="50" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <path stroke-width="2.5" transform="translate(-0.444448 3.55558)" opacity="undefined" d="m20.22229,22.77776l20,0l-20,0z" id="svg_1" stroke="black"/>
+  <polygon stroke-width="2.5" transform="translate(-0.444448 3.55558)" points="39.59678268432617,12.97529125213623 59.59678268432617,22.97529411315918 39.59678268432617,32.975290298461914 " fill="none" stroke="black" id="svg_2"/>
+  <line stroke-width="2.5" transform="translate(-0.444448 3.55558)" stroke="black" x1="60.22229" y1="22.77776" x2="80.09892" y2="22.77776" id="svg_3"/>
+  <line stroke-width="2.5" transform="translate(-0.444448 3.55558)" x1="60.22229" y1="12.77776" x2="60.22229" y2="32.77776" stroke="#000000" id="svg_4"/>
+ </g>
+
+</svg>

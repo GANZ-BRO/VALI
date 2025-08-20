@@ -1,0 +1,12 @@
+<svg width="100" height="50" xmlns="http://www.w3.org/2000/svg" stroke="null">
+ <g stroke="null">
+  <title stroke="null">Layer 1</title>
+  <path stroke-width="2.5" opacity="undefined" d="m19.77784,26.33334l20,0l-20,0z" id="svg_1" stroke="black"/>
+  <polygon stroke-width="2.5" points="39.152334690093994,16.530871391296387 59.152334690093994,26.530874252319336 39.152334690093994,36.53086853027344 " fill="none" id="svg_2" stroke="black"/>
+  <line stroke-width="2.5" x1="59.77784" y1="26.33334" x2="79.65447" y2="26.33334" id="svg_3" stroke="black"/>
+  <line stroke-width="2.5" x1="59.77784" y1="16.33334" x2="59.77784" y2="36.33334" id="svg_4" stroke="#000000"/>
+  <path fill="#000000" d="m50.12378,8.39857l1.29219,-7.49869l1.2922,7.49869l-0.6461,0l0,7.53477l-1.29219,0l0,-7.53477l-0.6461,0z" id="svg_5" stroke-width="0" transform="rotate(24 51.416 8.41661)" stroke="#000"/>
+  <path fill="#000000" d="m55.32689,10.22669l1.29218,-7.49869l1.2922,7.49869l-0.64609,0l0,7.53477l-1.29219,0l0,-7.53477l-0.6461,0z" id="svg_6" stroke-width="0" transform="rotate(24 56.6191 10.2447)" stroke="#000"/>
+ </g>
+
+</svg>
