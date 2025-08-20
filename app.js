@@ -98,7 +98,8 @@ function generateOptions(correctAnswerIndex, optionsArray, answerType, difficult
 const components = {
   easy: [
     { name: "Vezeték", symbol: "alkatreszek/wire.svg", description: "Elektromos áram vezetésére szolgál", example: "Áramkörök összekötésére" },
-    { name: "Elem", symbol: "alkatreszek/cell.svg", description: "Elektromos energiát biztosít", example: "Távirányítókban használják" },
+    { name: "Elem", symbol: "alkatreszek/cell.svg", description: "Elektromos energiát biztosít", example: "Távirányítókban" },
+    { name: "Akkumulátor", symbol: "alkatreszek/battery.svg", description: "Újratölthető elektromos energiát biztosít", example: "Okostelefonokban és laptopokban" },
     { name: "Kapcsoló", symbol: "alkatreszek/switch.svg", description: "Áramkör nyitására vagy zárására szolgál", example: "Lámpák be- és kikapcsolására" },
     { name: "Izzó", symbol: "alkatreszek/bulb.svg", description: "Fényt és hőt termel áram hatására", example: "Régi típusú lámpákban" },
     { name: "Nyomógomb", symbol: "alkatreszek/pushbutton.svg", description: "Ideiglenesen zárja az áramkört", example: "Kapucsengőkben használják" }
@@ -108,7 +109,10 @@ const components = {
     { name: "Kondenzátor", symbol: "alkatreszek/capacitor.svg", description: "Elektromos töltést tárol", example: "Szűrőáramkör" },
     { name: "Tranzisztor", symbol: "alkatreszek/transistor.svg", description: "Felerősíti a jelet", example: "Erősítő áramkör" },
     { name: "Dióda", symbol: "alkatreszek/diode.svg", description: "Egyirányú áramot enged", example: "Tápegység" },
-    { name: "LED", symbol: "alkatreszek/led.svg", description: "Fényt bocsát ki áram hatására", example: "Jelzőfények" }
+    { name: "LED", symbol: "alkatreszek/led.svg", description: "Fényt bocsát ki áram hatására", example: "Jelzőfények" },
+    { name: "Biztosíték", symbol: "alkatreszek/fuse.svg", description: "Védi az áramkört a túláramtól az olvadással", example: "Mérőmüszerek védelmére " },
+    { name: "Fényérzékeny ellenállás", symbol: "alkatreszek/ldr.svg", description: "Ellenállása a fény intenzitásának megfelelően változik", example: "Automatikus világításvezérléshez" },
+    { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba,  napelemekbe" }
   ],
   hard: [
     { name: "Integrált áramkör", symbol: "alkatreszek/ic.svg", description: "Több elektronikai alkatrészt tartalmaz egy chipen", example: "Mikroprocesszorok" },
@@ -173,7 +177,7 @@ const taskTypes = [
         options = shuffleArray(options); // Véletlenszerű sorrend
         correctAnswer = (options.indexOf(component.example) + 1).toString();
         return {
-          display: `Hol használják az alkatrészt, ha a neve: <span class="blue-percent">${component.name}</span>?`,
+          display: `Hol használhatják az alkatrészt, ha a neve: <span class="blue-percent">${component.name}</span>?`,
           answer: correctAnswer,
           answerType: "number",
           options: options
@@ -213,16 +217,14 @@ function showQuestion(index) {
     div.className = "question-container";
   }
 
-  // Válaszok generálása kör alakú jelölőkkel
+  // Válaszok generálása ponttal (•) jelölőkkel
   let optionsHtml = "";
   const options = generateOptions(parseInt(q.answer) - 1, q.options || [], q.answerType, difficultySelect.value, "");
   options.forEach((opt, i) => {
-    const optionNumber = i + 1;
     optionsHtml += `
       <div class="option-item">
-        <span class="radio-circle" data-answer="${opt.value}"></span>
-        <span class="option-number">${optionNumber}</span>
-        <span class="option-text">${opt.label}</span>
+        <span class="option-marker" data-answer="${opt.value}">•</span>
+        <span class="option-text" data-answer="${opt.value}">${opt.label}</span>
       </div>
     `;
   });
@@ -236,38 +238,48 @@ function showQuestion(index) {
     <div class="options-container">${optionsHtml}</div>
   `;
 
-  // Eseménykezelő a körökhöz
-  const radioCircles = div.querySelectorAll('.radio-circle');
-  radioCircles.forEach(circle => {
-    circle.addEventListener('click', (event) => {
-      if (!gameActive) return;
+  // Eseménykezelő az option-marker és option-text elemekre
+  const markers = div.querySelectorAll('.option-marker');
+  const texts = div.querySelectorAll('.option-text');
+  
+  const handleClick = (event) => {
+    if (!gameActive) return;
 
-      const selectedAnswer = parseInt(circle.getAttribute('data-answer'));
-      const correctAnswer = parseInt(q.answer);
-      let pauseStart = Date.now();
-      if (timerInterval) clearInterval(timerInterval);
+    const selectedAnswer = parseInt(event.currentTarget.getAttribute('data-answer'));
+    const correctAnswer = parseInt(q.answer);
+    let pauseStart = Date.now();
+    if (timerInterval) clearInterval(timerInterval);
 
-      radioCircles.forEach(c => c.classList.remove('checked'));
-      circle.classList.add('checked');
+    markers.forEach(m => m.classList.remove('checked'));
+    texts.forEach(t => t.classList.remove('checked')); // Töröljük a checked állapotot a szövegről is
+    event.currentTarget.classList.add('checked');
 
-      if (selectedAnswer === correctAnswer) {
-        score++;
-        currentQuestion++;
-        radioCircles.forEach(c => c.classList.remove('checked'));
-        showQuestion(currentQuestion);
-        if (currentQuestion >= QUESTIONS) {
-          finishGame();
-        } else {
-          startTime += (Date.now() - pauseStart);
-          timerInterval = setInterval(updateTimer, 1000);
-        }
+    if (selectedAnswer === correctAnswer) {
+      score++;
+      currentQuestion++;
+      markers.forEach(m => m.classList.remove('checked'));
+      texts.forEach(t => t.classList.remove('checked'));
+      showQuestion(currentQuestion);
+      if (currentQuestion >= QUESTIONS) {
+        finishGame();
       } else {
-        wrongAnswers++;
         startTime += (Date.now() - pauseStart);
         timerInterval = setInterval(updateTimer, 1000);
-        alert('Helytelen válasz! Próbáld újra.');
       }
-    });
+    } else {
+      wrongAnswers++;
+      startTime += (Date.now() - pauseStart);
+      timerInterval = setInterval(updateTimer, 1000);
+      alert('Helytelen válasz! Próbáld újra.');
+    }
+  };
+
+  markers.forEach(marker => {
+    marker.addEventListener('click', handleClick);
+  });
+
+  texts.forEach(text => {
+    text.addEventListener('click', handleClick);
   });
 
   const progress = div.querySelector('.progress');
