@@ -115,9 +115,9 @@ const components = {
     { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba,  napelemekbe" }
   ],
   hard: [
-    { name: “Hálózati áramforrás”, symbol: “alkatreszek/ac_source.svg”, description: “Váltakozó áramot szolgáltató energiaforrás, általában a hálózatról”, example: “Házimozi rendszerek táplálása” },
-    { name: “Voltmérő”, symbol: “alkatreszek/voltmeter.svg”, description: “Elektronikai eszköz a feszültség mérésére két pont között”, example: “Áramkör hibakeresése” },
-    { name: “Ampermérő”, symbol: “alkatreszek/ammeter.svg”, description: “Elektronikai eszköz az áramerősség mérésére sorba kötve”, example: “Áramfogyasztás ellenőrzése” },{ name: "Potenciométer", symbol: "alkatreszek/potentiometer.svg", description: "Változtatható ellenállást biztosít", example: "Szűrőáramkörök" }
+    { name: "Hálózati áramforrás", symbol: "alkatreszek/ac_source.svg", description: "Váltakozó feszültséget biztosít az áramkör számára", example: "230V-os konnektor" },
+    { name: "Voltmérő", symbol: "alkatreszek/voltmeter.svg", description: "Feszültség mérésére szolgáló műszer", example: "Tápegység kimenetének ellenőrzése" },
+    { name: "Ampermérő", symbol: "alkatreszek/ammeter.svg", description: "Áramerősség mérésére szolgáló műszer", example: "Motor áramfelvételének vizsgálata" }, 
     { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabályzó" },
     { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" },
     { name: "Tekercs", symbol: "alkatreszek/coil.svg", description: "Mágneses mezőt hoz létre áram hatására, vagy tárolja az energiát", example: "Szűrőáramkörök" }
