@@ -115,11 +115,12 @@ const components = {
     { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba,  napelemekbe" }
   ],
   hard: [
-    { name: "Integrált áramkör", symbol: "alkatreszek/ic.svg", description: "Több elektronikai alkatrészt tartalmaz egy chipen", example: "Mikroprocesszorok" },
-    { name: "Relé", symbol: "alkatreszek/relay.svg", description: "Villamos jelet mechanikai kapcsolásra alakít", example: "Automatizálás" },
-    { name: "Optocsatoló", symbol: "alkatreszek/optocoupler.svg", description: "Villamos szigetelést biztosít jelek továbbítására", example: "Biztonsági áramkörök" },
-    { name: "Potenciométer", symbol: "alkatreszek/potentiometer.svg", description: "Változtatható ellenállást biztosít", example: "Hangerőszabályzás" },
-    { name: "Induktivitás", symbol: "alkatreszek/inductor.svg", description: "Mágneses mezőt hoz létre áram hatására", example: "Szűrőkben" }
+    { name: “Hálózati áramforrás”, symbol: “alkatreszek/ac_source.svg”, description: “Váltakozó áramot szolgáltató energiaforrás, általában a hálózatról”, example: “Házimozi rendszerek táplálása” },
+    { name: “Voltmérő”, symbol: “alkatreszek/voltmeter.svg”, description: “Elektronikai eszköz a feszültség mérésére két pont között”, example: “Áramkör hibakeresése” },
+    { name: “Ampermérő”, symbol: “alkatreszek/ammeter.svg”, description: “Elektronikai eszköz az áramerősség mérésére sorba kötve”, example: “Áramfogyasztás ellenőrzése” },{ name: "Potenciométer", symbol: "alkatreszek/potentiometer.svg", description: "Változtatható ellenállást biztosít", example: "Szűrőáramkörök" }
+    { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabályzó" },
+    { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" },
+    { name: "Tekercs", symbol: "alkatreszek/coil.svg", description: "Mágneses mezőt hoz létre áram hatására, vagy tárolja az energiát", example: "Szűrőáramkörök" }
   ]
 };
 
