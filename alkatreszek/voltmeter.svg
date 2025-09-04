@@ -1,0 +1,10 @@
+<svg width="119.99999999999999" height="59.99999999999999" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <line x1="10" y1="30" x2="40" y2="30" stroke="black" stroke-width="2" id="svg_1"/>
+  <line x1="80" y1="30" x2="110" y2="30" stroke="black" stroke-width="2" id="svg_2"/>
+  <circle cx="60" cy="30" r="20" stroke="black" stroke-width="2" fill="white" id="svg_3"/>
+  <text x="49.67876" y="32.99008" font-size="16" font-family="Arial" id="svg_4" transform="matrix(1.72012 0 0 1.55003 -34.7944 -11.4914)" stroke="null">V</text>
+ </g>
+
+</svg>

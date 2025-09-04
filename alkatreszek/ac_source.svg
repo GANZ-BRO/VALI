@@ -1,0 +1,10 @@
+<svg width="119.99999999999999" height="59.99999999999999" xmlns="http://www.w3.org/2000/svg" style="vector-effect: non-scaling-stroke;" stroke="null">
+
+ <g stroke="null">
+  <title stroke="null">Layer 1</title>
+  <path stroke="black" id="svg_1" d="m10,30l32.56787,-0.39506" opacity="undefined" stroke-width="2"/>
+  <line stroke="black" id="svg_2" stroke-width="2" y2="30" x2="110" y1="30" x1="75.65435"/>
+  <path stroke="black" id="svg_3" fill="none" stroke-width="2" d="m47.50613,30c6.24694,-14.18376 18.74081,14.18377 24.98775,0"/>
+  <path id="svg_4" d="m60,47.08632c-9.33082,0 -16.88879,-7.64637 -16.88879,-17.08632c0,-9.43996 7.55797,-17.08632 16.88879,-17.08632c9.33083,0 16.88879,7.64636 16.88879,17.08632c0,9.43995 -7.55797,17.08632 -16.88879,17.08632z" opacity="undefined" stroke-width="2" stroke="black" fill="none"/>
+ </g>
+</svg>
