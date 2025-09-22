@@ -321,6 +321,9 @@ function startGame() {
   restartBtn.style.display = "none";
   startBtn.style.display = "none";
   bestStats.style.opacity = "0.55";
+
+    // --- ITT JELENIK MEG A RAJZOLÓ GOMB! ---
+  addParallelCircuitGeneratorButtonSVG();
 }
 
 function finishGame() {
@@ -703,6 +706,5 @@ document.addEventListener("DOMContentLoaded", () => {
       restartBtn: !!restartBtn,
       themeToggle: !!themeToggle
     });
- addParallelCircuitGeneratorButtonSVG();
   }
 });
