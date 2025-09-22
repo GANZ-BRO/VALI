@@ -188,7 +188,18 @@ const taskTypes = [
         };
       }
     }
+  },
+{
+    name: "Áramkör rajzoló",
+    value: "aramkor_rajzolo",
+    generate: (difficulty) => ({
+      display: "Áramkör rajzoló",
+      answer: null,
+      answerType: "none",
+      options: []
+    })
   }
+
 ];
 
 // --- HTML ELEMEK ---
@@ -323,8 +334,7 @@ function startGame() {
   bestStats.style.opacity = "0.55";
 
     // --- ITT JELENIK MEG A RAJZOLÓ GOMB! ---
-  addParallelCircuitGeneratorButtonSVG();
-}
+ }
 
 function finishGame() {
   gameActive = false;
@@ -688,13 +698,26 @@ document.addEventListener("DOMContentLoaded", () => {
   applyTheme();
   themeToggle.addEventListener("click", toggleTheme);
   themeToggle.addEventListener("touchstart", toggleTheme);
-  categorySelect.addEventListener("change", () => { saveLastSelection(); loadBest(); });
+
+  categorySelect.addEventListener("change", () => {
+    saveLastSelection();
+    loadBest();
+    // --- IDE JÖN A RAJZOLÓ GOMB LOGIKA ---
+    if (categorySelect.value === "aramkor_rajzolo") {
+      addParallelCircuitGeneratorButtonSVG();
+    } else {
+      const btn = document.getElementById("circuit-gen-btn-svg");
+      if (btn) btn.remove();
+      const svg = document.getElementById("circuit-svg");
+      if (svg) svg.remove();
+    }
+  });
+
   difficultySelect.addEventListener("change", () => { saveLastSelection(); loadBest(); });
   startBtn.onclick = startGame;
   restartBtn.onclick = startGame;
   loadBest();
-  
-  
+
   if (!quizContainer || !timerDisplay || !bestStats || !difficultySelect || !categorySelect || !startBtn || !restartBtn || !themeToggle) {
     console.error("Hiányzó HTML elem:", {
       quizContainer: !!quizContainer,
