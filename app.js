@@ -470,30 +470,60 @@ function updateTimer() {
 
 // --- EGYSZERŰ ÁRAMKÖR GENERÁLÁS ÉS RAJZOLÁS (INTEGRÁLT, DE ELKÜLÖNÍTETT) ---
 
-function generateSimpleCircuit() {
+// --- SZABVÁNYOS ELLENÁLLÁS ÉRTÉKEK (E12, 100Ω-47kΩ) ---
+const E12_VALUES = [
+  100, 120, 150, 180, 220, 270, 330, 390, 470, 560, 680, 820,
+  1000, 1200, 1500, 1800, 2200, 2700, 3300, 3900, 4700, 5600, 6800, 8200,
+  10000, 12000, 15000, 18000, 22000, 27000, 33000, 39000, 47000
+];
+
+// --- GENERÁL ÁRAMKÖRT: SOROS + PÁRHUZAMOS ÁG ---
+function generateCircuitWithParallel() {
   const circuit = [];
-  // 9V-os elem mindig az első
+  // Elem
   circuit.push({ type: "battery", label: "9V elem", symbol: "🔋" });
 
-  // 1-4 ellenállás
-  const resistorCount = Math.floor(Math.random() * 4) + 1;
-  for (let i = 0; i < resistorCount; i++) {
+  // Soros ellenállás(ok) (0-2 db)
+  const seriesCount = Math.floor(Math.random() * 3);
+  for (let i = 0; i < seriesCount; i++) {
     circuit.push({
       type: "resistor",
-      label: `Ellenállás ${i + 1}`,
+      label: `Ellenállás (soros) ${i + 1}`,
       symbol: "🟦",
-      value: getRandomResistorValue()
+      value: getRandomE12Value()
     });
   }
 
-  // 1-2 LED
-  const ledCount = Math.floor(Math.random() * 2) + 1;
-  for (let i = 0; i < ledCount; i++) {
+  // Párhuzamos ág (2 vagy 3 ág, mindegyikben 1 ellenállás, opcionálisan LED)
+  const branchCount = 2 + Math.floor(Math.random() * 2); // 2 vagy 3 ág
+  const branches = [];
+  for (let i = 0; i < branchCount; i++) {
+    const branch = [];
+    branch.push({
+      type: "resistor",
+      label: `Ellenállás (párhuzamos) ${i + 1}`,
+      symbol: "🟦",
+      value: getRandomE12Value()
+    });
+    if (Math.random() > 0.5) {
+      branch.push({
+        type: "led",
+        label: `LED (ág ${i + 1})`,
+        symbol: "💡",
+        color: i === 0 ? "piros" : (i === 1 ? "zöld" : "sárga")
+      });
+    }
+    branches.push(branch);
+  }
+  circuit.push({ type: "parallel", branches });
+
+  // Soros LED (opcionális)
+  if (Math.random() > 0.5) {
     circuit.push({
       type: "led",
-      label: `LED ${i + 1}`,
+      label: `LED (soros)`,
       symbol: "💡",
-      color: i === 0 ? "piros" : "zöld"
+      color: "kék"
     });
   }
 
@@ -503,18 +533,19 @@ function generateSimpleCircuit() {
   return circuit;
 }
 
-function getRandomResistorValue() {
-  const values = [220, 470, 1000, 2200];
-  return values[Math.floor(Math.random() * values.length)];
+function getRandomE12Value() {
+  // 100Ω-47kΩ közül választ
+  return E12_VALUES[Math.floor(Math.random() * E12_VALUES.length)];
 }
 
-function drawCircuit(circuit, canvasId = "circuit-canvas") {
+// --- GRAFIKUS MEGJELENÍTÉS SOROS + PÁRHUZAMOS ÁGHOZ ---
+function drawCircuitWithParallel(circuit, canvasId = "circuit-canvas") {
   let canvas = document.getElementById(canvasId);
   if (!canvas) {
     canvas = document.createElement('canvas');
     canvas.id = canvasId;
-    canvas.width = 700;
-    canvas.height = 120;
+    canvas.width = 800;
+    canvas.height = 220;
     canvas.style.border = "1px solid #888";
     canvas.style.display = "block";
     canvas.style.margin = "16px auto";
@@ -523,53 +554,113 @@ function drawCircuit(circuit, canvasId = "circuit-canvas") {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const xStart = 50, y = 60, spacing = 110;
+  let x = 60, y = 110, spacing = 110;
+
+  // SOROS SZAKASZ
   circuit.forEach((comp, idx) => {
-    const x = xStart + idx * spacing;
-    // Szimbólum + felirat
-    ctx.font = "40px Arial";
-    ctx.fillText(comp.symbol, x, y);
-    ctx.font = "14px Arial";
-    ctx.fillText(comp.label, x - 25, y + 35);
-    if (comp.type === "resistor") {
-      ctx.fillText(`${comp.value} Ω`, x - 15, y + 55);
-    }
-    if (comp.type === "led") {
-      ctx.fillText(comp.color, x + 5, y + 55);
-    }
-    // Vezeték
-    if (idx > 0) {
+    if (comp.type !== "parallel") {
+      // Szimbólum + felirat
+      ctx.font = "40px Arial";
+      ctx.fillText(comp.symbol, x, y);
+      ctx.font = "14px Arial";
+      ctx.fillText(comp.label, x - 25, y + 35);
+      if (comp.type === "resistor") {
+        ctx.fillText(`${comp.value} Ω`, x - 15, y + 55);
+      }
+      if (comp.type === "led") {
+        ctx.fillText(comp.color, x + 5, y + 55);
+      }
+      // Vezeték
+      if (idx > 0) {
+        ctx.beginPath();
+        ctx.moveTo(x - spacing + 22, y - 10);
+        ctx.lineTo(x - 16, y - 10);
+        ctx.strokeStyle = "#666";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+      x += spacing;
+    } else {
+      // PÁRHUZAMOS ÁGAK
+      // Elágazás vonal
       ctx.beginPath();
-      ctx.moveTo(x - spacing + 22, y - 10);
-      ctx.lineTo(x - 16, y - 10);
-      ctx.strokeStyle = "#666";
+      ctx.moveTo(x - 16, y - 10);
+      ctx.lineTo(x - 16, y - 50);
+      ctx.strokeStyle = "#222";
       ctx.lineWidth = 3;
       ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(x - 16, y - 10);
+      ctx.lineTo(x - 16, y + 30);
+      ctx.stroke();
+
+      // Ágak rajzolása
+      const branchY = [y - 50, y, y + 30];
+      const branchSpacing = 90;
+      comp.branches.forEach((branch, bidx) => {
+        let bx = x, by = branchY[bidx];
+        // Ág kezdete
+        ctx.beginPath();
+        ctx.moveTo(x - 16, by);
+        ctx.lineTo(bx, by);
+        ctx.strokeStyle = "#666";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        // Komponensek az ágon
+        branch.forEach((bcomp, j) => {
+          ctx.font = "35px Arial";
+          ctx.fillText(bcomp.symbol, bx + j * branchSpacing, by);
+          ctx.font = "13px Arial";
+          ctx.fillText(bcomp.label, bx + j * branchSpacing - 17, by + 25);
+          if (bcomp.type === "resistor") {
+            ctx.fillText(`${bcomp.value} Ω`, bx + j * branchSpacing - 10, by + 45);
+          }
+          if (bcomp.type === "led") {
+            ctx.fillText(bcomp.color, bx + j * branchSpacing + 5, by + 45);
+          }
+          // Vezeték két komponens között
+          if (j > 0) {
+            ctx.beginPath();
+            ctx.moveTo(bx + (j - 1) * branchSpacing + 22, by - 8);
+            ctx.lineTo(bx + j * branchSpacing - 16, by - 8);
+            ctx.strokeStyle = "#888";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+        });
+        // Ág vége vissza soros ágba
+        ctx.beginPath();
+        ctx.moveTo(bx + branch.length * branchSpacing, by);
+        ctx.lineTo(bx + branch.length * branchSpacing, y - 10);
+        ctx.strokeStyle = "#222";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+      x += branchSpacing * 2;
     }
   });
 }
 
-function addCircuitGeneratorButton() {
-  // Ne legyen duplikáció
+// --- UI GOMB (Továbbra is jól elkülönítve) ---
+function addParallelCircuitGeneratorButton() {
   if (document.getElementById("circuit-gen-btn")) return;
   const btn = document.createElement('button');
   btn.id = "circuit-gen-btn";
-  btn.textContent = "Új áramkör generálása";
+  btn.textContent = "Új áramkör (párhuzamos ágakkal)";
   btn.style.margin = "20px 0 0 0";
   btn.style.display = "block";
   btn.style.fontSize = "1.1em";
   btn.onclick = () => {
-    const circuit = generateSimpleCircuit();
-    drawCircuit(circuit);
+    const circuit = generateCircuitWithParallel();
+    drawCircuitWithParallel(circuit);
   };
-  // Quiz container után helyezzük el
   if (quizContainer) {
     quizContainer.parentNode.insertBefore(btn, quizContainer.nextSibling);
   } else {
     document.body.appendChild(btn);
   }
 }
-
 
 // --- ÁLLAPOTVÁLTOZÓK ---
 let score = 0, startTime = 0, timerInterval = null, currentQuestion = 0, questions = [];
@@ -592,7 +683,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startBtn.onclick = startGame;
   restartBtn.onclick = startGame;
   loadBest();
-  addCircuitGeneratorButton();
+  addParallelCircuitGeneratorButton();
   
   if (!quizContainer || !timerDisplay || !bestStats || !difficultySelect || !categorySelect || !startBtn || !restartBtn || !themeToggle) {
     console.error("Hiányzó HTML elem:", {
