@@ -468,198 +468,205 @@ function updateTimer() {
   timerDisplay.textContent = elapsed;
 }
 
-// --- EGYSZERŰ ÁRAMKÖR GENERÁLÁS ÉS RAJZOLÁS (INTEGRÁLT, DE ELKÜLÖNÍTETT) ---
+// --- SVG ÁRAMKÖR RAJZOLÓ (statikus képes verzió) ---
 
-// --- SZABVÁNYOS ELLENÁLLÁS ÉRTÉKEK (E12, 100Ω-47kΩ) ---
-const E12_VALUES = [
-  100, 120, 150, 180, 220, 270, 330, 390, 470, 560, 680, 820,
-  1000, 1200, 1500, 1800, 2200, 2700, 3300, 3900, 4700, 5600, 6800, 8200,
-  10000, 12000, 15000, 18000, 22000, 27000, 33000, 39000, 47000
-];
-
-// --- GENERÁL ÁRAMKÖRT: SOROS + PÁRHUZAMOS ÁG ---
-function generateCircuitWithParallel() {
-  const circuit = [];
-  // Elem
-  circuit.push({ type: "battery", label: "9V elem", symbol: "🔋" });
-
-  // Soros ellenállás(ok) (0-2 db)
-  const seriesCount = Math.floor(Math.random() * 3);
-  for (let i = 0; i < seriesCount; i++) {
-    circuit.push({
-      type: "resistor",
-      label: `Ellenállás (soros) ${i + 1}`,
-      symbol: "🟦",
-      value: getRandomE12Value()
-    });
+function drawCircuitWithParallelSVG(circuit, svgId = "circuit-svg") {
+  let svg = document.getElementById(svgId);
+  if (!svg) {
+    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.id = svgId;
+    svg.setAttribute("width", "900");
+    svg.setAttribute("height", "260");
+    svg.style.display = "block";
+    svg.style.margin = "16px auto";
+    document.body.appendChild(svg);
   }
+  // Törlés
+  svg.innerHTML = '';
 
-  // Párhuzamos ág (2 vagy 3 ág, mindegyikben 1 ellenállás, opcionálisan LED)
-  const branchCount = 2 + Math.floor(Math.random() * 2); // 2 vagy 3 ág
-  const branches = [];
-  for (let i = 0; i < branchCount; i++) {
-    const branch = [];
-    branch.push({
-      type: "resistor",
-      label: `Ellenállás (párhuzamos) ${i + 1}`,
-      symbol: "🟦",
-      value: getRandomE12Value()
-    });
-    if (Math.random() > 0.5) {
-      branch.push({
-        type: "led",
-        label: `LED (ág ${i + 1})`,
-        symbol: "💡",
-        color: i === 0 ? "piros" : (i === 1 ? "zöld" : "sárga")
-      });
-    }
-    branches.push(branch);
-  }
-  circuit.push({ type: "parallel", branches });
+  let x = 60, y = 120, spacing = 110;
 
-  // Soros LED (opcionális)
-  if (Math.random() > 0.5) {
-    circuit.push({
-      type: "led",
-      label: `LED (soros)`,
-      symbol: "💡",
-      color: "kék"
-    });
-  }
-
-  // Föld
-  circuit.push({ type: "ground", label: "Föld", symbol: "⏚" });
-
-  return circuit;
-}
-
-function getRandomE12Value() {
-  // 100Ω-47kΩ közül választ
-  return E12_VALUES[Math.floor(Math.random() * E12_VALUES.length)];
-}
-
-// --- GRAFIKUS MEGJELENÍTÉS SOROS + PÁRHUZAMOS ÁGHOZ ---
-function drawCircuitWithParallel(circuit, canvasId = "circuit-canvas") {
-  let canvas = document.getElementById(canvasId);
-  if (!canvas) {
-    canvas = document.createElement('canvas');
-    canvas.id = canvasId;
-    canvas.width = 800;
-    canvas.height = 220;
-    canvas.style.border = "1px solid #888";
-    canvas.style.display = "block";
-    canvas.style.margin = "16px auto";
-    document.body.appendChild(canvas);
-  }
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  let x = 60, y = 110, spacing = 110;
-
-  // SOROS SZAKASZ
   circuit.forEach((comp, idx) => {
     if (comp.type !== "parallel") {
-      // Szimbólum + felirat
-      ctx.font = "40px Arial";
-      ctx.fillText(comp.symbol, x, y);
-      ctx.font = "14px Arial";
-      ctx.fillText(comp.label, x - 25, y + 35);
-      if (comp.type === "resistor") {
-        ctx.fillText(`${comp.value} Ω`, x - 15, y + 55);
+      // Alkatrész SVG szimbólum
+      if (comp.symbol && comp.symbol.endsWith('.svg')) {
+        const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+        img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', comp.symbol);
+        img.setAttribute("x", x);
+        img.setAttribute("y", y - 20);
+        img.setAttribute("width", "40");
+        img.setAttribute("height", "40");
+        svg.appendChild(img);
+      } else {
+        // Fallback emoji szimbólum
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x + 10);
+        text.setAttribute("y", y + 10);
+        text.setAttribute("font-size", "40");
+        text.textContent = comp.symbol || '?';
+        svg.appendChild(text);
       }
-      if (comp.type === "led") {
-        ctx.fillText(comp.color, x + 5, y + 55);
+      // Felirat
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.setAttribute("x", x - 25);
+      label.setAttribute("y", y + 35);
+      label.setAttribute("font-size", "14");
+      label.textContent = comp.label;
+      svg.appendChild(label);
+
+      // Ellenállás érték
+      if (comp.type === "resistor" && comp.value) {
+        const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        val.setAttribute("x", x - 15);
+        val.setAttribute("y", y + 55);
+        val.setAttribute("font-size", "13");
+        val.textContent = `${comp.value} Ω`;
+        svg.appendChild(val);
       }
-      // Vezeték
+      // LED szín
+      if (comp.type === "led" && comp.color) {
+        const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        ledColor.setAttribute("x", x + 5);
+        ledColor.setAttribute("y", y + 55);
+        ledColor.setAttribute("font-size", "13");
+        ledColor.textContent = comp.color;
+        svg.appendChild(ledColor);
+      }
+      // Vezeték (előző elemhez)
       if (idx > 0) {
-        ctx.beginPath();
-        ctx.moveTo(x - spacing + 22, y - 10);
-        ctx.lineTo(x - 16, y - 10);
-        ctx.strokeStyle = "#666";
-        ctx.lineWidth = 3;
-        ctx.stroke();
+        const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        wire.setAttribute("x1", x - spacing + 22);
+        wire.setAttribute("y1", y - 10);
+        wire.setAttribute("x2", x - 16);
+        wire.setAttribute("y2", y - 10);
+        wire.setAttribute("stroke", "#666");
+        wire.setAttribute("stroke-width", "3");
+        svg.appendChild(wire);
       }
       x += spacing;
     } else {
-      // PÁRHUZAMOS ÁGAK
-      // Elágazás vonal
-      ctx.beginPath();
-      ctx.moveTo(x - 16, y - 10);
-      ctx.lineTo(x - 16, y - 50);
-      ctx.strokeStyle = "#222";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(x - 16, y - 10);
-      ctx.lineTo(x - 16, y + 30);
-      ctx.stroke();
-
-      // Ágak rajzolása
-      const branchY = [y - 50, y, y + 30];
+      // Párhuzamos ágak
+      // Elágazás vonalak
+      const branchYs = [y - 50, y, y + 30];
       const branchSpacing = 90;
+      // Fel-le vezeték
+      {
+        const upWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        upWire.setAttribute("x1", x - 16);
+        upWire.setAttribute("y1", y - 10);
+        upWire.setAttribute("x2", x - 16);
+        upWire.setAttribute("y2", y - 50);
+        upWire.setAttribute("stroke", "#222");
+        upWire.setAttribute("stroke-width", "3");
+        svg.appendChild(upWire);
+
+        const downWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        downWire.setAttribute("x1", x - 16);
+        downWire.setAttribute("y1", y - 10);
+        downWire.setAttribute("x2", x - 16);
+        downWire.setAttribute("y2", y + 30);
+        downWire.setAttribute("stroke", "#222");
+        downWire.setAttribute("stroke-width", "3");
+        svg.appendChild(downWire);
+      }
+      // Ágak rajzolása
       comp.branches.forEach((branch, bidx) => {
-        let bx = x, by = branchY[bidx];
-        // Ág kezdete
-        ctx.beginPath();
-        ctx.moveTo(x - 16, by);
-        ctx.lineTo(bx, by);
-        ctx.strokeStyle = "#666";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        // Komponensek az ágon
+        let bx = x, by = branchYs[bidx];
+        // Ág kezdete vezeték
+        const branchWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        branchWire.setAttribute("x1", x - 16);
+        branchWire.setAttribute("y1", by);
+        branchWire.setAttribute("x2", bx);
+        branchWire.setAttribute("y2", by);
+        branchWire.setAttribute("stroke", "#666");
+        branchWire.setAttribute("stroke-width", "2");
+        svg.appendChild(branchWire);
+
         branch.forEach((bcomp, j) => {
-          ctx.font = "35px Arial";
-          ctx.fillText(bcomp.symbol, bx + j * branchSpacing, by);
-          ctx.font = "13px Arial";
-          ctx.fillText(bcomp.label, bx + j * branchSpacing - 17, by + 25);
-          if (bcomp.type === "resistor") {
-            ctx.fillText(`${bcomp.value} Ω`, bx + j * branchSpacing - 10, by + 45);
+          // SVG szimbólum vagy emoji
+          if (bcomp.symbol && bcomp.symbol.endsWith('.svg')) {
+            const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+            img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', bcomp.symbol);
+            img.setAttribute("x", bx + j * branchSpacing);
+            img.setAttribute("y", by - 20);
+            img.setAttribute("width", "35");
+            img.setAttribute("height", "35");
+            svg.appendChild(img);
+          } else {
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", bx + j * branchSpacing + 10);
+            text.setAttribute("y", by + 10);
+            text.setAttribute("font-size", "30");
+            text.textContent = bcomp.symbol || '?';
+            svg.appendChild(text);
           }
-          if (bcomp.type === "led") {
-            ctx.fillText(bcomp.color, bx + j * branchSpacing + 5, by + 45);
+          // Felirat
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", bx + j * branchSpacing - 17);
+          label.setAttribute("y", by + 25);
+          label.setAttribute("font-size", "13");
+          label.textContent = bcomp.label;
+          svg.appendChild(label);
+
+          // Ellenállás érték
+          if (bcomp.type === "resistor" && bcomp.value) {
+            const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            val.setAttribute("x", bx + j * branchSpacing - 10);
+            val.setAttribute("y", by + 45);
+            val.setAttribute("font-size", "12");
+            val.textContent = `${bcomp.value} Ω`;
+            svg.appendChild(val);
+          }
+          // LED szín
+          if (bcomp.type === "led" && bcomp.color) {
+            const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            ledColor.setAttribute("x", bx + j * branchSpacing + 5);
+            ledColor.setAttribute("y", by + 45);
+            ledColor.setAttribute("font-size", "12");
+            ledColor.textContent = bcomp.color;
+            svg.appendChild(ledColor);
           }
           // Vezeték két komponens között
           if (j > 0) {
-            ctx.beginPath();
-            ctx.moveTo(bx + (j - 1) * branchSpacing + 22, by - 8);
-            ctx.lineTo(bx + j * branchSpacing - 16, by - 8);
-            ctx.strokeStyle = "#888";
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            wire.setAttribute("x1", bx + (j - 1) * branchSpacing + 22);
+            wire.setAttribute("y1", by - 8);
+            wire.setAttribute("x2", bx + j * branchSpacing - 16);
+            wire.setAttribute("y2", by - 8);
+            wire.setAttribute("stroke", "#888");
+            wire.setAttribute("stroke-width", "2");
+            svg.appendChild(wire);
           }
         });
         // Ág vége vissza soros ágba
-        ctx.beginPath();
-        ctx.moveTo(bx + branch.length * branchSpacing, by);
-        ctx.lineTo(bx + branch.length * branchSpacing, y - 10);
-        ctx.strokeStyle = "#222";
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        const endWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        endWire.setAttribute("x1", bx + branch.length * branchSpacing);
+        endWire.setAttribute("y1", by);
+        endWire.setAttribute("x2", bx + branch.length * branchSpacing);
+        endWire.setAttribute("y2", y - 10);
+        endWire.setAttribute("stroke", "#222");
+        endWire.setAttribute("stroke-width", "2");
+        svg.appendChild(endWire);
       });
       x += branchSpacing * 2;
     }
   });
 }
 
-// --- UI GOMB (Továbbra is jól elkülönítve) ---
-function addParallelCircuitGeneratorButton() {
-  if (document.getElementById("circuit-gen-btn")) return;
+// --- UI GOMB (SVG verzióhoz) ---
+function addParallelCircuitGeneratorButtonSVG() {
+  if (document.getElementById("circuit-gen-btn-svg")) return;
   const btn = document.createElement('button');
-  btn.id = "circuit-gen-btn";
-  btn.textContent = "Új áramkör (párhuzamos ágakkal)";
+  btn.id = "circuit-gen-btn-svg";
+  btn.textContent = "Új áramkör (SVG, párhuzamos ágakkal)";
   btn.style.margin = "20px 0 0 0";
   btn.style.display = "block";
   btn.style.fontSize = "1.1em";
   btn.onclick = () => {
     const circuit = generateCircuitWithParallel();
-    drawCircuitWithParallel(circuit);
+    drawCircuitWithParallelSVG(circuit);
   };
-  if (quizContainer) {
-    quizContainer.parentNode.insertBefore(btn, quizContainer.nextSibling);
-  } else {
-    document.body.appendChild(btn);
-  }
+  document.body.appendChild(btn);
 }
 
 // --- ÁLLAPOTVÁLTOZÓK ---
@@ -683,7 +690,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startBtn.onclick = startGame;
   restartBtn.onclick = startGame;
   loadBest();
-  addParallelCircuitGeneratorButton();
+  
   
   if (!quizContainer || !timerDisplay || !bestStats || !difficultySelect || !categorySelect || !startBtn || !restartBtn || !themeToggle) {
     console.error("Hiányzó HTML elem:", {
@@ -696,5 +703,6 @@ document.addEventListener("DOMContentLoaded", () => {
       restartBtn: !!restartBtn,
       themeToggle: !!themeToggle
     });
+ addParallelCircuitGeneratorButtonSVG();
   }
 });
