@@ -468,11 +468,117 @@ function updateTimer() {
   timerDisplay.textContent = elapsed;
 }
 
+// --- EGYSZERŰ ÁRAMKÖR GENERÁLÁS ÉS RAJZOLÁS (INTEGRÁLT, DE ELKÜLÖNÍTETT) ---
+
+function generateSimpleCircuit() {
+  const circuit = [];
+  // 9V-os elem mindig az első
+  circuit.push({ type: "battery", label: "9V elem", symbol: "🔋" });
+
+  // 1-4 ellenállás
+  const resistorCount = Math.floor(Math.random() * 4) + 1;
+  for (let i = 0; i < resistorCount; i++) {
+    circuit.push({
+      type: "resistor",
+      label: `Ellenállás ${i + 1}`,
+      symbol: "🟦",
+      value: getRandomResistorValue()
+    });
+  }
+
+  // 1-2 LED
+  const ledCount = Math.floor(Math.random() * 2) + 1;
+  for (let i = 0; i < ledCount; i++) {
+    circuit.push({
+      type: "led",
+      label: `LED ${i + 1}`,
+      symbol: "💡",
+      color: i === 0 ? "piros" : "zöld"
+    });
+  }
+
+  // Föld
+  circuit.push({ type: "ground", label: "Föld", symbol: "⏚" });
+
+  return circuit;
+}
+
+function getRandomResistorValue() {
+  const values = [220, 470, 1000, 2200];
+  return values[Math.floor(Math.random() * values.length)];
+}
+
+function drawCircuit(circuit, canvasId = "circuit-canvas") {
+  let canvas = document.getElementById(canvasId);
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.id = canvasId;
+    canvas.width = 700;
+    canvas.height = 120;
+    canvas.style.border = "1px solid #888";
+    canvas.style.display = "block";
+    canvas.style.margin = "16px auto";
+    document.body.appendChild(canvas);
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const xStart = 50, y = 60, spacing = 110;
+  circuit.forEach((comp, idx) => {
+    const x = xStart + idx * spacing;
+    // Szimbólum + felirat
+    ctx.font = "40px Arial";
+    ctx.fillText(comp.symbol, x, y);
+    ctx.font = "14px Arial";
+    ctx.fillText(comp.label, x - 25, y + 35);
+    if (comp.type === "resistor") {
+      ctx.fillText(`${comp.value} Ω`, x - 15, y + 55);
+    }
+    if (comp.type === "led") {
+      ctx.fillText(comp.color, x + 5, y + 55);
+    }
+    // Vezeték
+    if (idx > 0) {
+      ctx.beginPath();
+      ctx.moveTo(x - spacing + 22, y - 10);
+      ctx.lineTo(x - 16, y - 10);
+      ctx.strokeStyle = "#666";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+  });
+}
+
+function addCircuitGeneratorButton() {
+  // Ne legyen duplikáció
+  if (document.getElementById("circuit-gen-btn")) return;
+  const btn = document.createElement('button');
+  btn.id = "circuit-gen-btn";
+  btn.textContent = "Új áramkör generálása";
+  btn.style.margin = "20px 0 0 0";
+  btn.style.display = "block";
+  btn.style.fontSize = "1.1em";
+  btn.onclick = () => {
+    const circuit = generateSimpleCircuit();
+    drawCircuit(circuit);
+  };
+  // Quiz container után helyezzük el
+  if (quizContainer) {
+    quizContainer.parentNode.insertBefore(btn, quizContainer.nextSibling);
+  } else {
+    document.body.appendChild(btn);
+  }
+}
+
+
 // --- ÁLLAPOTVÁLTOZÓK ---
 let score = 0, startTime = 0, timerInterval = null, currentQuestion = 0, questions = [];
 let best = { score: 0, time: null, wrongAnswers: Infinity };
 let gameActive = false;
 let wrongAnswers = 0;
+
+
+
 
 // --- INICIALIZÁCIÓ ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -486,7 +592,8 @@ document.addEventListener("DOMContentLoaded", () => {
   startBtn.onclick = startGame;
   restartBtn.onclick = startGame;
   loadBest();
-
+  addCircuitGeneratorButton();
+  
   if (!quizContainer || !timerDisplay || !bestStats || !difficultySelect || !categorySelect || !startBtn || !restartBtn || !themeToggle) {
     console.error("Hiányzó HTML elem:", {
       quizContainer: !!quizContainer,
