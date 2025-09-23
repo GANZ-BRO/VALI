@@ -461,47 +461,53 @@ function updateTimer() {
   timerDisplay.textContent = elapsed;
 }
 
-// --- EGYSOROS ÁRAMKÖR RAJZOLÓ, vezetéket NEM rajzol! ---
-// (illeszd be az app.js végére vagy az "Áramkör rajzoló" funkciókhoz)
+// --- EGYSOROS ÁRAMKÖR RAJZOLÓ, 2x nagyobb SVG-vel, fix sorrenddel, LED-ek és ellenállások váltakoznak ---
+// Illeszd be az app.js végére vagy az "Áramkör rajzoló" funkciókhoz
 
 function getRandomResistorValue() {
   const values = [330, 470, 1000, 1200];
   return values[getRandomInt(0, values.length - 1)];
 }
 
-function generateSimpleSeriesCircuit() {
-  // Random 2 vagy 3 ellenállás, random 1 vagy 2 LED
-  const resistorCount = 2 + getRandomInt(0, 1); // 2 vagy 3
-  const ledCount = 1 + getRandomInt(0, 1);      // 1 vagy 2
-
-  // Alkatrészek listája, első elem az elem (cell)
-  const circuit = [
-    { type: "cell", symbol: "alkatreszek/cell.svg", label: "Elem" }
-  ];
-
-  for (let i = 0; i < resistorCount; i++) {
-    circuit.push({
+function generateFixedSeriesCircuit() {
+  // Sorrend: Elem (9V), R1, Led1, R2, Led2, R3
+  return [
+    { type: "cell", symbol: "alkatreszek/cell.svg", label: "9V" },
+    {
       type: "resistor",
       symbol: "alkatreszek/resistor.svg",
-      label: `R${i + 1}`,
+      label: "R1",
       value: getRandomResistorValue()
-    });
-  }
-  for (let i = 0; i < ledCount; i++) {
-    circuit.push({
+    },
+    {
       type: "led",
       symbol: "alkatreszek/led.svg",
-      label: `LED${i + 1}`,
-      color: (i === 0 ? "piros" : "zöld")
-    });
-  }
-
-  return circuit;
+      label: "LED1",
+      color: "piros"
+    },
+    {
+      type: "resistor",
+      symbol: "alkatreszek/resistor.svg",
+      label: "R2",
+      value: getRandomResistorValue()
+    },
+    {
+      type: "led",
+      symbol: "alkatreszek/led.svg",
+      label: "LED2",
+      color: "zöld"
+    },
+    {
+      type: "resistor",
+      symbol: "alkatreszek/resistor.svg",
+      label: "R3",
+      value: getRandomResistorValue()
+    }
+  ];
 }
 
-function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-series-circuit-svg") {
-  const iconW = 48, iconH = 48, margin = 10;
-
+function drawFixedSeriesCircuitSVG(circuit, svgId = "fixed-series-circuit-svg") {
+  const iconW = 96, iconH = 96, margin = 18; // 2x nagyobb
   let svg = document.getElementById(svgId);
   if (!svg) {
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -509,7 +515,7 @@ function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-series-circuit-svg"
     document.body.appendChild(svg);
   }
   svg.setAttribute("width", circuit.length * (iconW + margin) + margin);
-  svg.setAttribute("height", iconH + 60);
+  svg.setAttribute("height", iconH + 80);
   svg.style.display = "block";
   svg.style.margin = "18px auto";
   svg.innerHTML = '';
@@ -529,43 +535,43 @@ function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-series-circuit-svg"
     }
     // Felirat
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", x + 8);
-    label.setAttribute("y", y + iconH + 18);
-    label.setAttribute("font-size", "15");
+    label.setAttribute("x", x + 16);
+    label.setAttribute("y", y + iconH + 22);
+    label.setAttribute("font-size", "22");
     label.textContent = comp.label;
     svg.appendChild(label);
 
     // Ellenállás érték
     if (comp.type === "resistor" && comp.value) {
       const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      val.setAttribute("x", x + 5);
-      val.setAttribute("y", y + iconH + 38);
-      val.setAttribute("font-size", "13");
+      val.setAttribute("x", x + 10);
+      val.setAttribute("y", y + iconH + 48);
+      val.setAttribute("font-size", "18");
       val.textContent = `${comp.value} Ω`;
       svg.appendChild(val);
     }
     // LED szín
     if (comp.type === "led" && comp.color) {
       const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      ledColor.setAttribute("x", x + 5);
-      ledColor.setAttribute("y", y + iconH + 38);
-      ledColor.setAttribute("font-size", "13");
+      ledColor.setAttribute("x", x + 10);
+      ledColor.setAttribute("y", y + iconH + 48);
+      ledColor.setAttribute("font-size", "18");
       ledColor.textContent = comp.color;
       svg.appendChild(ledColor);
     }
   }
 }
 
-function addSimpleSeriesCircuitGeneratorButton() {
-  if (document.getElementById("simple-series-circuit-btn")) return;
+function addFixedSeriesCircuitGeneratorButton() {
+  if (document.getElementById("fixed-series-circuit-btn")) return;
   const btn = document.createElement('button');
-  btn.id = "simple-series-circuit-btn";
-  btn.textContent = "Egysoros áramkör generálása";
+  btn.id = "fixed-series-circuit-btn";
+  btn.textContent = "Egysoros (9V, 3 ellenállás, 2 LED) áramkör generálása";
   btn.style.margin = "20px 0";
-  btn.style.fontSize = "1.1em";
+  btn.style.fontSize = "1.2em";
   btn.onclick = () => {
-    const circuit = generateSimpleSeriesCircuit();
-    drawSimpleSeriesCircuitSVG(circuit);
+    const circuit = generateFixedSeriesCircuit();
+    drawFixedSeriesCircuitSVG(circuit);
   };
   document.body.appendChild(btn);
 }
@@ -589,11 +595,11 @@ document.addEventListener("DOMContentLoaded", () => {
     loadBest();
     // Ha áramkör rajzoló van kiválasztva, mutasd a gombot
     if (categorySelect.value === "aramkor_rajzolo") {
-      addSimpleSeriesCircuitGeneratorButton();
+      addFixedSeriesCircuitGeneratorButton();
     } else {
-      const btn = document.getElementById("simple-series-circuit-btn");
+      const btn = document.getElementById("fixed-series-circuit-btn");
       if (btn) btn.remove();
-      const svg = document.getElementById("simple-series-circuit-svg");
+      const svg = document.getElementById("fixed-series-circuit-svg");
       if (svg) svg.remove();
     }
   });
