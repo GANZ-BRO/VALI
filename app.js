@@ -461,22 +461,24 @@ function updateTimer() {
   timerDisplay.textContent = elapsed;
 }
 
-// --- Téglalap alakú áramkör rajzoló (SVG) ---
+// --- EGYSOROS ÁRAMKÖR RAJZOLÓ, vezetéket NEM rajzol! ---
+// (illeszd be az app.js végére vagy az "Áramkör rajzoló" funkciókhoz)
 
 function getRandomResistorValue() {
   const values = [330, 470, 1000, 1200];
   return values[getRandomInt(0, values.length - 1)];
 }
 
-function generateSmartRectangularSeriesCircuit() {
+function generateSimpleSeriesCircuit() {
   // Random 2 vagy 3 ellenállás, random 1 vagy 2 LED
   const resistorCount = 2 + getRandomInt(0, 1); // 2 vagy 3
   const ledCount = 1 + getRandomInt(0, 1);      // 1 vagy 2
 
-  // Elemek: elem, ellenállások, ledek
+  // Alkatrészek listája, első elem az elem (cell)
   const circuit = [
     { type: "cell", symbol: "alkatreszek/cell.svg", label: "Elem" }
   ];
+
   for (let i = 0; i < resistorCount; i++) {
     circuit.push({
       type: "resistor",
@@ -493,141 +495,29 @@ function generateSmartRectangularSeriesCircuit() {
       color: (i === 0 ? "piros" : "zöld")
     });
   }
+
   return circuit;
 }
 
-/**
- * Rajzol egy téglalap alakú zárt áramkört, elem alul középen vagy bal oldalt középen.
- * Az oldalsó komponensek SVG-je 90 fokkal balra forgatva.
- * Az alkatrészek minimális távolsággal, automatikusan méretezett SVG-ben.
- * @param {Array} circuit - az alkatrészek tömbje
- * @param {string} svgId - SVG elem id-je
- * @param {string} cellSide - "bottom" vagy "left"
- */
-function drawSmartRectangularCircuitSVG(circuit, svgId = "smart-rect-circuit-svg", cellSide = "bottom") {
+function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-series-circuit-svg") {
   const iconW = 48, iconH = 48, margin = 10;
-  const N = circuit.length;
-  
-  // Hány komponens fér el oldalakra? (elem külön oldal)
-  let sideCounts;
-  if (cellSide === "bottom") {
-    // Elem alul középen, a többi egyenletesen fel, jobb, bal, alsó oldalra
-    sideCounts = {
-      top: Math.floor((N - 1) / 2),
-      right: Math.ceil((N - 1) / 4),
-      left: Math.ceil((N - 1) / 4),
-      bottom: 1 // csak elem
-    };
-  } else {
-    // Elem bal oldalt középen, a többi egyenletesen fel, jobb, alsó oldalra
-    sideCounts = {
-      top: Math.floor((N - 1) / 3),
-      right: Math.ceil((N - 1) / 3),
-      bottom: Math.ceil((N - 1) / 3),
-      left: 1 // csak elem
-    };
-  }
 
-  // Pozíciók kiszámítása
-  let positions = [];
-  let idx = 0;
-
-  // TOP oldal
-  for (let i = 0; i < sideCounts.top; i++, idx++) {
-    positions.push({
-      x: margin + i * (iconW + margin),
-      y: margin,
-      side: "top",
-      rotate: 0
-    });
-  }
-
-  // RIGHT oldal
-  for (let i = 0; i < sideCounts.right; i++, idx++) {
-    positions.push({
-      x: margin + (sideCounts.top - 1) * (iconW + margin) + iconW,
-      y: margin + i * (iconH + margin),
-      side: "right",
-      rotate: -90
-    });
-  }
-
-  // BOTTOM oldal
-  if (cellSide === "bottom") {
-    // Elem alul középen
-    // Az elem az utolsó
-    for (let i = 0; i < sideCounts.left; i++, idx++) {
-      positions.push({
-        x: margin + (sideCounts.top - 1 - i) * (iconW + margin),
-        y: margin + sideCounts.right * (iconH + margin) + iconH,
-        side: "left",
-        rotate: -90
-      });
-    }
-    // Elem pozíciója alul középen
-    positions.push({
-      x: margin + ((sideCounts.top) * (iconW + margin)) / 2,
-      y: margin + sideCounts.right * (iconH + margin) + iconH + iconH + margin,
-      side: "bottom",
-      rotate: 0
-    });
-  } else {
-    // Elem bal oldalt középen
-    positions.push({
-      x: margin,
-      y: margin + ((sideCounts.bottom) * (iconH + margin)) / 2,
-      side: "left",
-      rotate: -90
-    });
-    // BOTTOM oldal
-    for (let i = 0; i < sideCounts.bottom; i++, idx++) {
-      positions.push({
-        x: margin + iconW + i * (iconW + margin),
-        y: margin + sideCounts.right * (iconH + margin) + iconH,
-        side: "bottom",
-        rotate: 0
-      });
-    }
-  }
-
-  // Automatikus SVG méret
-  let maxX = 0, maxY = 0;
-  positions.forEach(p => {
-    if (p.x + iconW > maxX) maxX = p.x + iconW;
-    if (p.y + iconH > maxY) maxY = p.y + iconH;
-  });
-
-  // SVG elem létrehozása/törlése
   let svg = document.getElementById(svgId);
   if (!svg) {
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.id = svgId;
     document.body.appendChild(svg);
   }
-  svg.setAttribute("width", maxX + margin);
-  svg.setAttribute("height", maxY + margin + iconH);
+  svg.setAttribute("width", circuit.length * (iconW + margin) + margin);
+  svg.setAttribute("height", iconH + 60);
   svg.style.display = "block";
   svg.style.margin = "18px auto";
   svg.innerHTML = '';
 
-  // Vezetékek rajzolása (összekötés vonallal)
-  for (let i = 0; i < positions.length; i++) {
-    const a = positions[i];
-    const b = positions[(i + 1) % positions.length];
-    const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    wire.setAttribute("x1", a.x + iconW / 2);
-    wire.setAttribute("y1", a.y + iconH / 2);
-    wire.setAttribute("x2", b.x + iconW / 2);
-    wire.setAttribute("y2", b.y + iconH / 2);
-    wire.setAttribute("stroke", "#666");
-    wire.setAttribute("stroke-width", 4);
-    svg.appendChild(wire);
-  }
-
-  // Alkatrészek kirajzolása, forgatással
   for (let i = 0; i < circuit.length; i++) {
     const comp = circuit[i];
-    const { x, y, rotate } = positions[i];
+    const x = margin + i * (iconW + margin);
+    const y = margin;
     if (comp.symbol && comp.symbol.endsWith('.svg')) {
       const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
       img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', comp.symbol);
@@ -635,15 +525,12 @@ function drawSmartRectangularCircuitSVG(circuit, svgId = "smart-rect-circuit-svg
       img.setAttribute("y", y);
       img.setAttribute("width", iconW);
       img.setAttribute("height", iconH);
-      if (rotate) {
-        img.setAttribute("transform", `rotate(${rotate},${x + iconW / 2},${y + iconH / 2})`);
-      }
       svg.appendChild(img);
     }
     // Felirat
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", x + 6);
-    label.setAttribute("y", y + iconH + 17);
+    label.setAttribute("x", x + 8);
+    label.setAttribute("y", y + iconH + 18);
     label.setAttribute("font-size", "15");
     label.textContent = comp.label;
     svg.appendChild(label);
@@ -669,16 +556,16 @@ function drawSmartRectangularCircuitSVG(circuit, svgId = "smart-rect-circuit-svg
   }
 }
 
-function addSmartRectangularCircuitGeneratorButton() {
-  if (document.getElementById("smart-rect-circuit-btn")) return;
+function addSimpleSeriesCircuitGeneratorButton() {
+  if (document.getElementById("simple-series-circuit-btn")) return;
   const btn = document.createElement('button');
-  btn.id = "smart-rect-circuit-btn";
-  btn.textContent = "Okos téglalap alakú áramkör generálása";
+  btn.id = "simple-series-circuit-btn";
+  btn.textContent = "Egysoros áramkör generálása";
   btn.style.margin = "20px 0";
   btn.style.fontSize = "1.1em";
   btn.onclick = () => {
-    const circuit = generateSmartRectangularSeriesCircuit();
-    drawSmartRectangularCircuitSVG(circuit, "smart-rect-circuit-svg", "bottom"); // cellSide: "bottom" vagy "left"
+    const circuit = generateSimpleSeriesCircuit();
+    drawSimpleSeriesCircuitSVG(circuit);
   };
   document.body.appendChild(btn);
 }
@@ -701,12 +588,12 @@ document.addEventListener("DOMContentLoaded", () => {
     saveLastSelection();
     loadBest();
     // Ha áramkör rajzoló van kiválasztva, mutasd a gombot
-     if (categorySelect.value === "aramkor_rajzolo") {
-      addSmartRectangularCircuitGeneratorButton();
+    if (categorySelect.value === "aramkor_rajzolo") {
+      addSimpleSeriesCircuitGeneratorButton();
     } else {
-      const btn = document.getElementById("smart-rect-circuit-btn");
+      const btn = document.getElementById("simple-series-circuit-btn");
       if (btn) btn.remove();
-      const svg = document.getElementById("smart-rect-circuit-svg");
+      const svg = document.getElementById("simple-series-circuit-svg");
       if (svg) svg.remove();
     }
   });
