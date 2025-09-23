@@ -6,21 +6,15 @@ const DIFFICULTY_SETTINGS = {
   hard: { min: -100, max: 100 }
 };
 
-// --- MOTIVÁLÓ ÜZENETEK ---
-const motivationalMessages = [
-  "Szuper munka, igazi matekzseni vagy!",
-  "Fantasztikus, így kell ezt csinálni!",
-  "Látom, nem lehet téged megállítani, csak így tovább!",
-  "Bravó, ezt a nehéz feladatot is megoldottad!",
-  "Kiváló, egyre közelebb vagy a csúcshoz!",
-  "Hűha, ez egy profi megoldás volt!",
-  "Nagyszerű, a matek mestere vagy!",
-  "Remekül teljesítesz, folytasd ebben a szellemben!"
-];
-
 // --- SEGÉDFÜGGVÉNYEK ---
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomResistorValue() {
+  // Csak a megadott értékekből választ!
+  const values = [330, 470, 1000, 1200];
+  return values[getRandomInt(0, values.length - 1)];
 }
 
 function shuffleArray(array) {
@@ -142,7 +136,7 @@ const taskTypes = [
 
       if (taskType === 0) { // Mi az alkatrész neve, ha a jele: ...
         options = [component.name, ...shuffleArray(wrongOptions.names.filter(name => name !== component.name)).slice(0, 3)];
-        options = shuffleArray(options); // Véletlenszerű sorrend
+        options = shuffleArray(options);
         correctAnswer = (options.indexOf(component.name) + 1).toString();
         return {
           display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>?`,
@@ -152,7 +146,7 @@ const taskTypes = [
         };
       } else if (taskType === 1) { // Mi az alkatrész jele, ha a neve: ...
         options = [component.symbol, ...shuffleArray(wrongOptions.symbols.filter(symbol => symbol !== component.symbol)).slice(0, 3)];
-        options = shuffleArray(options); // Véletlenszerű sorrend
+        options = shuffleArray(options);
         options = options.map(symbol => `<img src="${symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`);
         correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`) + 1).toString();
         return {
@@ -163,7 +157,7 @@ const taskTypes = [
         };
       } else if (taskType === 2) { // Mi az alkatrész leírása, ha a neve: ...
         options = [component.description, ...shuffleArray(wrongOptions.descriptions.filter(desc => desc !== component.description)).slice(0, 3)];
-        options = shuffleArray(options); // Véletlenszerű sorrend
+        options = shuffleArray(options);
         correctAnswer = (options.indexOf(component.description) + 1).toString();
         return {
           display: `Mi az alkatrész leírása, ha a neve: <span class="blue-percent">${component.name}</span>?`,
@@ -173,7 +167,7 @@ const taskTypes = [
         };
       } else { // Hol használják az alkatrészt, ha a neve: ...
         options = [component.example, ...shuffleArray(wrongOptions.examples.filter(example => example !== component.example)).slice(0, 3)];
-        options = shuffleArray(options); // Véletlenszerű sorrend
+        options = shuffleArray(options);
         correctAnswer = (options.indexOf(component.example) + 1).toString();
         return {
           display: `Hol használhatják az alkatrészt, ha a neve: <span class="blue-percent">${component.name}</span>?`,
@@ -226,7 +220,6 @@ function showQuestion(index) {
     div.className = "question-container";
   }
 
-  // Válaszok generálása ponttal (•) jelölőkkel
   let optionsHtml = "";
   const options = generateOptions(parseInt(q.answer) - 1, q.options || [], q.answerType, difficultySelect.value, "");
   options.forEach((opt, i) => {
@@ -247,7 +240,6 @@ function showQuestion(index) {
     <div class="options-container">${optionsHtml}</div>
   `;
 
-  // Eseménykezelő az option-marker és option-text elemekre
   const markers = div.querySelectorAll('.option-marker');
   const texts = div.querySelectorAll('.option-text');
   
@@ -469,9 +461,9 @@ function updateTimer() {
   timerDisplay.textContent = elapsed;
 }
 
-// --- EGYSZERŰ SOROS ÁRAMKÖR RAJZOLÓ (SVG) ---
+// --- Téglalap alakú áramkör rajzoló (SVG) ---
 
-function generateSimpleSeriesCircuit() {
+function generateRectangularSeriesCircuit() {
   // Random 2 vagy 3 ellenállás, random 1 vagy 2 LED
   const resistorCount = 2 + getRandomInt(0, 1); // 2 vagy 3
   const ledCount = 1 + getRandomInt(0, 1);      // 1 vagy 2
@@ -486,7 +478,7 @@ function generateSimpleSeriesCircuit() {
       type: "resistor",
       symbol: "alkatreszek/resistor.svg",
       label: `R${i + 1}`,
-      value: getRandomInt(100, 1000)
+      value: getRandomResistorValue()
     });
   }
   for (let i = 0; i < ledCount; i++) {
@@ -498,7 +490,6 @@ function generateSimpleSeriesCircuit() {
     });
   }
 
-  // Végén egy vezeték (opcionális)
   circuit.push({
     type: "wire",
     symbol: "alkatreszek/wire.svg",
@@ -508,34 +499,88 @@ function generateSimpleSeriesCircuit() {
   return circuit;
 }
 
-function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-circuit-svg") {
+function drawRectangularCircuitSVG(circuit, svgId = "rect-circuit-svg") {
+  // Téglalap paraméterek
+  const w = 400, h = 250;
+  const iconSize = 48;
+  const padding = 28;
+  const wireStroke = 4;
+
   let svg = document.getElementById(svgId);
   if (!svg) {
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.id = svgId;
-    svg.setAttribute("width", 120 * circuit.length);
-    svg.setAttribute("height", "120");
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
     svg.style.display = "block";
     svg.style.margin = "18px auto";
     document.body.appendChild(svg);
   }
   svg.innerHTML = '';
 
-  let x = 20, y = 40, spacing = 100;
-  circuit.forEach((comp, idx) => {
-    // Alkatrész SVG szimbólum
+  const N = circuit.length;
+  // Oldalakra elosztás
+  const perSide = Math.ceil(N / 4);
+  let positions = [];
+
+  // Felső oldal (balról jobbra)
+  for (let i = 0; i < perSide && positions.length < N; i++) {
+    const x = padding + i * ((w - 2 * padding) / (perSide));
+    const y = padding;
+    positions.push({ x, y, side: 'top' });
+  }
+
+  // Jobb oldal (fentről le)
+  for (let i = 0; i < perSide && positions.length < N; i++) {
+    const x = w - padding;
+    const y = padding + i * ((h - 2 * padding) / (perSide));
+    positions.push({ x, y, side: 'right' });
+  }
+
+  // Alsó oldal (jobbról balra)
+  for (let i = 0; i < perSide && positions.length < N; i++) {
+    const x = w - padding - i * ((w - 2 * padding) / (perSide));
+    const y = h - padding;
+    positions.push({ x, y, side: 'bottom' });
+  }
+
+  // Bal oldal (lentről fel)
+  for (let i = 0; i < perSide && positions.length < N; i++) {
+    const x = padding;
+    const y = h - padding - i * ((h - 2 * padding) / (perSide));
+    positions.push({ x, y, side: 'left' });
+  }
+
+  // Vezetékek (összekötés)
+  for (let i = 0; i < N; i++) {
+    const a = positions[i];
+    const b = positions[(i + 1) % N];
+    const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    wire.setAttribute("x1", a.x + iconSize / 2);
+    wire.setAttribute("y1", a.y + iconSize / 2);
+    wire.setAttribute("x2", b.x + iconSize / 2);
+    wire.setAttribute("y2", b.y + iconSize / 2);
+    wire.setAttribute("stroke", "#666");
+    wire.setAttribute("stroke-width", wireStroke);
+    svg.appendChild(wire);
+  }
+
+  // Alkatrészek kirajzolása
+  for (let i = 0; i < N; i++) {
+    const comp = circuit[i];
+    const { x, y } = positions[i];
     if (comp.symbol && comp.symbol.endsWith('.svg')) {
       const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
       img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', comp.symbol);
-      img.setAttribute("x", x + idx * spacing);
+      img.setAttribute("x", x);
       img.setAttribute("y", y);
-      img.setAttribute("width", "48");
-      img.setAttribute("height", "48");
+      img.setAttribute("width", iconSize);
+      img.setAttribute("height", iconSize);
       svg.appendChild(img);
     }
     // Felirat
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", x + idx * spacing + 10);
+    label.setAttribute("x", x + 10);
     label.setAttribute("y", y + 68);
     label.setAttribute("font-size", "15");
     label.textContent = comp.label;
@@ -544,7 +589,7 @@ function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-circuit-svg") {
     // Ellenállás érték
     if (comp.type === "resistor" && comp.value) {
       const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      val.setAttribute("x", x + idx * spacing + 5);
+      val.setAttribute("x", x + 5);
       val.setAttribute("y", y + 90);
       val.setAttribute("font-size", "13");
       val.textContent = `${comp.value} Ω`;
@@ -553,36 +598,25 @@ function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-circuit-svg") {
     // LED szín
     if (comp.type === "led" && comp.color) {
       const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      ledColor.setAttribute("x", x + idx * spacing + 5);
+      ledColor.setAttribute("x", x + 5);
       ledColor.setAttribute("y", y + 90);
       ledColor.setAttribute("font-size", "13");
       ledColor.textContent = comp.color;
       svg.appendChild(ledColor);
     }
-    // Vezeték két komponens között
-    if (idx > 0) {
-      const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      wire.setAttribute("x1", x + (idx - 1) * spacing + 40);
-      wire.setAttribute("y1", y + 24);
-      wire.setAttribute("x2", x + idx * spacing);
-      wire.setAttribute("y2", y + 24);
-      wire.setAttribute("stroke", "#666");
-      wire.setAttribute("stroke-width", "3");
-      svg.appendChild(wire);
-    }
-  });
+  }
 }
 
-function addSimpleCircuitGeneratorButton() {
-  if (document.getElementById("simple-circuit-btn")) return;
+function addRectangularCircuitGeneratorButton() {
+  if (document.getElementById("rect-circuit-btn")) return;
   const btn = document.createElement('button');
-  btn.id = "simple-circuit-btn";
-  btn.textContent = "Egyszerű soros áramkör generálása";
+  btn.id = "rect-circuit-btn";
+  btn.textContent = "Téglalap alakú áramkör generálása";
   btn.style.margin = "20px 0";
   btn.style.fontSize = "1.1em";
   btn.onclick = () => {
-    const circuit = generateSimpleSeriesCircuit();
-    drawSimpleSeriesCircuitSVG(circuit);
+    const circuit = generateRectangularSeriesCircuit();
+    drawRectangularCircuitSVG(circuit);
   };
   document.body.appendChild(btn);
 }
@@ -606,11 +640,11 @@ document.addEventListener("DOMContentLoaded", () => {
     loadBest();
     // Ha áramkör rajzoló van kiválasztva, mutasd a gombot
     if (categorySelect.value === "aramkor_rajzolo") {
-      addSimpleCircuitGeneratorButton();
+      addRectangularCircuitGeneratorButton();
     } else {
-      const btn = document.getElementById("simple-circuit-btn");
+      const btn = document.getElementById("rect-circuit-btn");
       if (btn) btn.remove();
-      const svg = document.getElementById("simple-circuit-svg");
+      const svg = document.getElementById("rect-circuit-svg");
       if (svg) svg.remove();
     }
   });
