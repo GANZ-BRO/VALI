@@ -487,19 +487,19 @@ function generateFixedSeriesCircuit() {
     },
     {
       type: "resistor",
-      symbol: "alkatreszek/resistor.svg",
+      symbol: "alkatreszek/resistor0.svg",
       label: "R2",
       value: getRandomResistorValue()
     },
     {
       type: "led",
-      symbol: "alkatreszek/led.svg",
+      symbol: "alkatreszek/led0.svg",
       label: "LED2",
       color: "zöld"
     },
     {
       type: "resistor",
-      symbol: "alkatreszek/resistor.svg",
+      symbol: "alkatreszek/resistor0.svg",
       label: "R3",
       value: getRandomResistorValue()
     }
