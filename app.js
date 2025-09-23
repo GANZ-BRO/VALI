@@ -507,7 +507,7 @@ function generateFixedSeriesCircuit() {
 }
 
 function drawFixedSeriesCircuitSVG(circuit, svgId = "fixed-series-circuit-svg") {
-  const iconW = 96, iconH = 96, margin = 18; // 2x nagyobb
+  const iconW = 96, iconH = 48, margin = 0; // 2x nagyobb
   let svg = document.getElementById(svgId);
   if (!svg) {
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
