@@ -87,10 +87,8 @@ function formatNumber(value, unit, difficulty, forceBaseUnit = false) {
 }
 
 function generateOptions(correctAnswerIndex, optionsArray, answerType, difficulty, unit) {
-  console.log("generateOptions called", { correctAnswerIndex, optionsArray, answerType, difficulty, unit });
   if (answerType !== "number") return [];
   const options = optionsArray.map((opt, index) => ({ value: (index + 1).toString(), label: opt }));
-  console.log("generateOptions result", options);
   return options;
 }
 
@@ -102,8 +100,6 @@ const components = {
     { name: "Kapcsoló", symbol: "alkatreszek/switch.svg", description: "Áramkör nyitására vagy zárására szolgál", example: "Lámpák be- és kikapcsolására" },
     { name: "Izzó", symbol: "alkatreszek/bulb.svg", description: "Fényt és hőt termel áram hatására", example: "Régi típusú lámpákban" },
     { name: "Voltmérő", symbol: "alkatreszek/voltmeter.svg", description: "Feszültség mérésére szolgáló műszer", example: "Tápegység kimenetének ellenőrzése" },
-     
-    
   ],
   medium: [
     { name: "Akkumulátor", symbol: "alkatreszek/battery.svg", description: "Újratölthető elektromos energiát biztosít", example: "Okostelefonokban és laptopokban" },
@@ -113,7 +109,6 @@ const components = {
     { name: "Dióda", symbol: "alkatreszek/diode.svg", description: "Egyirányú áramot enged", example: "Tápegység" },
     { name: "LED", symbol: "alkatreszek/led.svg", description: "Fényt bocsát ki áram hatására", example: "Jelzőfények" },
     { name: "Nyomógomb", symbol: "alkatreszek/pushbutton.svg", description: "Ideiglenesen zárja az áramkört", example: "Kapucsengőkben használják" }
-    
   ],
   hard: [
     { name: "Hálózati áramforrás", symbol: "alkatreszek/ac_source.svg", description: "Váltakozó feszültséget biztosít az áramkör számára", example: "230V-os konnektor" },
@@ -122,7 +117,7 @@ const components = {
     { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabályzó" },
     { name: "Fényérzékeny ellenállás", symbol: "alkatreszek/ldr.svg", description: "Ellenállása a fény intenzitásának megfelelően változik", example: "Automatikus világításvezérléshez" },
     { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" },
-    { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba,  napelemekbe" },
+    { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba, napelemekbe" },
     { name: "Tekercs", symbol: "alkatreszek/coil.svg", description: "Mágneses mezőt hoz létre áram hatására, vagy tárolja az energiát", example: "Szűrőáramkörök" }
   ]
 };
@@ -150,7 +145,7 @@ const taskTypes = [
         options = shuffleArray(options); // Véletlenszerű sorrend
         correctAnswer = (options.indexOf(component.name) + 1).toString();
         return {
-          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg'; console.log('Hiba: ${component.symbol} nem található');"></span>?`,
+          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>?`,
           answer: correctAnswer,
           answerType: "number",
           options: options
@@ -158,8 +153,8 @@ const taskTypes = [
       } else if (taskType === 1) { // Mi az alkatrész jele, ha a neve: ...
         options = [component.symbol, ...shuffleArray(wrongOptions.symbols.filter(symbol => symbol !== component.symbol)).slice(0, 3)];
         options = shuffleArray(options); // Véletlenszerű sorrend
-        options = options.map(symbol => `<img src="${symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg'; console.log('Hiba: ${symbol} nem található');">`);
-        correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg'; console.log('Hiba: ${component.symbol} nem található');">`) + 1).toString();
+        options = options.map(symbol => `<img src="${symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`);
+        correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`) + 1).toString();
         return {
           display: `Mi az alkatrész jele, ha a neve: <span class="blue-percent">${component.name}</span>?`,
           answer: correctAnswer,
@@ -189,7 +184,7 @@ const taskTypes = [
       }
     }
   },
-{
+  {
     name: "Áramkör rajzoló",
     value: "aramkor_rajzolo",
     generate: (difficulty) => ({
@@ -199,7 +194,6 @@ const taskTypes = [
       options: []
     })
   }
-
 ];
 
 // --- HTML ELEMEK ---
@@ -208,8 +202,8 @@ const timerDisplay = document.getElementById("time");
 const bestStats = document.getElementById("best-stats");
 const difficultySelect = document.getElementById("difficulty");
 const categorySelect = document.getElementById("category");
-const startBtn = document.querySelector(".big-btn[onclick='startGame()']");
-const restartBtn = document.getElementById("restart-btn");
+const startBtn = document.querySelector(".big-btn[onclick='startGame()']") || document.querySelector("button[onclick='startGame()']");
+const restartBtn = document.getElementById("restart-btn") || document.querySelector("button[onclick='restartGame()']");
 const themeToggle = document.getElementById("theme-toggle");
 
 // --- JÁTÉK LOGIKA ---
@@ -259,14 +253,13 @@ function showQuestion(index) {
   
   const handleClick = (event) => {
     if (!gameActive) return;
-
     const selectedAnswer = parseInt(event.currentTarget.getAttribute('data-answer'));
     const correctAnswer = parseInt(q.answer);
     let pauseStart = Date.now();
     if (timerInterval) clearInterval(timerInterval);
 
     markers.forEach(m => m.classList.remove('checked'));
-    texts.forEach(t => t.classList.remove('checked')); // Töröljük a checked állapotot a szövegről is
+    texts.forEach(t => t.classList.remove('checked'));
     event.currentTarget.classList.add('checked');
 
     if (selectedAnswer === correctAnswer) {
@@ -329,12 +322,10 @@ function startGame() {
 
   categorySelect.disabled = true;
   difficultySelect.disabled = true;
-  restartBtn.style.display = "none";
-  startBtn.style.display = "none";
+  if (restartBtn) restartBtn.style.display = "none";
+  if (startBtn) startBtn.style.display = "none";
   bestStats.style.opacity = "0.55";
-
-    // --- ITT JELENIK MEG A RAJZOLÓ GOMB! ---
- }
+}
 
 function finishGame() {
   gameActive = false;
@@ -344,8 +335,8 @@ function finishGame() {
   quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
   saveBest(score, elapsed);
 
-  restartBtn.style.display = "";
-  startBtn.style.display = "";
+  if (restartBtn) restartBtn.style.display = "";
+  if (startBtn) startBtn.style.display = "";
   bestStats.style.opacity = "1";
   categorySelect.disabled = false;
   difficultySelect.disabled = false;
@@ -360,40 +351,37 @@ function generateQuestions() {
     questions.push({ display: "Hiba: kategória nincs implementálva", answer: null, answerType: "number" });
     return;
   }
-  let lastTaskType = -1; // -1 kezdeti érték, hogy az első kérdésnél ne legyen korlátozás
+  let lastTaskType = -1;
   for (let i = 0; i < QUESTIONS; i++) {
     let task;
     let attempts = 0;
-    const maxAttempts = 10; // Elkerüljük a végtelen ciklust, ha kevés típus van
+    const maxAttempts = 10;
     do {
       task = taskType.generate(difficulty);
       attempts++;
       if (attempts > maxAttempts) {
-        console.warn("Túl sok próbálkozás az új feladat típus generálásához, a ciklus megszakítva.");
         break;
       }
-    } while (getTaskTypeIndex(task.display) === lastTaskType); // Addig generálunk, amíg különbözik
-    lastTaskType = getTaskTypeIndex(task.display); // Frissítjük az előző típust
+    } while (getTaskTypeIndex(task.display) === lastTaskType);
+    lastTaskType = getTaskTypeIndex(task.display);
 
     if (!task.answer || task.answer === "?") {
       task.display = "Hiba: érvénytelen feladat generálódott";
       task.answer = null;
     }
     if (!['number'].includes(task.answerType)) {
-      console.warn(`Ismeretlen answerType: ${task.answerType} a ${taskType.name} feladattípusban`);
       task.answerType = 'number';
     }
     questions.push(task);
   }
 }
 
-// Segédfüggvény a feladat típus azonosítására a display alapján
 function getTaskTypeIndex(display) {
   if (display.includes("Mi az alkatrész neve, ha a jele:")) return 0;
   if (display.includes("Mi az alkatrész jele, ha a neve:")) return 1;
   if (display.includes("Mi az alkatrész leírása, ha a neve:")) return 2;
   if (display.includes("Hol használják az alkatrészt, ha a neve:")) return 3;
-  return -1; // Ismeretlen típus esetén
+  return -1;
 }
 
 // --- UTOLSÓ VÁLASZTÁS MENTÉSE/BETÖLTÉSE ---
@@ -481,203 +469,120 @@ function updateTimer() {
   timerDisplay.textContent = elapsed;
 }
 
-// --- SVG ÁRAMKÖR RAJZOLÓ (statikus képes verzió) ---
+// --- EGYSZERŰ SOROS ÁRAMKÖR RAJZOLÓ (SVG) ---
 
-function drawCircuitWithParallelSVG(circuit, svgId = "circuit-svg") {
+function generateSimpleSeriesCircuit() {
+  // Random 2 vagy 3 ellenállás, random 1 vagy 2 LED
+  const resistorCount = 2 + getRandomInt(0, 1); // 2 vagy 3
+  const ledCount = 1 + getRandomInt(0, 1);      // 1 vagy 2
+
+  // Alkatrészek listája, első elem az elem (cell)
+  const circuit = [
+    { type: "cell", symbol: "alkatreszek/cell.svg", label: "Elem" }
+  ];
+
+  for (let i = 0; i < resistorCount; i++) {
+    circuit.push({
+      type: "resistor",
+      symbol: "alkatreszek/resistor.svg",
+      label: `R${i + 1}`,
+      value: getRandomInt(100, 1000)
+    });
+  }
+  for (let i = 0; i < ledCount; i++) {
+    circuit.push({
+      type: "led",
+      symbol: "alkatreszek/led.svg",
+      label: `LED${i + 1}`,
+      color: (i === 0 ? "piros" : "zöld")
+    });
+  }
+
+  // Végén egy vezeték (opcionális)
+  circuit.push({
+    type: "wire",
+    symbol: "alkatreszek/wire.svg",
+    label: "Vezeték"
+  });
+
+  return circuit;
+}
+
+function drawSimpleSeriesCircuitSVG(circuit, svgId = "simple-circuit-svg") {
   let svg = document.getElementById(svgId);
   if (!svg) {
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.id = svgId;
-    svg.setAttribute("width", "900");
-    svg.setAttribute("height", "260");
+    svg.setAttribute("width", 120 * circuit.length);
+    svg.setAttribute("height", "120");
     svg.style.display = "block";
-    svg.style.margin = "16px auto";
+    svg.style.margin = "18px auto";
     document.body.appendChild(svg);
   }
-  // Törlés
   svg.innerHTML = '';
 
-  let x = 60, y = 120, spacing = 110;
-
+  let x = 20, y = 40, spacing = 100;
   circuit.forEach((comp, idx) => {
-    if (comp.type !== "parallel") {
-      // Alkatrész SVG szimbólum
-      if (comp.symbol && comp.symbol.endsWith('.svg')) {
-        const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
-        img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', comp.symbol);
-        img.setAttribute("x", x);
-        img.setAttribute("y", y - 20);
-        img.setAttribute("width", "40");
-        img.setAttribute("height", "40");
-        svg.appendChild(img);
-      } else {
-        // Fallback emoji szimbólum
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", x + 10);
-        text.setAttribute("y", y + 10);
-        text.setAttribute("font-size", "40");
-        text.textContent = comp.symbol || '?';
-        svg.appendChild(text);
-      }
-      // Felirat
-      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      label.setAttribute("x", x - 25);
-      label.setAttribute("y", y + 35);
-      label.setAttribute("font-size", "14");
-      label.textContent = comp.label;
-      svg.appendChild(label);
+    // Alkatrész SVG szimbólum
+    if (comp.symbol && comp.symbol.endsWith('.svg')) {
+      const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+      img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', comp.symbol);
+      img.setAttribute("x", x + idx * spacing);
+      img.setAttribute("y", y);
+      img.setAttribute("width", "48");
+      img.setAttribute("height", "48");
+      svg.appendChild(img);
+    }
+    // Felirat
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", x + idx * spacing + 10);
+    label.setAttribute("y", y + 68);
+    label.setAttribute("font-size", "15");
+    label.textContent = comp.label;
+    svg.appendChild(label);
 
-      // Ellenállás érték
-      if (comp.type === "resistor" && comp.value) {
-        const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        val.setAttribute("x", x - 15);
-        val.setAttribute("y", y + 55);
-        val.setAttribute("font-size", "13");
-        val.textContent = `${comp.value} Ω`;
-        svg.appendChild(val);
-      }
-      // LED szín
-      if (comp.type === "led" && comp.color) {
-        const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        ledColor.setAttribute("x", x + 5);
-        ledColor.setAttribute("y", y + 55);
-        ledColor.setAttribute("font-size", "13");
-        ledColor.textContent = comp.color;
-        svg.appendChild(ledColor);
-      }
-      // Vezeték (előző elemhez)
-      if (idx > 0) {
-        const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        wire.setAttribute("x1", x - spacing + 22);
-        wire.setAttribute("y1", y - 10);
-        wire.setAttribute("x2", x - 16);
-        wire.setAttribute("y2", y - 10);
-        wire.setAttribute("stroke", "#666");
-        wire.setAttribute("stroke-width", "3");
-        svg.appendChild(wire);
-      }
-      x += spacing;
-    } else {
-      // Párhuzamos ágak
-      // Elágazás vonalak
-      const branchYs = [y - 50, y, y + 30];
-      const branchSpacing = 90;
-      // Fel-le vezeték
-      {
-        const upWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        upWire.setAttribute("x1", x - 16);
-        upWire.setAttribute("y1", y - 10);
-        upWire.setAttribute("x2", x - 16);
-        upWire.setAttribute("y2", y - 50);
-        upWire.setAttribute("stroke", "#222");
-        upWire.setAttribute("stroke-width", "3");
-        svg.appendChild(upWire);
-
-        const downWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        downWire.setAttribute("x1", x - 16);
-        downWire.setAttribute("y1", y - 10);
-        downWire.setAttribute("x2", x - 16);
-        downWire.setAttribute("y2", y + 30);
-        downWire.setAttribute("stroke", "#222");
-        downWire.setAttribute("stroke-width", "3");
-        svg.appendChild(downWire);
-      }
-      // Ágak rajzolása
-      comp.branches.forEach((branch, bidx) => {
-        let bx = x, by = branchYs[bidx];
-        // Ág kezdete vezeték
-        const branchWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        branchWire.setAttribute("x1", x - 16);
-        branchWire.setAttribute("y1", by);
-        branchWire.setAttribute("x2", bx);
-        branchWire.setAttribute("y2", by);
-        branchWire.setAttribute("stroke", "#666");
-        branchWire.setAttribute("stroke-width", "2");
-        svg.appendChild(branchWire);
-
-        branch.forEach((bcomp, j) => {
-          // SVG szimbólum vagy emoji
-          if (bcomp.symbol && bcomp.symbol.endsWith('.svg')) {
-            const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
-            img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', bcomp.symbol);
-            img.setAttribute("x", bx + j * branchSpacing);
-            img.setAttribute("y", by - 20);
-            img.setAttribute("width", "35");
-            img.setAttribute("height", "35");
-            svg.appendChild(img);
-          } else {
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", bx + j * branchSpacing + 10);
-            text.setAttribute("y", by + 10);
-            text.setAttribute("font-size", "30");
-            text.textContent = bcomp.symbol || '?';
-            svg.appendChild(text);
-          }
-          // Felirat
-          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          label.setAttribute("x", bx + j * branchSpacing - 17);
-          label.setAttribute("y", by + 25);
-          label.setAttribute("font-size", "13");
-          label.textContent = bcomp.label;
-          svg.appendChild(label);
-
-          // Ellenállás érték
-          if (bcomp.type === "resistor" && bcomp.value) {
-            const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            val.setAttribute("x", bx + j * branchSpacing - 10);
-            val.setAttribute("y", by + 45);
-            val.setAttribute("font-size", "12");
-            val.textContent = `${bcomp.value} Ω`;
-            svg.appendChild(val);
-          }
-          // LED szín
-          if (bcomp.type === "led" && bcomp.color) {
-            const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            ledColor.setAttribute("x", bx + j * branchSpacing + 5);
-            ledColor.setAttribute("y", by + 45);
-            ledColor.setAttribute("font-size", "12");
-            ledColor.textContent = bcomp.color;
-            svg.appendChild(ledColor);
-          }
-          // Vezeték két komponens között
-          if (j > 0) {
-            const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            wire.setAttribute("x1", bx + (j - 1) * branchSpacing + 22);
-            wire.setAttribute("y1", by - 8);
-            wire.setAttribute("x2", bx + j * branchSpacing - 16);
-            wire.setAttribute("y2", by - 8);
-            wire.setAttribute("stroke", "#888");
-            wire.setAttribute("stroke-width", "2");
-            svg.appendChild(wire);
-          }
-        });
-        // Ág vége vissza soros ágba
-        const endWire = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        endWire.setAttribute("x1", bx + branch.length * branchSpacing);
-        endWire.setAttribute("y1", by);
-        endWire.setAttribute("x2", bx + branch.length * branchSpacing);
-        endWire.setAttribute("y2", y - 10);
-        endWire.setAttribute("stroke", "#222");
-        endWire.setAttribute("stroke-width", "2");
-        svg.appendChild(endWire);
-      });
-      x += branchSpacing * 2;
+    // Ellenállás érték
+    if (comp.type === "resistor" && comp.value) {
+      const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      val.setAttribute("x", x + idx * spacing + 5);
+      val.setAttribute("y", y + 90);
+      val.setAttribute("font-size", "13");
+      val.textContent = `${comp.value} Ω`;
+      svg.appendChild(val);
+    }
+    // LED szín
+    if (comp.type === "led" && comp.color) {
+      const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      ledColor.setAttribute("x", x + idx * spacing + 5);
+      ledColor.setAttribute("y", y + 90);
+      ledColor.setAttribute("font-size", "13");
+      ledColor.textContent = comp.color;
+      svg.appendChild(ledColor);
+    }
+    // Vezeték két komponens között
+    if (idx > 0) {
+      const wire = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      wire.setAttribute("x1", x + (idx - 1) * spacing + 40);
+      wire.setAttribute("y1", y + 24);
+      wire.setAttribute("x2", x + idx * spacing);
+      wire.setAttribute("y2", y + 24);
+      wire.setAttribute("stroke", "#666");
+      wire.setAttribute("stroke-width", "3");
+      svg.appendChild(wire);
     }
   });
 }
 
-// --- UI GOMB (SVG verzióhoz) ---
-function addParallelCircuitGeneratorButtonSVG() {
-  if (document.getElementById("circuit-gen-btn-svg")) return;
+function addSimpleCircuitGeneratorButton() {
+  if (document.getElementById("simple-circuit-btn")) return;
   const btn = document.createElement('button');
-  btn.id = "circuit-gen-btn-svg";
-  btn.textContent = "Új áramkör (SVG, párhuzamos ágakkal)";
-  btn.style.margin = "20px 0 0 0";
-  btn.style.display = "block";
+  btn.id = "simple-circuit-btn";
+  btn.textContent = "Egyszerű soros áramkör generálása";
+  btn.style.margin = "20px 0";
   btn.style.fontSize = "1.1em";
   btn.onclick = () => {
-    const circuit = generateCircuitWithParallel();
-    drawCircuitWithParallelSVG(circuit);
+    const circuit = generateSimpleSeriesCircuit();
+    drawSimpleSeriesCircuitSVG(circuit);
   };
   document.body.appendChild(btn);
 }
@@ -688,34 +593,31 @@ let best = { score: 0, time: null, wrongAnswers: Infinity };
 let gameActive = false;
 let wrongAnswers = 0;
 
-
-
-
 // --- INICIALIZÁCIÓ ---
 document.addEventListener("DOMContentLoaded", () => {
   loadCategories();
   loadLastSelection();
   applyTheme();
-  themeToggle.addEventListener("click", toggleTheme);
-  themeToggle.addEventListener("touchstart", toggleTheme);
+  themeToggle && themeToggle.addEventListener("click", toggleTheme);
+  themeToggle && themeToggle.addEventListener("touchstart", toggleTheme);
 
   categorySelect.addEventListener("change", () => {
     saveLastSelection();
     loadBest();
-    // --- IDE JÖN A RAJZOLÓ GOMB LOGIKA ---
+    // Ha áramkör rajzoló van kiválasztva, mutasd a gombot
     if (categorySelect.value === "aramkor_rajzolo") {
-      addParallelCircuitGeneratorButtonSVG();
+      addSimpleCircuitGeneratorButton();
     } else {
-      const btn = document.getElementById("circuit-gen-btn-svg");
+      const btn = document.getElementById("simple-circuit-btn");
       if (btn) btn.remove();
-      const svg = document.getElementById("circuit-svg");
+      const svg = document.getElementById("simple-circuit-svg");
       if (svg) svg.remove();
     }
   });
 
   difficultySelect.addEventListener("change", () => { saveLastSelection(); loadBest(); });
-  startBtn.onclick = startGame;
-  restartBtn.onclick = startGame;
+  if (startBtn) startBtn.onclick = startGame;
+  if (restartBtn) restartBtn.onclick = startGame;
   loadBest();
 
   if (!quizContainer || !timerDisplay || !bestStats || !difficultySelect || !categorySelect || !startBtn || !restartBtn || !themeToggle) {
