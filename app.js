@@ -461,16 +461,16 @@ function updateTimer() {
   timerDisplay.textContent = elapsed;
 }
 
-// --- EGYSOROS ÁRAMKÖR RAJZOLÓ, 2x nagyobb SVG-vel, fix sorrenddel, LED-ek és ellenállások váltakoznak ---
-// Illeszd be az app.js végére vagy az "Áramkör rajzoló" funkciókhoz
+// --- DINAMIKUSAN MOBILBARÁT EGYSOROS ÁRAMKÖR RAJZOLÓ ---
+// Mindig kifér telefonon, képernyőváltáskor automatikusan újrarajzol!
 
 function getRandomResistorValue() {
   const values = [330, 470, 1000, 1200];
-  return values[getRandomInt(0, values.length - 1)];
+  return values[Math.floor(Math.random() * values.length)];
 }
 
 function generateFixedSeriesCircuit() {
-  // Sorrend: Elem (9V), R1, Led1, R2, Led2, R3
+  // Sorrend: 9V, R1, LED1, R2, LED2, R3
   return [
     { type: "cell", symbol: "alkatreszek/cell.svg", label: "9V" },
     {
@@ -506,15 +506,21 @@ function generateFixedSeriesCircuit() {
   ];
 }
 
-function drawFixedSeriesCircuitSVG(circuit, svgId = "fixed-series-circuit-svg") {
-  const iconW = 96, iconH = 48, margin = 0; // 2x nagyobb
+function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circuit-svg") {
+  // Konténer vagy ablak szélessége alapján számol
+  const maxW = Math.min(window.innerWidth, 500); // 500px desktop limit, mobilon teljes szélesség
+  const iconCount = circuit.length;
+  const margin = 0; // nincs hézag
+  const iconW = Math.floor((maxW - (iconCount + 1) * margin) / iconCount);
+  const iconH = iconW; // négyzetes
+
   let svg = document.getElementById(svgId);
   if (!svg) {
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.id = svgId;
     document.body.appendChild(svg);
   }
-  svg.setAttribute("width", circuit.length * (iconW + margin) + margin);
+  svg.setAttribute("width", maxW);
   svg.setAttribute("height", iconH + 80);
   svg.style.display = "block";
   svg.style.margin = "18px auto";
@@ -535,43 +541,44 @@ function drawFixedSeriesCircuitSVG(circuit, svgId = "fixed-series-circuit-svg") 
     }
     // Felirat
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", x + 16);
+    label.setAttribute("x", x + iconW / 5);
     label.setAttribute("y", y + iconH + 22);
-    label.setAttribute("font-size", "22");
+    label.setAttribute("font-size", Math.floor(iconW / 4));
     label.textContent = comp.label;
     svg.appendChild(label);
 
     // Ellenállás érték
     if (comp.type === "resistor" && comp.value) {
       const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      val.setAttribute("x", x + 10);
+      val.setAttribute("x", x + iconW / 8);
       val.setAttribute("y", y + iconH + 48);
-      val.setAttribute("font-size", "18");
+      val.setAttribute("font-size", Math.floor(iconW / 5));
       val.textContent = `${comp.value} Ω`;
       svg.appendChild(val);
     }
     // LED szín
     if (comp.type === "led" && comp.color) {
       const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      ledColor.setAttribute("x", x + 10);
+      ledColor.setAttribute("x", x + iconW / 8);
       ledColor.setAttribute("y", y + iconH + 48);
-      ledColor.setAttribute("font-size", "18");
+      ledColor.setAttribute("font-size", Math.floor(iconW / 5));
       ledColor.textContent = comp.color;
       svg.appendChild(ledColor);
     }
   }
 }
 
-function addFixedSeriesCircuitGeneratorButton() {
-  if (document.getElementById("fixed-series-circuit-btn")) return;
+// Gomb integráció
+function addResponsiveSeriesCircuitGeneratorButton() {
+  if (document.getElementById("responsive-series-circuit-btn")) return;
   const btn = document.createElement('button');
-  btn.id = "fixed-series-circuit-btn";
-  btn.textContent = "Egysoros (9V, 3 ellenállás, 2 LED) áramkör generálása";
+  btn.id = "responsive-series-circuit-btn";
+  btn.textContent = "Egysoros áramkör generálása (mindig kifér!)";
   btn.style.margin = "20px 0";
   btn.style.fontSize = "1.2em";
   btn.onclick = () => {
-    const circuit = generateFixedSeriesCircuit();
-    drawFixedSeriesCircuitSVG(circuit);
+    window.currentCircuit = generateFixedSeriesCircuit(); // globális a resize-hoz
+    drawResponsiveSeriesCircuitSVG(window.currentCircuit);
   };
   document.body.appendChild(btn);
 }
@@ -595,14 +602,21 @@ document.addEventListener("DOMContentLoaded", () => {
     loadBest();
     // Ha áramkör rajzoló van kiválasztva, mutasd a gombot
     if (categorySelect.value === "aramkor_rajzolo") {
-      addFixedSeriesCircuitGeneratorButton();
+      addResponsiveSeriesCircuitGeneratorButton();
     } else {
-      const btn = document.getElementById("fixed-series-circuit-btn");
+      const btn = document.getElementById("responsive-series-circuit-btn");
       if (btn) btn.remove();
-      const svg = document.getElementById("fixed-series-circuit-svg");
+      const svg = document.getElementById("responsive-series-circuit-svg");
       if (svg) svg.remove();
     }
   });
+
+// Automatikus újrarajzolás képernyőváltáskor (forgás, átméretezés)
+window.addEventListener("resize", () => {
+  if (window.currentCircuit) {
+    drawResponsiveSeriesCircuitSVG(window.currentCircuit);
+  }
+});
 
   difficultySelect.addEventListener("change", () => { saveLastSelection(); loadBest(); });
   if (startBtn) startBtn.onclick = startGame;
