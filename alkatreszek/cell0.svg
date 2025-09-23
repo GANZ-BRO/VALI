@@ -1,13 +1,13 @@
 <svg width="99.99999999999997" height="49.999999999999986" xmlns="http://www.w3.org/2000/svg" stroke="null">
  <g stroke="null">
   <title stroke="null">Layer 1</title>
-  <path stroke-width="1.5" id="svg_1" d="m1.79993,25l45.35223,0l-45.35223,0z" opacity="undefined" stroke="black"/>
-  <line stroke-width="1.5" id="svg_3" y2="25" x2="100.80328" y1="25" x1="53.44827" stroke="black"/>
-  <line stroke-width="3" x1="46.74995" y1="17.03949" x2="46.74995" y2="32.96051" id="svg_7" fill="none" stroke="black"/>
-  <line id="svg_2" y2="7.81489" x2="52.97766" y1="42.18511" x1="52.64844" stroke-width="3" fill="none" stroke="black"/>
-  <path id="svg_5" d="m58.67342,38.14242l8.9842,0.04385" opacity="undefined" fill="none" stroke="black"/>
-  <line transform="rotate(-90 63.1656 38.1645)" id="svg_8" y2="38.18627" x2="67.65762" y1="38.14241" x1="58.67342" fill="none" stroke="black"/>
-  <text x="18.54944" y="42.40088" id="svg_4" fill="#000000" font-size="17" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" stroke="black">9V</text>
+  <path stroke-width="2.5" id="svg_1" d="m1.79993,25l45.35223,0l-45.35223,0z" opacity="undefined" stroke="black"/>
+  <line stroke-width="2.5" id="svg_3" y2="25" x2="100.80328" y1="25" x1="53.44827" stroke="black"/>
+  <line stroke-width="2.5" x1="46.74995" y1="17.03949" x2="46.74995" y2="32.96051" id="svg_7" fill="none" stroke="black"/>
+  <line id="svg_2" y2="7.81489" x2="52.97766" y1="42.18511" x1="52.64844" stroke-width="2.5" fill="none" stroke="black"/>
+  <path id="svg_5" d="m58.67342,6.93277l8.9842,0.04385" opacity="undefined" fill="none" stroke="black" stroke-width="1.5"/>
+  <line transform="rotate(-90 63.1655 6.95464)" id="svg_8" y2="6.97661" x2="67.65762" y1="6.93275" x1="58.67342" fill="none" stroke="black" stroke-width="1.5"/>
+  <text x="23.48768" y="12.12948" id="svg_4" fill="#000000" font-size="17" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" stroke="black" stroke-width="0.5">9V</text>
  </g>
 
 </svg>

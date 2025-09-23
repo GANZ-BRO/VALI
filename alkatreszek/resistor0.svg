@@ -1,8 +1,10 @@
-<svg width="100.00000000000001" height="50.00000000000001" xmlns="http://www.w3.org/2000/svg" style="vector-effect: non-scaling-stroke;" stroke="null">
+<svg width="100.00000000000001" height="50.00000000000001" xmlns="http://www.w3.org/2000/svg" stroke="null">
  <g stroke="null">
   <title stroke="null">Layer 1</title>
-  <line stroke="black" x1="-0.55506" y1="24.71875" x2="102.24544" y2="24.71875" id="svg_1"/>
-  <path stroke="#000000" fill="#FFFFFF" opacity="undefined" d="m23.03708,13.6121l54.32529,0l0,22.77579l-54.32529,0l0,-22.77579z" id="svg_2"/>
+  <g id="svg_3" stroke-width="3">
+   <line stroke="black" x1="-0.55506" y1="24.71875" x2="102.24544" y2="24.71875" id="svg_1"/>
+   <path stroke="#000000" fill="#FFFFFF" opacity="undefined" d="m23.03708,13.6121l54.32529,0l0,22.77579l-54.32529,0l0,-22.77579z" id="svg_2"/>
+  </g>
  </g>
 
 </svg>

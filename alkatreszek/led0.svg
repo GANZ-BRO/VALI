@@ -1,12 +1,12 @@
 <svg width="100" height="50" xmlns="http://www.w3.org/2000/svg" stroke="null">
  <g stroke="null">
   <title stroke="null">Layer 1</title>
-  <path stroke-width="2.5" opacity="undefined" d="m0.20986,24.87951l38.37643,0l-38.37643,0z" id="svg_1" stroke="black"/>
-  <polygon stroke-width="2.5" points="37.86792755126953,12.919992446899414 60.83702850341797,25.120508193969727 37.86792755126953,37.32101058959961 " fill="none" id="svg_2" stroke="black"/>
-  <path stroke-width="2.5" opacity="undefined" d="m61.55539,24.87951l39.81499,0" id="svg_3" stroke="black"/>
-  <line stroke-width="2.5" x1="61.55539" y1="12.67899" x2="61.55539" y2="37.08002" id="svg_4" stroke="#000000"/>
-  <path fill="#000000" d="m49.93076,6.60992l1.08671,-7.76409l1.0867,7.76409l-0.54336,0l0,7.80142l-1.0867,0l0,-7.80142l-0.54335,0z" id="svg_6" transform="rotate(42 51.0175 6.62858)" stroke="#000"/>
-  <path fill="#000000" d="m55.19821,9.06806l1.08672,-7.76409l1.0867,7.76409l-0.54336,0l0,7.80142l-1.0867,0l0,-7.80142l-0.54336,0z" id="svg_10" transform="rotate(42 56.285 9.08672)" stroke="#000"/>
+  <path stroke="black" id="svg_1" d="m0.20986,24.87951l38.37643,0l-38.37643,0z" opacity="undefined" stroke-width="2.5"/>
+  <polygon stroke="black" id="svg_2" fill="none" points="37.86792755126953,12.919992446899414 60.83702850341797,25.120508193969727 37.86792755126953,37.32101058959961 " stroke-width="2.5"/>
+  <path stroke="black" id="svg_3" d="m61.55539,24.87951l39.81499,0" opacity="undefined" stroke-width="2.5"/>
+  <line stroke="#000000" id="svg_4" y2="37.08002" x2="61.55539" y1="12.67899" x1="61.55539" stroke-width="2.5"/>
+  <path stroke="#000" transform="rotate(42 51.0175 6.62858)" id="svg_6" d="m49.93076,6.60992l1.08671,-7.76409l1.0867,7.76409l-0.54336,0l0,7.80142l-1.0867,0l0,-7.80142l-0.54335,0z" fill="#000000"/>
+  <path stroke="#000" transform="rotate(42 56.285 9.08672)" id="svg_10" d="m55.19821,9.06806l1.08672,-7.76409l1.0867,7.76409l-0.54336,0l0,7.80142l-1.0867,0l0,-7.80142l-0.54336,0z" fill="#000000"/>
  </g>
 
 </svg>
