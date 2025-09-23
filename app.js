@@ -472,16 +472,16 @@ function getRandomResistorValue() {
 function generateFixedSeriesCircuit() {
   // Sorrend: 9V, R1, LED1, R2, LED2, R3
   return [
-    { type: "cell", symbol: "alkatreszek/cell.svg", label: "9V" },
+    { type: "cell", symbol: "alkatreszek/cell0.svg", label: "9V" },
     {
       type: "resistor",
-      symbol: "alkatreszek/resistor.svg",
+      symbol: "alkatreszek/resistor0.svg",
       label: "R1",
       value: getRandomResistorValue()
     },
     {
       type: "led",
-      symbol: "alkatreszek/led.svg",
+      symbol: "alkatreszek/led0.svg",
       label: "LED1",
       color: "piros"
     },
