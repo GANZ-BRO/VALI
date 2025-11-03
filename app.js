@@ -190,34 +190,25 @@ let wrongAnswers = 0;
 let attempts = []; // betöltött próbálkozások a jelenlegi kategória+nehézség szerint
 
 // --- PONTOZÁSI LOGIKA ---
-//  - alap: 100 pont ha idő <= 10s
-//  - minden hiba: -20 pont
-//  - minden másodperc 10s felett: -1 pont/másodperc (kérés szerint)
-//  - végeredmény min 0
 function calculatePoints(elapsedSeconds, wrongCount) {
   const base = 100;
   const overtime = Math.max(0, elapsedSeconds - 10);
   const penaltyWrong = (wrongCount || 0) * 20;
-  const penaltyTime = overtime * 1; // <- módosítva: 1 pont/másodperc
+  const penaltyTime = overtime * 1; // 1 pont/másodperc
   const raw = base - penaltyWrong - penaltyTime;
   return Math.max(0, raw);
 }
 
 // --- SVG TÉMA ALKALMAZÁS ---
-// Világos módban "fehérítjük" a képeket (invert+brightness) hogy hasonló legyen a dark módhoz.
-// Ha a forrás SVG-k eredetileg fekete ikonok, ez működik jól.
-// Ez a függvény frissít minden képet a responsive-series-circuit-svg belsejében.
+// A CSS kezeli a dark/light ikon-fehérítést; itt eltávolítjuk az inline style-okat,
+// hogy a CSS (body.dark ...) érvényesüljön egyértelműen.
 function applySvgThemeToAll() {
   const svg = document.getElementById("responsive-series-circuit-svg");
   if (!svg) return;
   const images = svg.querySelectorAll('image');
   images.forEach(img => {
-    if (document.body.classList.contains('dark')) {
-      img.style.filter = '';
-    } else {
-      // finomíthatod az értékeket, ha túl erős/gyenge
-      img.style.filter = 'invert(1) brightness(3)';
-    }
+    // távolítsuk el az esetleges inline filtereket, a CSS fog dönteni a témáról
+    img.style.removeProperty('filter');
   });
 }
 
@@ -360,10 +351,7 @@ function finishGame() {
     quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}<br><b>Pontok:</b> ${points}</p>`;
   }
 
-  // Megtartjuk a meglévő saveBest logikát (legjobb idő csak hibátlanul számít)
   saveBest(points, elapsed);
-
-  // Mentés és megjelenítés a próbálkozásoknál (a score mezőbe most a pontok kerülnek)
   saveAttempt(points, elapsed);
   loadAttempts();
   if (quizContainer) {
@@ -489,7 +477,7 @@ function showBest() {
   if (best.time !== null && best.wrongAnswers !== Infinity) {
     let resultText = `🏆 <b>Legjobb eredmény:</b> ${best.time} mp`;
     if (best.wrongAnswers > 0) {
-      resultText += `, ${best.wronganswers || best.wrongAnswers} hiba`;
+      resultText += `, ${best.wrongAnswers} hiba`;
     }
     bestStats.innerHTML = resultText;
   } else {
@@ -576,7 +564,7 @@ function applyTheme() {
   const theme = localStorage.getItem("vilma-theme") || "light";
   const isLight = theme === "light";
   document.body.classList.toggle("dark", !isLight);
-  // frissítjük a meglévő SVG képeket is
+  // CSS kezeli az ikonok színét (body.dark szabályok). Töröljük inline stílusokat, ha lennének.
   applySvgThemeToAll();
 }
 
@@ -642,12 +630,7 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
       img.setAttribute("y", y);
       img.setAttribute("width", iconW);
       img.setAttribute("height", iconH);
-      // témától függő filter beállítása azonnal
-      if (document.body.classList.contains('dark')) {
-        img.style.filter = '';
-      } else {
-        img.style.filter = 'invert(1) brightness(3)';
-      }
+      // Ne állítsunk inline filtert itt: a CSS body.dark szabály fogja kezelni.
       svg.appendChild(img);
     }
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -674,9 +657,11 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
       svg.appendChild(ledColor);
     }
   }
+
+  // biztosítjuk, hogy a CSS által beállított téma-irányelvek alkalmazódjanak (ha korábban inline volt)
+  applySvgThemeToAll();
 }
 
-// Gomb integráció
 function addResponsiveSeriesCircuitGeneratorButton() {
   if (document.getElementById("responsive-series-circuit-btn")) return;
   const btn = document.createElement('button');
@@ -693,7 +678,6 @@ function addResponsiveSeriesCircuitGeneratorButton() {
 
 // --- INICIALIZÁCIÓ ---
 document.addEventListener("DOMContentLoaded", () => {
-  // DOM elemek lekérése itt — így biztosan léteznek
   quizContainer = document.getElementById("quiz");
   timerDisplay = document.getElementById("time");
   bestStats = document.getElementById("best-stats");
@@ -711,7 +695,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // injektáljuk a kompakt stílust a válasz gombokra
   injectAnswerButtonStyle();
 
   loadCategories();
