@@ -102,59 +102,58 @@ const components = {
 };
 
 const taskTypes = [
-  {
-    name: "Elektronikai alkatrészek",
-    value: "elektronikai_alkatreszek",
-    generate: (difficulty) => {
-      const selectedComponents = components[difficulty] || components.easy;
-      const component = selectedComponents[getRandomInt(0, selectedComponents.length - 1)];
-      // Korábban volt 4 feladattípus (0..3). A felhasználói kérés szerint eltávolítjuk
-      // azt a típust, amelyik: "Mi az alkatrész jele, ha a neve:" (eredetileg taskType === 1).
-      // Itt csak a fennmaradó típusok közül választunk: 0 (név a jelhez), 2 (leírás), 3 (hol használják).
-      const possibleTypes = [0, 2, 3];
-      const taskType = possibleTypes[getRandomInt(0, possibleTypes.length - 1)];
+  // --- FELADATTÍPUS: Elektronikai alkatrészek (módosítva: elfogad forcedComponent paramétert) ---
+{
+  name: "Elektronikai alkatrészek",
+  value: "elektronikai_alkatreszek",
+  generate: (difficulty, forcedComponent = null) => {
+    const selectedComponents = components[difficulty] || components.easy;
+    // ha forcedComponent át van adva, használjuk azt; különben válasszunk véletlent
+    const component = forcedComponent || selectedComponents[getRandomInt(0, selectedComponents.length - 1)];
+    const taskTypeCandidates = [0, 2, 3]; // 0: név-jele, 2: leírás, 3: hol használják
+    const taskType = taskTypeCandidates[getRandomInt(0, taskTypeCandidates.length - 1)];
 
-      let options = [];
-      let correctAnswer;
-      const wrongOptions = {
-        names: selectedComponents.map(c => c.name),
-        descriptions: selectedComponents.map(c => c.description),
-        examples: selectedComponents.map(c => c.example)
+    let options = [];
+    let correctAnswer;
+    const wrongOptions = {
+      names: selectedComponents.map(c => c.name),
+      descriptions: selectedComponents.map(c => c.description),
+      examples: selectedComponents.map(c => c.example)
+    };
+
+    if (taskType === 0) { // Mi az alkatrész neve, ha a jele: ...
+      options = [component.name, ...shuffleArray(wrongOptions.names.filter(name => name !== component.name)).slice(0, 3)];
+      options = shuffleArray(options);
+      correctAnswer = (options.indexOf(component.name) + 1).toString();
+      return {
+        display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
+        answer: correctAnswer,
+        answerType: "number",
+        options: options
       };
-
-      if (taskType === 0) { // Mi az alkatrész neve, ha a jele: ...
-        options = [component.name, ...shuffleArray(wrongOptions.names.filter(name => name !== component.name)).slice(0, 3)];
-        options = shuffleArray(options);
-        correctAnswer = (options.indexOf(component.name) + 1).toString();
-        return {
-          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
-          answer: correctAnswer,
-          answerType: "number",
-          options: options
-        };
-      } else if (taskType === 2) { // Mi az alkatrész leírása, ha a neve: ...
-        options = [component.description, ...shuffleArray(wrongOptions.descriptions.filter(desc => desc !== component.description)).slice(0, 3)];
-        options = shuffleArray(options);
-        correctAnswer = (options.indexOf(component.description) + 1).toString();
-        return {
-          display: `Mi az alkatrész leírása, ha a neve: <span class="blue-percent">${component.name}</span>?`,
-          answer: correctAnswer,
-          answerType: "number",
-          options: options
-        };
-      } else { // Hol használják az alkatrészt, ha a neve: ...
-        options = [component.example, ...shuffleArray(wrongOptions.examples.filter(example => example !== component.example)).slice(0, 3)];
-        options = shuffleArray(options);
-        correctAnswer = (options.indexOf(component.example) + 1).toString();
-        return {
-          display: `Hol használhatják az alkatrészt, ha a neve: <span class="blue-percent">${component.name}</span>?`,
-          answer: correctAnswer,
-          answerType: "number",
-          options: options
-        };
-      }
+    } else if (taskType === 2) { // Mi az alkatrész leírása, ha a neve: ...
+      options = [component.description, ...shuffleArray(wrongOptions.descriptions.filter(desc => desc !== component.description)).slice(0, 3)];
+      options = shuffleArray(options);
+      correctAnswer = (options.indexOf(component.description) + 1).toString();
+      return {
+        display: `Mi az alkatrész leírása, ha a neve: <span class="blue-percent">${component.name}</span>?`,
+        answer: correctAnswer,
+        answerType: "number",
+        options: options
+      };
+    } else { // Hol használják az alkatrészt, ha a neve: ...
+      options = [component.example, ...shuffleArray(wrongOptions.examples.filter(example => example !== component.example)).slice(0, 3)];
+      options = shuffleArray(options);
+      correctAnswer = (options.indexOf(component.example) + 1).toString();
+      return {
+        display: `Hol használhatják az alkatrészt, ha a neve: <span class="blue-percent">${component.name}</span>?`,
+        answer: correctAnswer,
+        answerType: "number",
+        options: options
+      };
     }
-  },
+  }
+},
   {
     name: "Áramkör rajzoló",
     value: "aramkor_rajzolo",
@@ -370,17 +369,39 @@ function generateQuestions() {
     }
     return;
   }
+
+  const availableComponents = components[difficulty] || components.easy;
+  const usedComponents = new Set(); // ide gyűjtjük azokat az alkatrészeket, amikről már volt kérdés
+
   let lastTaskType = -1;
   for (let i = 0; i < QUESTIONS; i++) {
     let task;
     let attemptsLocal = 0;
-    const maxAttempts = 20;
+    const maxAttempts = 50;
+
+    // Válasszunk egy alkatrészt, ami még nincs usedComponents-ben, ha lehetséges
+    let candidateComponent = null;
+    const pool = availableComponents.filter(c => !usedComponents.has(c.name));
+
+    if (pool.length > 0) {
+      candidateComponent = pool[getRandomInt(0, pool.length - 1)];
+      // foglaljuk le az alkatrészt az adott játékra
+      usedComponents.add(candidateComponent.name);
+    } else {
+      // nincs több egyedi alkatrész: engedünk ismétlést (vagy ha szeretnéd, itt resetelhetjük a usedComponents-et)
+      candidateComponent = availableComponents[getRandomInt(0, availableComponents.length - 1)];
+    }
+
     do {
-      task = taskType.generate(difficulty);
+      // passzoljuk be a kiválasztott komponens-t a generate-nek (ha a generate nem használja, semmi baj)
+      task = taskType.generate(difficulty, candidateComponent);
       attemptsLocal++;
       if (attemptsLocal > maxAttempts) break;
     } while (getTaskTypeIndex(task.display) === lastTaskType);
+
     lastTaskType = getTaskTypeIndex(task.display);
+
+    // Validációk (ahogy korábban is)
     if (!task.answer && task.answerType === 'number') {
       task.display = "Hiba: érvénytelen feladat generálódott";
       task.answer = null;
