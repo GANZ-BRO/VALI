@@ -79,9 +79,6 @@ function generateOptions(correctAnswerIndex, optionsArray, answerType, difficult
   return options;
 }
 
-options;
-}
-
 // --- FELADATTÍPUSOK ---
 const components = {
   easy: [
