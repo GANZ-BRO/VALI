@@ -192,25 +192,40 @@ let attempts = []; // betöltött próbálkozások a jelenlegi kategória+nehéz
 // --- PONTOZÁSI LOGIKA ---
 //  - alap: 100 pont ha idő <= 10s
 //  - minden hiba: -20 pont
-//  - minden másodperc 10s felett: -5 pont/másodperc
+//  - minden másodperc 10s felett: -1 pont/másodperc (kérés szerint)
 //  - végeredmény min 0
 function calculatePoints(elapsedSeconds, wrongCount) {
   const base = 100;
   const overtime = Math.max(0, elapsedSeconds - 10);
   const penaltyWrong = (wrongCount || 0) * 20;
-  const penaltyTime = overtime * 5;
+  const penaltyTime = overtime * 1; // <- módosítva: 1 pont/másodperc
   const raw = base - penaltyWrong - penaltyTime;
   return Math.max(0, raw);
 }
 
-// --- STÍLUS: csak a válasz (option) gombokra — mobilon 90%-os méret
+// --- SVG TÉMA ALKALMAZÁS ---
+// Világos módban "fehérítjük" a képeket (invert+brightness) hogy hasonló legyen a dark módhoz.
+// Ha a forrás SVG-k eredetileg fekete ikonok, ez működik jól.
+// Ez a függvény frissít minden képet a responsive-series-circuit-svg belsejében.
+function applySvgThemeToAll() {
+  const svg = document.getElementById("responsive-series-circuit-svg");
+  if (!svg) return;
+  const images = svg.querySelectorAll('image');
+  images.forEach(img => {
+    if (document.body.classList.contains('dark')) {
+      img.style.filter = '';
+    } else {
+      // finomíthatod az értékeket, ha túl erős/gyenge
+      img.style.filter = 'invert(1) brightness(3)';
+    }
+  });
+}
+
+// --- STÍLUS: csak a válasz (option) gombokra — mobilon 90%-os méret ---
 function injectAnswerButtonStyle() {
-  // csak egyszer injektáljuk
   if (document.getElementById('vilma-option-btn-style')) return;
   const style = document.createElement('style');
   style.id = 'vilma-option-btn-style';
-  // Csak az .option-btn osztályra vonatkozik, a többi gomb nem változik.
-  // A 0.9em és kisebb padding biztosítja, hogy a gombok ~90%-osnak tűnjenek telefonon.
   style.textContent = `
     .option-btn {
       font-size: 0.9em !important;
@@ -218,12 +233,7 @@ function injectAnswerButtonStyle() {
       line-height: 1.1 !important;
       border-radius: 6px;
       box-sizing: border-box;
-      /* ha szeretnéd a gombokat még kompaktabbá tenni, a transform használható:
-         transform: scale(0.9);
-         transform-origin: left top;
-         de a scale torzíthatja a címsorokat, ezért alapból csak méretet állítunk. */
     }
-    /* biztosítjuk, hogy a kép/ikonos opciók is illeszkedjenek */
     .option-item img.question-symbol { max-height: 1.4em; vertical-align: middle; }
   `;
   document.head.appendChild(style);
@@ -241,7 +251,6 @@ function showQuestion(index) {
   let div = document.createElement("div");
   div.className = "question-container";
 
-  // Opciós kérdések
   let html = `
     <div class="progress-bar">
       <div class="progress" style="width:${(score / QUESTIONS) * 100}%"></div>
@@ -252,7 +261,6 @@ function showQuestion(index) {
 
   if (q.answerType === "number" && Array.isArray(q.options) && q.options.length) {
     html += `<div class="options-container">`;
-    // Az opciónál a generateOptions visszaad egy label mezőt; ha a label tartalmaz HTML-t (pl. <img>), az megjelenik.
     const options = generateOptions(parseInt(q.answer) - 1, q.options || [], q.answerType, difficultySelect?.value, "");
     options.forEach((opt) => {
       html += `
@@ -284,7 +292,6 @@ function showQuestion(index) {
           wrongAnswers++;
           alert('Helytelen válasz! Próbáld újra.');
         }
-        // update progress visuals
         const p = div.querySelector('.progress');
         const pw = div.querySelector('.progress-wrong');
         if (p && pw) {
@@ -295,7 +302,7 @@ function showQuestion(index) {
       });
     });
 
-  } else { // answerType === 'none' vagy nincs opció
+  } else {
     html += `<div class="no-options"><button id="question-next-btn" type="button">Tovább</button></div>`;
     div.innerHTML = html;
     quizContainer.innerHTML = "";
@@ -314,7 +321,6 @@ function showQuestion(index) {
     }
   }
 
-  // görgetés ha kell
   if (index > 0) window.scrollTo(0, window.scrollY);
 }
 
@@ -348,18 +354,16 @@ function finishGame() {
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   if (timerDisplay) timerDisplay.textContent = `${elapsed} (Vége)`;
 
-  // Új pontszám számítása a megadott szabályok alapján
   const points = calculatePoints(elapsed, wrongAnswers);
 
-  // Alap üzenet: idő, hibák, pontok
   if (quizContainer) {
     quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}<br><b>Pontok:</b> ${points}</p>`;
   }
 
-  // Mentjük a "best"-et (a meglévő logika: legjobb idő hibátlan futásnál marad változatlan)
+  // Megtartjuk a meglévő saveBest logikát (legjobb idő csak hibátlanul számít)
   saveBest(points, elapsed);
 
-  // Mentjük és megjelenítjük a próbálkozásokat (score mezőbe a pontok kerülnek)
+  // Mentés és megjelenítés a próbálkozásoknál (a score mezőbe most a pontok kerülnek)
   saveAttempt(points, elapsed);
   loadAttempts();
   if (quizContainer) {
@@ -485,7 +489,7 @@ function showBest() {
   if (best.time !== null && best.wrongAnswers !== Infinity) {
     let resultText = `🏆 <b>Legjobb eredmény:</b> ${best.time} mp`;
     if (best.wrongAnswers > 0) {
-      resultText += `, ${best.wrongAnswers} hiba`;
+      resultText += `, ${best.wronganswers || best.wrongAnswers} hiba`;
     }
     bestStats.innerHTML = resultText;
   } else {
@@ -572,6 +576,8 @@ function applyTheme() {
   const theme = localStorage.getItem("vilma-theme") || "light";
   const isLight = theme === "light";
   document.body.classList.toggle("dark", !isLight);
+  // frissítjük a meglévő SVG képeket is
+  applySvgThemeToAll();
 }
 
 function toggleTheme(event) {
@@ -584,6 +590,7 @@ function toggleTheme(event) {
     body.classList.add("dark");
     localStorage.setItem("vilma-theme", "dark");
   }
+  applySvgThemeToAll();
 }
 
 /* --- IDŐZÍTŐ --- */
@@ -635,6 +642,12 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
       img.setAttribute("y", y);
       img.setAttribute("width", iconW);
       img.setAttribute("height", iconH);
+      // témától függő filter beállítása azonnal
+      if (document.body.classList.contains('dark')) {
+        img.style.filter = '';
+      } else {
+        img.style.filter = 'invert(1) brightness(3)';
+      }
       svg.appendChild(img);
     }
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -663,6 +676,7 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
   }
 }
 
+// Gomb integráció
 function addResponsiveSeriesCircuitGeneratorButton() {
   if (document.getElementById("responsive-series-circuit-btn")) return;
   const btn = document.createElement('button');
@@ -689,7 +703,6 @@ document.addEventListener("DOMContentLoaded", () => {
   restartBtn = document.getElementById("restart-btn") || document.querySelector("button[onclick='restartGame()']");
   themeToggle = document.getElementById("theme-toggle");
 
-  // Debug: hiányzó elemek jelzése
   if (!categorySelect) {
     if (quizContainer) {
       quizContainer.innerHTML = '<p style="color:#c00;"><b>Hiba:</b> A kategória választó nem található. Ellenőrizd, hogy létezik-e egy &lt;select id="category"&gt; elem az oldalon.</p>';
@@ -698,7 +711,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Injektáljuk a választógombok kompakt stílusát (csak .option-btn)
+  // injektáljuk a kompakt stílust a válasz gombokra
   injectAnswerButtonStyle();
 
   loadCategories();
@@ -732,7 +745,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (restartBtn) restartBtn.onclick = startGame;
   loadBest();
 
-  // ellenőrizzük hiányzó elemeket a konzolra
   if (!quizContainer || !timerDisplay || !bestStats || !difficultySelect || !categorySelect || !startBtn || !restartBtn || !themeToggle) {
     console.warn("Hiányzó HTML elem(ek). Ellenőrizd az ID-ket és a script elhelyezését:", {
       quizContainer: !!quizContainer,
