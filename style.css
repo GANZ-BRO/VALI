@@ -557,3 +557,13 @@ body.dark .option-btn img,
 body.dark .big-btn img {
   filter: invert(1) brightness(3) !important;
 }
+
+/* QUICK: inverse-like effect using difference blend */
+.option-btn {
+  isolation: isolate;
+}
+.option-btn img,
+.option-btn svg {
+  mix-blend-mode: difference;
+  filter: brightness(1.6) saturate(1.1);
+}
