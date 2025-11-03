@@ -12,7 +12,6 @@ function getRandomInt(min, max) {
 }
 
 function getRandomResistorValue() {
-  // Csak a megadott értékekből választ!
   const values = [330, 470, 1000, 1200];
   return values[getRandomInt(0, values.length - 1)];
 }
@@ -25,8 +24,8 @@ function shuffleArray(array) {
   return array;
 }
 
-function gcd(a, b) { 
-  return b === 0 ? a : gcd(b, a % b); 
+function gcd(a, b) {
+  return b === 0 ? a : gcd(b, a % b);
 }
 
 function simplifyFraction(num, denom) {
@@ -51,12 +50,6 @@ function formatNumber(value, unit, difficulty, forceBaseUnit = false) {
     if (unit === 'Ω' && absValue >= 1000) {
       newValue = value / 1000;
       newUnit = 'kΩ';
-    } else if (unit === 'Ω' && absValue > 100) {
-      newValue = value / 1000;
-      newUnit = 'kΩ';
-    } else if (unit === 'A' && absValue < 0.1) {
-      newValue = value * 1000;
-      newUnit = 'mA';
     } else if (unit === 'A' && absValue < 1) {
       newValue = value * 1000;
       newUnit = 'mA';
@@ -82,37 +75,29 @@ function formatNumber(value, unit, difficulty, forceBaseUnit = false) {
 
 function generateOptions(correctAnswerIndex, optionsArray, answerType, difficulty, unit) {
   if (answerType !== "number") return [];
-  const options = optionsArray.map((opt, index) => ({ value: (index + 1).toString(), label: opt }));
+  const options = (optionsArray || []).map((opt, index) => ({ value: (index + 1).toString(), label: opt }));
   return options;
 }
 
-// --- FELADATTÍPUSOK ---
+// --- FELADATTÍPUSOK (példák) ---
 const components = {
   easy: [
     { name: "Vezeték", symbol: "alkatreszek/wire.svg", description: "Elektromos áram vezetésére szolgál", example: "Áramkörök összekötésére" },
     { name: "Elem", symbol: "alkatreszek/cell.svg", description: "Elektromos energiát biztosít", example: "Távirányítókban" },
     { name: "Kapcsoló", symbol: "alkatreszek/switch.svg", description: "Áramkör nyitására vagy zárására szolgál", example: "Lámpák be- és kikapcsolására" },
-    { name: "Nyomógomb", symbol: "alkatreszek/pushbutton.svg", description: "Ideiglenesen zárja az áramkört", example: "Kapucsengőkben használják" }, 
-    { name: "Izzó", symbol: "alkatreszek/bulb.svg", description: "Fényt és hőt termel áram hatására", example: "Régi típusú lámpákban" },
-    { name: "Ampermérő", symbol: "alkatreszek/ammeter.svg", description: "Áramerősség mérésére szolgáló műszer", example: "Motor áramfelvételének vizsgálata" },
-    { name: "Voltmérő", symbol: "alkatreszek/voltmeter.svg", description: "Feszültség mérésére szolgáló műszer", example: "Tápegység kimenetének ellenőrzése" },
+    { name: "Nyomógomb", symbol: "alkatreszek/pushbutton.svg", description: "Ideiglenesen zárja az áramkört", example: "Kapucsengőkben használják" }
   ],
   medium: [
     { name: "Akkumulátor", symbol: "alkatreszek/battery.svg", description: "Újratölthető elektromos energiát biztosít", example: "Okostelefonokban és laptopokban" },
     { name: "Ellenállás", symbol: "alkatreszek/resistor.svg", description: "Áramot korlátozza", example: "Feszültségosztó" },
-    { name: "Biztosíték", symbol: "alkatreszek/fuse.svg", description: "Védi az áramkört a túláramtól az olvadással", example: "Mérőmüszerek védelmére " },
     { name: "Kondenzátor", symbol: "alkatreszek/capacitor.svg", description: "Elektromos töltést tárol", example: "Szűrőáramkör" },
-    { name: "Dióda", symbol: "alkatreszek/diode.svg", description: "Egyirányú áramot enged", example: "Tápegység" },
-    { name: "LED", symbol: "alkatreszek/led.svg", description: "Fényt bocsát ki áram hatására", example: "Jelzőfények" },
-    { name: "Tranzisztor", symbol: "alkatreszek/transistor.svg", description: "Felerősíti a jelet", example: "Erősítő áramkör" },
+    { name: "Dióda", symbol: "alkatreszek/diode.svg", description: "Egyirányú áramot enged", example: "Tápegység" }
   ],
   hard: [
-    { name: "Hálózati áramforrás", symbol: "alkatreszek/ac_source.svg", description: "Váltakozó feszültséget biztosít az áramkör számára", example: "230V-os konnektor" },
-    { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabál[...]
-    { name: "Fényérzékeny ellenállás", symbol: "alkatreszek/ldr.svg", description: "Ellenállása a fény intenzitásának megfelelően változik", example: "Automatikus világításvezérléshez[...]
-    { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" [...]
-    { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba, napelemekbe" },
-    { name: "Tekercs", symbol: "alkatreszek/coil.svg", description: "Mágneses mezőt hoz létre áram hatására, vagy tárolja az energiát", example: "Szűrőáramkörök" }
+    { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség átalakítására szolgál", example: "Tápegységekben" },
+    { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos jellé alakít", example: "Fényérzékelőkben" },
+    { name: "Tekercs", symbol: "alkatreszek/coil.svg", description: "Mágneses mezőt hoz létre áram hatására", example: "Szűrőkben" },
+    { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Ellenállás értéke szabályozható", example: "Hangerő szabályozásához" }
   ]
 };
 
@@ -121,7 +106,7 @@ const taskTypes = [
     name: "Elektronikai alkatrészek",
     value: "elektronikai_alkatreszek",
     generate: (difficulty) => {
-      const selectedComponents = components[difficulty];
+      const selectedComponents = components[difficulty] || components.easy;
       const component = selectedComponents[getRandomInt(0, selectedComponents.length - 1)];
       const taskType = getRandomInt(0, 3);
 
@@ -139,16 +124,16 @@ const taskTypes = [
         options = shuffleArray(options);
         correctAnswer = (options.indexOf(component.name) + 1).toString();
         return {
-          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; t[...]
+          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
           answer: correctAnswer,
           answerType: "number",
           options: options
         };
       } else if (taskType === 1) { // Mi az alkatrész jele, ha a neve: ...
-        options = [component.symbol, ...shuffleArray(wrongOptions.symbols.filter(symbol => symbol !== component.symbol)).slice(0, 3)];
-        options = shuffleArray(options);
-        options = options.map(symbol => `<img src="${symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`);
-        correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`) + 1).t[...]
+        const symbols = [component.symbol, ...shuffleArray(wrongOptions.symbols.filter(s => s !== component.symbol)).slice(0, 3)];
+        const mapped = symbols.map(symbol => `<img src="${symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`);
+        options = shuffleArray(mapped);
+        correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`) + 1).toString();
         return {
           display: `Mi az alkatrész jele, ha a neve: <span class="blue-percent">${component.name}</span>?`,
           answer: correctAnswer,
@@ -182,7 +167,7 @@ const taskTypes = [
     name: "Áramkör rajzoló",
     value: "aramkor_rajzolo",
     generate: (difficulty) => ({
-      display: "Áramkör rajzoló",
+      display: "Áramkör rajzoló — generálj egysoros áramkört és nézd meg!",
       answer: null,
       answerType: "none",
       options: []
@@ -190,113 +175,111 @@ const taskTypes = [
   }
 ];
 
-// --- HTML ELEMEK ---
-const quizContainer = document.getElementById("quiz");
-const timerDisplay = document.getElementById("time");
-const bestStats = document.getElementById("best-stats");
-const difficultySelect = document.getElementById("difficulty");
-const categorySelect = document.getElementById("category");
-const startBtn = document.querySelector(".big-btn[onclick='startGame()']") || document.querySelector("button[onclick='startGame()']");
-const restartBtn = document.getElementById("restart-btn") || document.querySelector("button[onclick='restartGame()']");
-const themeToggle = document.getElementById("theme-toggle");
+// --- VÁLTOZÓK (DOM elemeket DOMContentLoaded-ban töltjük) ---
+let quizContainer, timerDisplay, bestStats, difficultySelect, categorySelect, startBtn, restartBtn, themeToggle;
+
+// --- ÁLLAPOTVÁLTOZÓK ---
+let score = 0;
+let startTime = 0;
+let timerInterval = null;
+let currentQuestion = 0;
+let questions = [];
+let best = { score: 0, time: null, wrongAnswers: Infinity };
+let gameActive = false;
+let wrongAnswers = 0;
+let attempts = []; // betöltött próbálkozások a jelenlegi kategória+nehézség szerint
 
 // --- JÁTÉK LOGIKA ---
 function showQuestion(index) {
+  if (!quizContainer) return;
   if (index >= QUESTIONS) {
     finishGame();
     return;
   }
 
   const q = questions[index];
-  let div;
+  let div = document.createElement("div");
+  div.className = "question-container";
 
-  if (index === 0 || quizContainer.children.length === 0) {
-    div = document.createElement("div");
-    div.className = "question-container";
-    quizContainer.innerHTML = "";
-    quizContainer.appendChild(div);
-  } else {
-    div = quizContainer.children[0];
-    div.className = "question-container";
-  }
-
-  let optionsHtml = "";
-  const options = generateOptions(parseInt(q.answer) - 1, q.options || [], q.answerType, difficultySelect.value, "");
-  options.forEach((opt, i) => {
-    optionsHtml += `
-      <div class="option-item">
-        <span class="option-marker" data-answer="${opt.value}">•</span>
-        <span class="option-text" data-answer="${opt.value}">${opt.label}</span>
-      </div>
-    `;
-  });
-
-  div.innerHTML = `
+  // Opciós kérdések
+  let html = `
     <div class="progress-bar">
-      <div class="progress"></div>
-      <div class="progress-wrong"></div>
+      <div class="progress" style="width:${(score / QUESTIONS) * 100}%"></div>
+      <div class="progress-wrong" style="width:${(wrongAnswers / QUESTIONS) * 100}%; left:${(score / QUESTIONS) * 100}%"></div>
     </div>
     <div class="question-text">${q.display}</div>
-    <div class="options-container">${optionsHtml}</div>
   `;
 
-  const markers = div.querySelectorAll('.option-marker');
-  const texts = div.querySelectorAll('.option-text');
-  
-  const handleClick = (event) => {
-    if (!gameActive) return;
-    const selectedAnswer = parseInt(event.currentTarget.getAttribute('data-answer'));
-    const correctAnswer = parseInt(q.answer);
-    let pauseStart = Date.now();
-    if (timerInterval) clearInterval(timerInterval);
+  if (q.answerType === "number" && Array.isArray(q.options) && q.options.length) {
+    html += `<div class="options-container">`;
+    const options = generateOptions(parseInt(q.answer) - 1, q.options || [], q.answerType, difficultySelect?.value, "");
+    options.forEach((opt) => {
+      html += `
+        <div class="option-item">
+          <button class="option-btn" data-answer="${opt.value}" type="button">${opt.label}</button>
+        </div>
+      `;
+    });
+    html += `</div>`;
+    div.innerHTML = html;
+    quizContainer.innerHTML = "";
+    quizContainer.appendChild(div);
 
-    markers.forEach(m => m.classList.remove('checked'));
-    texts.forEach(t => t.classList.remove('checked'));
-    event.currentTarget.classList.add('checked');
+    const buttons = div.querySelectorAll('.option-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (ev) => {
+        if (!gameActive) return;
+        const selected = parseInt(ev.currentTarget.getAttribute('data-answer'));
+        const correct = parseInt(q.answer);
+        if (selected === correct) {
+          score++;
+          currentQuestion++;
+          if (currentQuestion >= QUESTIONS) {
+            finishGame();
+          } else {
+            showQuestion(currentQuestion);
+          }
+        } else {
+          wrongAnswers++;
+          alert('Helytelen válasz! Próbáld újra.');
+          // nem lépünk tovább, felhasználó újra próbálkozhat
+        }
+        // update progress visuals
+        const p = div.querySelector('.progress');
+        const pw = div.querySelector('.progress-wrong');
+        if (p && pw) {
+          p.style.width = `${(score / QUESTIONS) * 100}%`;
+          pw.style.width = `${(wrongAnswers / QUESTIONS) * 100}%`;
+          pw.style.left = `${(score / QUESTIONS) * 100}%`;
+        }
+      });
+    });
 
-    if (selectedAnswer === correctAnswer) {
-      score++;
-      currentQuestion++;
-      markers.forEach(m => m.classList.remove('checked'));
-      texts.forEach(t => t.classList.remove('checked'));
-      showQuestion(currentQuestion);
-      if (currentQuestion >= QUESTIONS) {
-        finishGame();
-      } else {
-        startTime += (Date.now() - pauseStart);
-        timerInterval = setInterval(updateTimer, 1000);
-      }
-    } else {
-      wrongAnswers++;
-      startTime += (Date.now() - pauseStart);
-      timerInterval = setInterval(updateTimer, 1000);
-      alert('Helytelen válasz! Próbáld újra.');
+  } else { // answerType === 'none' vagy nincs opció
+    html += `<div class="no-options"><button id="question-next-btn" type="button">Tovább</button></div>`;
+    div.innerHTML = html;
+    quizContainer.innerHTML = "";
+    quizContainer.appendChild(div);
+
+    const btn = document.getElementById('question-next-btn');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        currentQuestion++;
+        if (currentQuestion >= QUESTIONS) {
+          finishGame();
+        } else {
+          showQuestion(currentQuestion);
+        }
+      });
     }
-  };
-
-  markers.forEach(marker => {
-    marker.addEventListener('click', handleClick);
-  });
-
-  texts.forEach(text => {
-    text.addEventListener('click', handleClick);
-  });
-
-  const progress = div.querySelector('.progress');
-  const progressWrong = div.querySelector('.progress-wrong');
-  if (progress && progressWrong) {
-    progress.style.width = `${(score / QUESTIONS) * 100}%`;
-    progressWrong.style.width = `${(wrongAnswers / QUESTIONS) * 100}%`;
-    progressWrong.style.left = `${(score / QUESTIONS) * 100}%`;
   }
 
-  if (index > 0) {
-    window.scrollTo(0, window.scrollY);
-  }
+  // görgetés ha kell
+  if (index > 0) window.scrollTo(0, window.scrollY);
 }
 
 function startGame() {
-  if (!difficultySelect.value || !categorySelect.value) {
+  if (!difficultySelect?.value || !categorySelect?.value) {
     alert("Kérlek, válassz nehézséget és kategóriát!");
     return;
   }
@@ -316,65 +299,76 @@ function startGame() {
   difficultySelect.disabled = true;
   if (restartBtn) restartBtn.style.display = "none";
   if (startBtn) startBtn.style.display = "none";
-  bestStats.style.opacity = "0.55";
+  if (bestStats) bestStats.style.opacity = "0.55";
 }
 
 function finishGame() {
   gameActive = false;
   clearInterval(timerInterval);
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
-  timerDisplay.textContent = `${elapsed} (Vége)`;
-  quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
+  if (timerDisplay) timerDisplay.textContent = `${elapsed} (Vége)`;
+
+  // Alap üzenet
+  if (quizContainer) {
+    quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
+  }
+
   saveBest(score, elapsed);
 
-  // Mentjük az új próbálkozást és megjelenítjük az összeset
+  // Mentjük és megjelenítjük a próbálkozásokat
   saveAttempt(score, elapsed);
-  loadAttempts(); // frissítjük a memóriát a jelenlegi kategória+nehézség szerint
-  const attemptsHtml = renderAttemptsHtml();
-  quizContainer.innerHTML += attemptsHtml;
+  loadAttempts();
+  if (quizContainer) {
+    const attemptsHtml = renderAttemptsHtml();
+    quizContainer.innerHTML += attemptsHtml;
+    bindAttemptsButtons(); // csatoljuk a törlés gomb eseményét
+  }
 
   if (restartBtn) restartBtn.style.display = "";
   if (startBtn) startBtn.style.display = "";
-  bestStats.style.opacity = "1";
-  categorySelect.disabled = false;
-  difficultySelect.disabled = false;
+  if (bestStats) bestStats.style.opacity = "1";
+  if (categorySelect) categorySelect.disabled = false;
+  if (difficultySelect) difficultySelect.disabled = false;
 }
 
 function generateQuestions() {
-  const difficulty = difficultySelect.value;
-  const category = categorySelect.value;
+  const difficulty = difficultySelect?.value || 'easy';
+  const category = categorySelect?.value || 'elektronikai_alkatreszek';
   questions = [];
   const taskType = taskTypes.find(t => t.value === category);
   if (!taskType) {
-    questions.push({ display: "Hiba: kategória nincs implementálva", answer: null, answerType: "number" });
+    for (let i = 0; i < QUESTIONS; i++) {
+      questions.push({ display: "Hiba: kategória nincs implementálva", answer: null, answerType: "number", options: [] });
+    }
     return;
   }
   let lastTaskType = -1;
   for (let i = 0; i < QUESTIONS; i++) {
     let task;
-    let attempts = 0;
-    const maxAttempts = 10;
+    let attemptsLocal = 0;
+    const maxAttempts = 20;
     do {
       task = taskType.generate(difficulty);
-      attempts++;
-      if (attempts > maxAttempts) {
-        break;
-      }
+      attemptsLocal++;
+      if (attemptsLocal > maxAttempts) break;
     } while (getTaskTypeIndex(task.display) === lastTaskType);
     lastTaskType = getTaskTypeIndex(task.display);
-
-    if (!task.answer || task.answer === "?") {
+    // Validáció
+    if (!task.answer && task.answerType === 'number') {
       task.display = "Hiba: érvénytelen feladat generálódott";
       task.answer = null;
+      task.options = [];
     }
-    if (!['number'].includes(task.answerType)) {
+    if (!['number', 'none'].includes(task.answerType)) {
       task.answerType = 'number';
     }
+    task.options = task.options || [];
     questions.push(task);
   }
 }
 
 function getTaskTypeIndex(display) {
+  if (!display) return -1;
   if (display.includes("Mi az alkatrész neve, ha a jele:")) return 0;
   if (display.includes("Mi az alkatrész jele, ha a neve:")) return 1;
   if (display.includes("Mi az alkatrész leírása, ha a neve:")) return 2;
@@ -384,26 +378,30 @@ function getTaskTypeIndex(display) {
 
 // --- UTOLSÓ VÁLASZTÁS MENTÉSE/BETÖLTÉSE ---
 function saveLastSelection() {
-  localStorage.setItem("vilma-last-category", categorySelect.value);
-  localStorage.setItem("vilma-last-difficulty", difficultySelect.value);
+  try {
+    if (categorySelect) localStorage.setItem("vilma-last-category", categorySelect.value);
+    if (difficultySelect) localStorage.setItem("vilma-last-difficulty", difficultySelect.value);
+  } catch (e) { /* ignore storage errors */ }
 }
 
 function loadLastSelection() {
-  const lastCat = localStorage.getItem("vilma-last-category");
-  const lastDiff = localStorage.getItem("vilma-last-difficulty");
-  if (lastCat) categorySelect.value = lastCat;
-  if (lastDiff) difficultySelect.value = lastDiff;
+  try {
+    const lastCat = localStorage.getItem("vilma-last-category");
+    const lastDiff = localStorage.getItem("vilma-last-difficulty");
+    if (lastCat && categorySelect) categorySelect.value = lastCat;
+    if (lastDiff && difficultySelect) difficultySelect.value = lastDiff;
+  } catch (e) { /* ignore */ }
 }
 
 function loadCategories() {
+  if (!categorySelect) return;
   categorySelect.innerHTML = taskTypes.map(task => `<option value="${task.value}">${task.name}</option>`).join('');
 }
 
 // --- LEGJOBB EREDMÉNY MENTÉSE/BETÖLTÉSE ---
-// + PRÓBÁLKOZÁSOK LISTÁJÁNAK KEZELÉSE (mentés és megjelenítés)
 function loadBest() {
-  const diff = difficultySelect.value;
-  const cat = categorySelect.value;
+  const diff = difficultySelect?.value || 'easy';
+  const cat = categorySelect?.value || taskTypes[0].value;
   try {
     const bestRaw = localStorage.getItem("vilma-best-" + cat + "-" + diff);
     best = bestRaw ? JSON.parse(bestRaw) : { score: 0, time: null, wrongAnswers: Infinity };
@@ -412,28 +410,34 @@ function loadBest() {
     best = { score: 0, time: null, wrongAnswers: Infinity };
   }
   showBest();
-
-  // betöltjük a próbálkozásokat is ugyanarra a kategóriára+nehézségre
   loadAttempts();
 }
 
 function saveBest(newScore, time) {
-  const diff = difficultySelect.value;
-  const cat = categorySelect.value;
-  let currentBest = JSON.parse(localStorage.getItem("vilma-best-" + cat + "-" + diff)) || { score: 0, time: null, wrongAnswers: Infinity };
-  
+  const diff = difficultySelect?.value || 'easy';
+  const cat = categorySelect?.value || taskTypes[0].value;
+  let currentBest = {};
+  try {
+    currentBest = JSON.parse(localStorage.getItem("vilma-best-" + cat + "-" + diff)) || { score: 0, time: null, wrongAnswers: Infinity };
+  } catch {
+    currentBest = { score: 0, time: null, wrongAnswers: Infinity };
+  }
+
   const newWrongAnswers = wrongAnswers !== undefined ? wrongAnswers : 0;
-  
-  if (newWrongAnswers < (currentBest.wrongAnswers || Infinity) || 
-      (newWrongAnswers === (currentBest.wrongAnswers || Infinity) && 
-       (currentBest.time === null || time < currentBest.time))) {
+
+  if (newWrongAnswers < (currentBest.wrongAnswers || Infinity) ||
+    (newWrongAnswers === (currentBest.wrongAnswers || Infinity) &&
+      (currentBest.time === null || time < currentBest.time))) {
     best = { score: newScore, time: time, wrongAnswers: newWrongAnswers };
-    localStorage.setItem("vilma-best-" + cat + "-" + diff, JSON.stringify(best));
+    try {
+      localStorage.setItem("vilma-best-" + cat + "-" + diff, JSON.stringify(best));
+    } catch (e) { /* ignore */ }
     showBest();
   }
 }
 
 function showBest() {
+  if (!bestStats) return;
   if (best.time !== null && best.wrongAnswers !== Infinity) {
     let resultText = `🏆 <b>Legjobb eredmény:</b> ${best.time} mp`;
     if (best.wrongAnswers > 0) {
@@ -446,12 +450,10 @@ function showBest() {
   bestStats.style.display = "";
 }
 
-/* --- ÚJ FUNKCIÓK: próbálkozások mentése/betöltése/megjelenítése --- */
-let attempts = []; // a jelenleg betöltött próbálkozások listája (kategória+nehézség szerint)
-
+/* --- PRÓBÁLKOZÁSOK MENTÉSE/BETÖLTÉSE/MEGJELENÍTÉSE --- */
 function loadAttempts() {
-  const diff = difficultySelect.value;
-  const cat = categorySelect.value;
+  const diff = difficultySelect?.value || 'easy';
+  const cat = categorySelect?.value || taskTypes[0].value;
   const key = "vilma-attempts-" + cat + "-" + diff;
   try {
     const raw = localStorage.getItem(key);
@@ -462,8 +464,8 @@ function loadAttempts() {
 }
 
 function saveAttempt(newScore, time) {
-  const diff = difficultySelect.value;
-  const cat = categorySelect.value;
+  const diff = difficultySelect?.value || 'easy';
+  const cat = categorySelect?.value || taskTypes[0].value;
   const key = "vilma-attempts-" + cat + "-" + diff;
   let arr = [];
   try {
@@ -471,16 +473,17 @@ function saveAttempt(newScore, time) {
   } catch {
     arr = [];
   }
-  const attemptNumber = arr.length + 1;
   const attempt = {
-    number: attemptNumber,
+    number: arr.length + 1,
     score: newScore,
     time: time,
     wrongAnswers: wrongAnswers !== undefined ? wrongAnswers : 0,
     date: new Date().toISOString()
   };
   arr.push(attempt);
-  localStorage.setItem(key, JSON.stringify(arr));
+  try {
+    localStorage.setItem(key, JSON.stringify(arr));
+  } catch (e) { /* ignore */ }
   attempts = arr;
 }
 
@@ -489,41 +492,36 @@ function renderAttemptsHtml() {
     return `<div style="margin-top:12px;"><b>Korábbi próbálkozások:</b> Nincsenek még próbálkozások ebben a kategóriában/nehézségben.</div>`;
   }
   let html = `<div style="margin-top:12px;"><b>Korábbi próbálkozások:</b><table style="width:100%;border-collapse:collapse;margin-top:6px;">`;
-  html += `<thead><tr style="text-align:left;border-bottom:1px solid #ccc"><th style="padding:6px">#</th><th style="padding:6px">Idő (s)</th><th style="padding:6px">Hibák</th><th style="padding:6px">Dátum</th></tr></thead><tbody>`;
+  html += `<thead><tr style="text-align:left;border-bottom:1px solid #ccc"><th style="padding:6px">#</th><th style="padding:6px">Pont</th><th style="padding:6px">Idő (s)</th><th style="padding:6px">Hibák</th><th style="padding:6px">Dátum</th></tr></thead><tbody>`;
   attempts.forEach(a => {
     const dateStr = new Date(a.date).toLocaleString();
-    html += `<tr style="border-bottom:1px solid #eee"><td style="padding:6px">${a.number}</td><td style="padding:6px">${a.time}</td><td style="padding:6px">${a.wrongAnswers}</td><td style="padding:6px">${dateStr}</td></tr>`;
+    html += `<tr style="border-bottom:1px solid #eee"><td style="padding:6px">${a.number}</td><td style="padding:6px">${a.score}</td><td style="padding:6px">${a.time}</td><td style="padding:6px">${a.wrongAnswers}</td><td style="padding:6px">${dateStr}</td></tr>`;
   });
-  html += `</tbody></table></div>`;
-  // plusz egy gomb a history törléséhez (opcionális)
+  html += `</tbody></table>`;
   html += `<div style="margin-top:8px;"><button id="clear-attempts-btn" style="margin-top:6px">Próbálkozások törlése (csak ez a kategória)</button></div>`;
-  // esemény kötése később: nem lehet DOM elemet innen visszaadva közvetlenül, ezért kötés a caller után
-  // de mi a finishGame-ben azonnal beszúrjuk ezt az HTML-t -> ott majd hozzáadjuk az eseményhallgatót
-  setTimeout(() => {
-    const btn = document.getElementById("clear-attempts-btn");
-    if (btn) {
-      btn.onclick = () => {
-        const diff = difficultySelect.value;
-        const cat = categorySelect.value;
-        const key = "vilma-attempts-" + cat + "-" + diff;
-        localStorage.removeItem(key);
-        attempts = [];
-        // frissítjük a megjelenítést
-        const attemptsBlock = document.querySelector("#quiz .attempts-list-block");
-        // egyszerűbb: újrarajzoljuk a quizContainer tartalmát: jelen esetben újra felülírjuk a finish üzenetet + új lista
-        // Megoldás: újratöltjük a attempts HTML a jelenlegi DOM-ba
-        const parent = quizContainer;
-        if (parent) {
-          // keressük meg a régi bejegyzést (jó ha módosul) - egyszerű megoldás: újraelrendezzük a finish tartalmat
-          // újra létrehozzuk a finish üzenetet és beillesztjük a frissített attempts HTML-t
-          const elapsedText = timerDisplay.textContent || "";
-          parent.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsedText} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
-          parent.innerHTML += renderAttemptsHtml();
-        }
-      };
-    }
-  }, 50);
+  html += `</div>`;
   return `<div class="attempts-list-block">${html}</div>`;
+}
+
+function bindAttemptsButtons() {
+  const btn = document.getElementById("clear-attempts-btn");
+  if (!btn) return;
+  btn.onclick = () => {
+    const diff = difficultySelect?.value || 'easy';
+    const cat = categorySelect?.value || taskTypes[0].value;
+    const key = "vilma-attempts-" + cat + "-" + diff;
+    try {
+      localStorage.removeItem(key);
+    } catch (e) { /* ignore */ }
+    attempts = [];
+    // frissítjük a megjelenítést: újrageneráljuk a finish szöveget + attempts blokk
+    const elapsedText = timerDisplay?.textContent || "";
+    if (quizContainer) {
+      quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsedText} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
+      quizContainer.innerHTML += renderAttemptsHtml();
+      bindAttemptsButtons();
+    }
+  };
 }
 
 /* --- TÉMA VÁLTÁS --- */
@@ -534,7 +532,7 @@ function applyTheme() {
 }
 
 function toggleTheme(event) {
-  event.preventDefault();
+  event && event.preventDefault();
   const body = document.body;
   if (body.classList.contains("dark")) {
     body.classList.remove("dark");
@@ -545,64 +543,31 @@ function toggleTheme(event) {
   }
 }
 
-// --- IDŐZÍTŐ ---
+/* --- IDŐZÍTŐ --- */
 function updateTimer() {
+  if (!timerDisplay) return;
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.textContent = elapsed;
 }
 
-// --- DINAMIKUSAN MOBILBARÁT EGYSOROS ÁRAMKÖR RAJZOLÓ ---
-// Mindig kifér telefonon, képernyőváltáskor automatikusan újrarajzol!
-
-function getRandomResistorValue() {
-  const values = [330, 470, 1000, 1200];
-  return values[Math.floor(Math.random() * values.length)];
-}
-
+/* --- EGYSOROS ÁRAMKÖR RAJZOLÓ (opcionális) --- */
 function generateFixedSeriesCircuit() {
-  // Sorrend: 9V, R1, LED1, R2, LED2, R3
   return [
     { type: "cell", symbol: "alkatreszek/cell0.svg", label: "9V" },
-    {
-      type: "resistor",
-      symbol: "alkatreszek/resistor0.svg",
-      label: "R1",
-      value: getRandomResistorValue()
-    },
-    {
-      type: "led",
-      symbol: "alkatreszek/led0.svg",
-      label: "LED1",
-      color: "piros"
-    },
-    {
-      type: "resistor",
-      symbol: "alkatreszek/resistor0.svg",
-      label: "R2",
-      value: getRandomResistorValue()
-    },
-    {
-      type: "led",
-      symbol: "alkatreszek/led0.svg",
-      label: "LED2",
-      color: "zöld"
-    },
-    {
-      type: "resistor",
-      symbol: "alkatreszek/resistor0.svg",
-      label: "R3",
-      value: getRandomResistorValue()
-    }
+    { type: "resistor", symbol: "alkatreszek/resistor0.svg", label: "R1", value: getRandomResistorValue() },
+    { type: "led", symbol: "alkatreszek/led0.svg", label: "LED1", color: "piros" },
+    { type: "resistor", symbol: "alkatreszek/resistor0.svg", label: "R2", value: getRandomResistorValue() },
+    { type: "led", symbol: "alkatreszek/led0.svg", label: "LED2", color: "zöld" },
+    { type: "resistor", symbol: "alkatreszek/resistor0.svg", label: "R3", value: getRandomResistorValue() }
   ];
 }
 
 function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circuit-svg") {
-  // Konténer vagy ablak szélessége alapján számol
-  const maxW = Math.min(window.innerWidth, 500); // 500px desktop limit, mobilon teljes szélesség
+  const maxW = Math.min(window.innerWidth, 500);
   const iconCount = circuit.length;
-  const margin = 0; // nincs hézag
+  const margin = 0;
   const iconW = Math.floor((maxW - (iconCount + 1) * margin) / iconCount);
-  const iconH = iconW; // négyzetes
+  const iconH = iconW;
 
   let svg = document.getElementById(svgId);
   if (!svg) {
@@ -629,7 +594,6 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
       img.setAttribute("height", iconH);
       svg.appendChild(img);
     }
-    // Felirat
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
     label.setAttribute("x", x + iconW / 5);
     label.setAttribute("y", y + iconH + 22);
@@ -637,7 +601,6 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
     label.textContent = comp.label;
     svg.appendChild(label);
 
-    // Ellenállás érték
     if (comp.type === "resistor" && comp.value) {
       const val = document.createElementNS("http://www.w3.org/2000/svg", "text");
       val.setAttribute("x", x + iconW / 8);
@@ -646,7 +609,6 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
       val.textContent = `${comp.value} Ω`;
       svg.appendChild(val);
     }
-    // LED szín
     if (comp.type === "led" && comp.color) {
       const ledColor = document.createElementNS("http://www.w3.org/2000/svg", "text");
       ledColor.setAttribute("x", x + iconW / 8);
@@ -658,7 +620,6 @@ function drawResponsiveSeriesCircuitSVG(circuit, svgId = "responsive-series-circ
   }
 }
 
-// Gomb integráció
 function addResponsiveSeriesCircuitGeneratorButton() {
   if (document.getElementById("responsive-series-circuit-btn")) return;
   const btn = document.createElement('button');
@@ -667,30 +628,43 @@ function addResponsiveSeriesCircuitGeneratorButton() {
   btn.style.margin = "20px 0";
   btn.style.fontSize = "1.2em";
   btn.onclick = () => {
-    window.currentCircuit = generateFixedSeriesCircuit(); // globális a resize-hoz
+    window.currentCircuit = generateFixedSeriesCircuit();
     drawResponsiveSeriesCircuitSVG(window.currentCircuit);
   };
   document.body.appendChild(btn);
 }
 
-// --- ÁLLAPOTVÁLTOZÓK ---
-let score = 0, startTime = 0, timerInterval = null, currentQuestion = 0, questions = [];
-let best = { score: 0, time: null, wrongAnswers: Infinity };
-let gameActive = false;
-let wrongAnswers = 0;
-
 // --- INICIALIZÁCIÓ ---
 document.addEventListener("DOMContentLoaded", () => {
+  // DOM elemek lekérése itt — így biztosan léteznek
+  quizContainer = document.getElementById("quiz");
+  timerDisplay = document.getElementById("time");
+  bestStats = document.getElementById("best-stats");
+  difficultySelect = document.getElementById("difficulty");
+  categorySelect = document.getElementById("category");
+  startBtn = document.querySelector(".big-btn[onclick='startGame()']") || document.querySelector("button[onclick='startGame()']");
+  restartBtn = document.getElementById("restart-btn") || document.querySelector("button[onclick='restartGame()']");
+  themeToggle = document.getElementById("theme-toggle");
+
+  // Debug: hiányzó elemek jelzése
+  if (!categorySelect) {
+    if (quizContainer) {
+      quizContainer.innerHTML = '<p style="color:#c00;"><b>Hiba:</b> A kategória választó nem található. Ellenőrizd, hogy létezik-e egy &lt;select id="category"&gt; elem az oldalon.</p>';
+    }
+    console.error("categorySelect nincs jelen a DOM-ban. Kérlek ellenőrizd az index.html-t.");
+    return;
+  }
+
   loadCategories();
   loadLastSelection();
   applyTheme();
+
   themeToggle && themeToggle.addEventListener("click", toggleTheme);
   themeToggle && themeToggle.addEventListener("touchstart", toggleTheme);
 
   categorySelect.addEventListener("change", () => {
     saveLastSelection();
     loadBest();
-    // Ha áramkör rajzoló van kiválasztva, mutasd a gombot
     if (categorySelect.value === "aramkor_rajzolo") {
       addResponsiveSeriesCircuitGeneratorButton();
     } else {
@@ -701,20 +675,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-// Automatikus újrarajzolás képernyőváltáskor (forgás, átméretezés)
-window.addEventListener("resize", () => {
-  if (window.currentCircuit) {
-    drawResponsiveSeriesCircuitSVG(window.currentCircuit);
-  }
-});
+  window.addEventListener("resize", () => {
+    if (window.currentCircuit) {
+      drawResponsiveSeriesCircuitSVG(window.currentCircuit);
+    }
+  });
 
-  difficultySelect.addEventListener("change", () => { saveLastSelection(); loadBest(); });
+  difficultySelect && difficultySelect.addEventListener("change", () => { saveLastSelection(); loadBest(); });
   if (startBtn) startBtn.onclick = startGame;
   if (restartBtn) restartBtn.onclick = startGame;
   loadBest();
 
+  // ellenőrizzük hiányzó elemeket a konzolra
   if (!quizContainer || !timerDisplay || !bestStats || !difficultySelect || !categorySelect || !startBtn || !restartBtn || !themeToggle) {
-    console.error("Hiányzó HTML elem:", {
+    console.warn("Hiányzó HTML elem(ek). Ellenőrizd az ID-ket és a script elhelyezését:", {
       quizContainer: !!quizContainer,
       timerDisplay: !!timerDisplay,
       bestStats: !!bestStats,
