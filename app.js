@@ -108,9 +108,9 @@ const components = {
   ],
   hard: [
     { name: "Hálózati áramforrás", symbol: "alkatreszek/ac_source.svg", description: "Váltakozó feszültséget biztosít az áramkör számára", example: "230V-os konnektor" },
-    { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabályzó" },
-    { name: "Fényérzékeny ellenállás", symbol: "alkatreszek/ldr.svg", description: "Ellenállása a fény intenzitásának megfelelően változik", example: "Automatikus világításvezérléshez" },
-    { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" },
+    { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabál[...]
+    { name: "Fényérzékeny ellenállás", symbol: "alkatreszek/ldr.svg", description: "Ellenállása a fény intenzitásának megfelelően változik", example: "Automatikus világításvezérléshez[...]
+    { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" [...]
     { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba, napelemekbe" },
     { name: "Tekercs", symbol: "alkatreszek/coil.svg", description: "Mágneses mezőt hoz létre áram hatására, vagy tárolja az energiát", example: "Szűrőáramkörök" }
   ]
@@ -139,7 +139,7 @@ const taskTypes = [
         options = shuffleArray(options);
         correctAnswer = (options.indexOf(component.name) + 1).toString();
         return {
-          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>?`,
+          display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; t[...]
           answer: correctAnswer,
           answerType: "number",
           options: options
@@ -148,7 +148,7 @@ const taskTypes = [
         options = [component.symbol, ...shuffleArray(wrongOptions.symbols.filter(symbol => symbol !== component.symbol)).slice(0, 3)];
         options = shuffleArray(options);
         options = options.map(symbol => `<img src="${symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`);
-        correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`) + 1).toString();
+        correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`) + 1).t[...]
         return {
           display: `Mi az alkatrész jele, ha a neve: <span class="blue-percent">${component.name}</span>?`,
           answer: correctAnswer,
@@ -327,6 +327,12 @@ function finishGame() {
   quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
   saveBest(score, elapsed);
 
+  // Mentjük az új próbálkozást és megjelenítjük az összeset
+  saveAttempt(score, elapsed);
+  loadAttempts(); // frissítjük a memóriát a jelenlegi kategória+nehézség szerint
+  const attemptsHtml = renderAttemptsHtml();
+  quizContainer.innerHTML += attemptsHtml;
+
   if (restartBtn) restartBtn.style.display = "";
   if (startBtn) startBtn.style.display = "";
   bestStats.style.opacity = "1";
@@ -394,6 +400,7 @@ function loadCategories() {
 }
 
 // --- LEGJOBB EREDMÉNY MENTÉSE/BETÖLTÉSE ---
+// + PRÓBÁLKOZÁSOK LISTÁJÁNAK KEZELÉSE (mentés és megjelenítés)
 function loadBest() {
   const diff = difficultySelect.value;
   const cat = categorySelect.value;
@@ -405,6 +412,9 @@ function loadBest() {
     best = { score: 0, time: null, wrongAnswers: Infinity };
   }
   showBest();
+
+  // betöltjük a próbálkozásokat is ugyanarra a kategóriára+nehézségre
+  loadAttempts();
 }
 
 function saveBest(newScore, time) {
@@ -436,7 +446,87 @@ function showBest() {
   bestStats.style.display = "";
 }
 
-// --- TÉMA VÁLTÁS ---
+/* --- ÚJ FUNKCIÓK: próbálkozások mentése/betöltése/megjelenítése --- */
+let attempts = []; // a jelenleg betöltött próbálkozások listája (kategória+nehézség szerint)
+
+function loadAttempts() {
+  const diff = difficultySelect.value;
+  const cat = categorySelect.value;
+  const key = "vilma-attempts-" + cat + "-" + diff;
+  try {
+    const raw = localStorage.getItem(key);
+    attempts = raw ? JSON.parse(raw) : [];
+  } catch {
+    attempts = [];
+  }
+}
+
+function saveAttempt(newScore, time) {
+  const diff = difficultySelect.value;
+  const cat = categorySelect.value;
+  const key = "vilma-attempts-" + cat + "-" + diff;
+  let arr = [];
+  try {
+    arr = JSON.parse(localStorage.getItem(key)) || [];
+  } catch {
+    arr = [];
+  }
+  const attemptNumber = arr.length + 1;
+  const attempt = {
+    number: attemptNumber,
+    score: newScore,
+    time: time,
+    wrongAnswers: wrongAnswers !== undefined ? wrongAnswers : 0,
+    date: new Date().toISOString()
+  };
+  arr.push(attempt);
+  localStorage.setItem(key, JSON.stringify(arr));
+  attempts = arr;
+}
+
+function renderAttemptsHtml() {
+  if (!attempts || attempts.length === 0) {
+    return `<div style="margin-top:12px;"><b>Korábbi próbálkozások:</b> Nincsenek még próbálkozások ebben a kategóriában/nehézségben.</div>`;
+  }
+  let html = `<div style="margin-top:12px;"><b>Korábbi próbálkozások:</b><table style="width:100%;border-collapse:collapse;margin-top:6px;">`;
+  html += `<thead><tr style="text-align:left;border-bottom:1px solid #ccc"><th style="padding:6px">#</th><th style="padding:6px">Idő (s)</th><th style="padding:6px">Hibák</th><th style="padding:6px">Dátum</th></tr></thead><tbody>`;
+  attempts.forEach(a => {
+    const dateStr = new Date(a.date).toLocaleString();
+    html += `<tr style="border-bottom:1px solid #eee"><td style="padding:6px">${a.number}</td><td style="padding:6px">${a.time}</td><td style="padding:6px">${a.wrongAnswers}</td><td style="padding:6px">${dateStr}</td></tr>`;
+  });
+  html += `</tbody></table></div>`;
+  // plusz egy gomb a history törléséhez (opcionális)
+  html += `<div style="margin-top:8px;"><button id="clear-attempts-btn" style="margin-top:6px">Próbálkozások törlése (csak ez a kategória)</button></div>`;
+  // esemény kötése később: nem lehet DOM elemet innen visszaadva közvetlenül, ezért kötés a caller után
+  // de mi a finishGame-ben azonnal beszúrjuk ezt az HTML-t -> ott majd hozzáadjuk az eseményhallgatót
+  setTimeout(() => {
+    const btn = document.getElementById("clear-attempts-btn");
+    if (btn) {
+      btn.onclick = () => {
+        const diff = difficultySelect.value;
+        const cat = categorySelect.value;
+        const key = "vilma-attempts-" + cat + "-" + diff;
+        localStorage.removeItem(key);
+        attempts = [];
+        // frissítjük a megjelenítést
+        const attemptsBlock = document.querySelector("#quiz .attempts-list-block");
+        // egyszerűbb: újrarajzoljuk a quizContainer tartalmát: jelen esetben újra felülírjuk a finish üzenetet + új lista
+        // Megoldás: újratöltjük a attempts HTML a jelenlegi DOM-ba
+        const parent = quizContainer;
+        if (parent) {
+          // keressük meg a régi bejegyzést (jó ha módosul) - egyszerű megoldás: újraelrendezzük a finish tartalmat
+          // újra létrehozzuk a finish üzenetet és beillesztjük a frissített attempts HTML-t
+          const elapsedText = timerDisplay.textContent || "";
+          parent.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsedText} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
+          parent.innerHTML += renderAttemptsHtml();
+        }
+      };
+    }
+  }, 50);
+  return `<div class="attempts-list-block">${html}</div>`;
+}
+
+/* --- TÉMA VÁLTÁS --- */
 function applyTheme() {
   const theme = localStorage.getItem("vilma-theme") || "light";
   const isLight = theme === "light";
