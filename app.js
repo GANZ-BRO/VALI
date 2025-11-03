@@ -189,6 +189,20 @@ let gameActive = false;
 let wrongAnswers = 0;
 let attempts = []; // betöltött próbálkozások a jelenlegi kategória+nehézség szerint
 
+// --- PONTOZÁSI LOGIKA ---
+//  - alap: 100 pont ha idő <= 10s
+//  - minden hiba: -20 pont
+//  - minden másodperc 10s felett: -5 pont/másodperc
+//  - végeredmény min 0
+function calculatePoints(elapsedSeconds, wrongCount) {
+  const base = 100;
+  const overtime = Math.max(0, elapsedSeconds - 10);
+  const penaltyWrong = (wrongCount || 0) * 20;
+  const penaltyTime = overtime * 5;
+  const raw = base - penaltyWrong - penaltyTime;
+  return Math.max(0, raw);
+}
+
 // --- JÁTÉK LOGIKA ---
 function showQuestion(index) {
   if (!quizContainer) return;
@@ -242,7 +256,6 @@ function showQuestion(index) {
         } else {
           wrongAnswers++;
           alert('Helytelen válasz! Próbáld újra.');
-          // nem lépünk tovább, felhasználó újra próbálkozhat
         }
         // update progress visuals
         const p = div.querySelector('.progress');
@@ -308,20 +321,25 @@ function finishGame() {
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   if (timerDisplay) timerDisplay.textContent = `${elapsed} (Vége)`;
 
-  // Alap üzenet
+  // Új pontszám számítása a megadott szabályok alapján
+  const points = calculatePoints(elapsed, wrongAnswers);
+
+  // Alap üzenet: idő, hibák, pontok
   if (quizContainer) {
-    quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
+    quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsed} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}<br><b>Pontok:</b> ${points}</p>`;
   }
 
-  saveBest(score, elapsed);
+  // Mentjük a "best"-et (a meglévő logika: legjobb idő hibátlan futásnál marad változatlan)
+  // saveBest használja a globális wrongAnswers változót a döntéshez, így nem kell módosítani
+  saveBest(points, elapsed);
 
-  // Mentjük és megjelenítjük a próbálkozásokat
-  saveAttempt(score, elapsed);
+  // Mentjük és megjelenítjük a próbálkozásokat (score mezőbe a pontok kerülnek)
+  saveAttempt(points, elapsed);
   loadAttempts();
   if (quizContainer) {
     const attemptsHtml = renderAttemptsHtml();
     quizContainer.innerHTML += attemptsHtml;
-    bindAttemptsButtons(); // csatoljuk a törlés gomb eseményét
+    bindAttemptsButtons();
   }
 
   if (restartBtn) restartBtn.style.display = "";
@@ -353,7 +371,6 @@ function generateQuestions() {
       if (attemptsLocal > maxAttempts) break;
     } while (getTaskTypeIndex(task.display) === lastTaskType);
     lastTaskType = getTaskTypeIndex(task.display);
-    // Validáció
     if (!task.answer && task.answerType === 'number') {
       task.display = "Hiba: érvénytelen feladat generálódott";
       task.answer = null;
@@ -425,6 +442,7 @@ function saveBest(newScore, time) {
 
   const newWrongAnswers = wrongAnswers !== undefined ? wrongAnswers : 0;
 
+  // Megtartjuk a meglévő szabályt: legjobb idő csak hibátlan válaszoknál érvényes
   if (newWrongAnswers < (currentBest.wrongAnswers || Infinity) ||
     (newWrongAnswers === (currentBest.wrongAnswers || Infinity) &&
       (currentBest.time === null || time < currentBest.time))) {
@@ -475,7 +493,7 @@ function saveAttempt(newScore, time) {
   }
   const attempt = {
     number: arr.length + 1,
-    score: newScore,
+    score: newScore, // itt a pontok kerülnek mentésre
     time: time,
     wrongAnswers: wrongAnswers !== undefined ? wrongAnswers : 0,
     date: new Date().toISOString()
@@ -514,7 +532,6 @@ function bindAttemptsButtons() {
       localStorage.removeItem(key);
     } catch (e) { /* ignore */ }
     attempts = [];
-    // frissítjük a megjelenítést: újrageneráljuk a finish szöveget + attempts blokk
     const elapsedText = timerDisplay?.textContent || "";
     if (quizContainer) {
       quizContainer.innerHTML = `<p style="font-size:1.2em;"><b>Gratulálok!</b> ${elapsedText} másodperc alatt végeztél.<br>Helytelen válaszok száma: ${wrongAnswers}</p>`;
