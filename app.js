@@ -203,6 +203,32 @@ function calculatePoints(elapsedSeconds, wrongCount) {
   return Math.max(0, raw);
 }
 
+// --- STÍLUS: csak a válasz (option) gombokra — mobilon 90%-os méret
+function injectAnswerButtonStyle() {
+  // csak egyszer injektáljuk
+  if (document.getElementById('vilma-option-btn-style')) return;
+  const style = document.createElement('style');
+  style.id = 'vilma-option-btn-style';
+  // Csak az .option-btn osztályra vonatkozik, a többi gomb nem változik.
+  // A 0.9em és kisebb padding biztosítja, hogy a gombok ~90%-osnak tűnjenek telefonon.
+  style.textContent = `
+    .option-btn {
+      font-size: 0.9em !important;
+      padding: 0.6em 0.9em !important;
+      line-height: 1.1 !important;
+      border-radius: 6px;
+      box-sizing: border-box;
+      /* ha szeretnéd a gombokat még kompaktabbá tenni, a transform használható:
+         transform: scale(0.9);
+         transform-origin: left top;
+         de a scale torzíthatja a címsorokat, ezért alapból csak méretet állítunk. */
+    }
+    /* biztosítjuk, hogy a kép/ikonos opciók is illeszkedjenek */
+    .option-item img.question-symbol { max-height: 1.4em; vertical-align: middle; }
+  `;
+  document.head.appendChild(style);
+}
+
 // --- JÁTÉK LOGIKA ---
 function showQuestion(index) {
   if (!quizContainer) return;
@@ -226,6 +252,7 @@ function showQuestion(index) {
 
   if (q.answerType === "number" && Array.isArray(q.options) && q.options.length) {
     html += `<div class="options-container">`;
+    // Az opciónál a generateOptions visszaad egy label mezőt; ha a label tartalmaz HTML-t (pl. <img>), az megjelenik.
     const options = generateOptions(parseInt(q.answer) - 1, q.options || [], q.answerType, difficultySelect?.value, "");
     options.forEach((opt) => {
       html += `
@@ -330,7 +357,6 @@ function finishGame() {
   }
 
   // Mentjük a "best"-et (a meglévő logika: legjobb idő hibátlan futásnál marad változatlan)
-  // saveBest használja a globális wrongAnswers változót a döntéshez, így nem kell módosítani
   saveBest(points, elapsed);
 
   // Mentjük és megjelenítjük a próbálkozásokat (score mezőbe a pontok kerülnek)
@@ -671,6 +697,9 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("categorySelect nincs jelen a DOM-ban. Kérlek ellenőrizd az index.html-t.");
     return;
   }
+
+  // Injektáljuk a választógombok kompakt stílusát (csak .option-btn)
+  injectAnswerButtonStyle();
 
   loadCategories();
   loadLastSelection();
