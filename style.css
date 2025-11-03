@@ -1,4 +1,4 @@
-:root {
+¶:root {
   --bg-dark: #1C2526;
   --text-dark: #E0E0E0;
   --input-bg-dark: #2D383A;
@@ -260,8 +260,12 @@ body.dark .question-text {
   margin: 5px;
 }
 
+/* Korábbi: body.dark .question-symbol invertálta az ikont sötét módhoz.
+   Most a cél az, hogy világos módban (light) a gombokon / ikonokon fehéret lássunk,
+   ezért az alap (light) módban alkalmazunk "fehérítő" filtert, és sötét módban
+   visszaállítjuk az eredeti színeket. */
 body.dark .question-symbol {
-  filter: invert(100%) brightness(200%);
+  filter: none;
 }
 
 .blue-percent {
@@ -537,12 +541,31 @@ body.dark .numpad-submit-btn:hover, body.dark .numpad-submit-btn:focus {
     padding: 0.4em 0.8em;
   }
 }
-  /* Világos módban: fehérítés a generált responsive-series-circuit SVG képeire */
+
+/* Biztosítjuk, hogy a generált responsive-series-circuit SVG képeire
+   a világos módban fehér hatás (invert+brightness) legyen alkalmazva,
+   míg sötét módban az eredeti színek maradjanak. */
 #responsive-series-circuit-svg image {
   filter: invert(1) brightness(3) !important;
 }
 
-/* Sötét módban ne alkalmazzuk (ha van .dark osztály a body-n) */
 body.dark #responsive-series-circuit-svg image {
+  filter: none !important;
+}
+
+/* Új: a gombokon (és válasz gombokon) található SVG/ikonok is legyenek fehérek világos módban.
+   Ezt kifejezetten a buttonokon belüli <img> elemekre és .option-btn img-re alkalmazzuk. */
+button img,
+.option-btn img,
+.big-btn img,
+.question-symbol {
+  filter: invert(1) brightness(3) !important;
+}
+
+/* Sötét módban ne alkalmazzuk a fehérítést a gombikonokra (hagyjuk az eredeti színeket) */
+body.dark button img,
+body.dark .option-btn img,
+body.dark .big-btn img,
+body.dark .question-symbol {
   filter: none !important;
 }
