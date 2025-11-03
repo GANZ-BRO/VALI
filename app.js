@@ -108,13 +108,16 @@ const taskTypes = [
     generate: (difficulty) => {
       const selectedComponents = components[difficulty] || components.easy;
       const component = selectedComponents[getRandomInt(0, selectedComponents.length - 1)];
-      const taskType = getRandomInt(0, 3);
+      // Korábban volt 4 feladattípus (0..3). A felhasználói kérés szerint eltávolítjuk
+      // azt a típust, amelyik: "Mi az alkatrész jele, ha a neve:" (eredetileg taskType === 1).
+      // Itt csak a fennmaradó típusok közül választunk: 0 (név a jelhez), 2 (leírás), 3 (hol használják).
+      const possibleTypes = [0, 2, 3];
+      const taskType = possibleTypes[getRandomInt(0, possibleTypes.length - 1)];
 
       let options = [];
       let correctAnswer;
       const wrongOptions = {
         names: selectedComponents.map(c => c.name),
-        symbols: selectedComponents.map(c => c.symbol),
         descriptions: selectedComponents.map(c => c.description),
         examples: selectedComponents.map(c => c.example)
       };
@@ -125,17 +128,6 @@ const taskTypes = [
         correctAnswer = (options.indexOf(component.name) + 1).toString();
         return {
           display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
-          answer: correctAnswer,
-          answerType: "number",
-          options: options
-        };
-      } else if (taskType === 1) { // Mi az alkatrész jele, ha a neve: ...
-        const symbols = [component.symbol, ...shuffleArray(wrongOptions.symbols.filter(s => s !== component.symbol)).slice(0, 3)];
-        const mapped = symbols.map(symbol => `<img src="${symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`);
-        options = shuffleArray(mapped);
-        correctAnswer = (options.indexOf(`<img src="${component.symbol}" alt="alkatrész szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';">`) + 1).toString();
-        return {
-          display: `Mi az alkatrész jele, ha a neve: <span class="blue-percent">${component.name}</span>?`,
           answer: correctAnswer,
           answerType: "number",
           options: options
