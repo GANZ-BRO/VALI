@@ -260,7 +260,10 @@ body.dark .question-text {
   margin: 5px;
 }
 
-/* blue-percent coloring */
+body.dark .question-symbol {
+  filter: invert(100%) brightness(200%);
+}
+
 .blue-percent {
   color: var(--primary);
   font-weight: 700;
@@ -307,15 +310,15 @@ body.dark #theme-toggle {
   letter-spacing: 1px;
 }
 
-body.dark .big-btn, body.dark button {
-  background: var(--primary-inverse);
-  color: #FFFFFF;
-}
-
 .big-btn:hover, button:hover, .big-btn:focus, button:focus {
   background: var(--primary-dark);
   transform: scale(1.05);
   outline: none;
+}
+
+body.dark .big-btn, body.dark button {
+  background: var(--primary-inverse);
+  color: #FFFFFF;
 }
 
 body.dark .big-btn:hover, body.dark button:hover, body.dark .big-btn:focus, body.dark button:focus {
@@ -533,37 +536,4 @@ body.dark .numpad-submit-btn:hover, body.dark .numpad-submit-btn:focus {
     min-width: 60px;
     padding: 0.4em 0.8em;
   }
-}
-
-/* THEMING FOR ICONS / SVGs
-   - Default (light mode): no filter (original colors)
-   - Dark mode (body.dark): invert+brighten icons so they appear light/white on dark background
-*/
-
-/* Default (light): ensure no forced inversion */
-#responsive-series-circuit-svg image,
-.question-symbol,
-button img,
-.option-btn img,
-.big-btn img {
-  filter: none !important;
-}
-
-/* Dark mode: make icons white/bright */
-body.dark #responsive-series-circuit-svg image,
-body.dark .question-symbol,
-body.dark button img,
-body.dark .option-btn img,
-body.dark .big-btn img {
-  filter: invert(1) brightness(3) !important;
-}
-
-/* QUICK: inverse-like effect using difference blend */
-.option-btn {
-  isolation: isolate;
-}
-.option-btn img,
-.option-btn svg {
-  mix-blend-mode: difference;
-  filter: brightness(1.6) saturate(1.1);
 }
