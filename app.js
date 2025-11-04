@@ -110,8 +110,37 @@ const components = {
 };
 
 const taskTypes = [
-  // --- FELADATTÍPUS: Elektronikai alkatrészek (módosítva: elfogad forcedComponent paramétert) ---
+  
+  // --- ÚJ FELADATTÍPUS: csak "Mi az alkatrész neve, ha a jele:" ---
+// Illeszd be ezt a taskTypes tömbbe az "Elektronikai alkatrészek" és az "Áramkör rajzoló" közé,
+// vagy tetszőleges helyre a taskTypes tömbön belül.
+//
+// A generate(difficulty, forcedComponent = null) aláírás kompatibilis a meglévő generateQuestions()
+// logikával (amely optionalisan forcedComponent-ot adhat át), így nem kell további módosítás.
 {
+  name: "Alkatrész – név (jel alapján)",
+  value: "alkatresz_nev_jel_alapjan",
+  generate: (difficulty, forcedComponent = null) => {
+    const selectedComponents = components[difficulty] || components.easy;
+    // ha forcedComponent át van adva, használjuk azt; különben véletlenül választunk
+    const component = forcedComponent || selectedComponents[getRandomInt(0, selectedComponents.length - 1)];
+
+    // Opciók: helyes név + 3 véletlen másik név
+    const wrongNames = selectedComponents.map(c => c.name).filter(n => n !== component.name);
+    const options = shuffleArray([component.name, ...shuffleArray(wrongNames).slice(0, 3)]);
+    const correctAnswer = (options.indexOf(component.name) + 1).toString();
+
+    return {
+      display: `Mi az alkatrész neve, ha a jele: <span class="blue-percent"><img src="${component.symbol}" alt="${component.name} szimbólum" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
+      answer: correctAnswer,
+      answerType: "number",
+      options: options
+    };
+  }
+},
+  
+  // --- FELADATTÍPUS: Elektronikai alkatrészek (módosítva: elfogad forcedComponent paramétert) ---
+  {
   name: "Elektronikai alkatrészek",
   value: "elektronikai_alkatreszek",
   generate: (difficulty, forcedComponent = null) => {
