@@ -80,32 +80,34 @@ function generateOptions(correctAnswerIndex, optionsArray, answerType, difficult
 }
 
 // --- FELADATTÍPUSOK ---
+// components list: most kiegészítve image mezővel (fotó / kép helye).
+// image mezőket a te általad készített képekkel helyettesítsd (útvonalak példák).
 const components = {
   easy: [
-    { name: "Vezeték", symbol: "alkatreszek/wire.svg", description: "Elektromos áram vezetésére szolgál", example: "Áramkörök összekötésére" },
-    { name: "Elem", symbol: "alkatreszek/cell.svg", description: "Elektromos energiát biztosít", example: "Távirányítókban" },
-    { name: "Kapcsoló", symbol: "alkatreszek/switch.svg", description: "Áramkör nyitására vagy zárására szolgál", example: "Lámpák be- és kikapcsolására" },
-    { name: "Nyomógomb", symbol: "alkatreszek/pushbutton.svg", description: "Ideiglenesen zárja az áramkört", example: "Kapucsengőkben használják" }, 
-    { name: "Izzó", symbol: "alkatreszek/bulb.svg", description: "Fényt és hőt termel áram hatására", example: "Régi típusú lámpákban" },
-    { name: "Ampermérő", symbol: "alkatreszek/ammeter.svg", description: "Áramerősség mérésére szolgáló műszer", example: "Motor áramfelvételének vizsgálata" },
-    { name: "Voltmérő", symbol: "alkatreszek/voltmeter.svg", description: "Feszültség mérésére szolgáló műszer", example: "Tápegység kimenetének ellenőrzése" }
+    { name: "Vezeték", symbol: "alkatreszek/wire.svg", image: "alkatreszek/images/wire.png", description: "Elektromos áram vezetésére szolgál", example: "Áramkörök összekötésére" },
+    { name: "Elem", symbol: "alkatreszek/cell.svg", image: "alkatreszek/images/cell.png", description: "Elektromos energiát biztosít", example: "Távirányítókban" },
+    { name: "Kapcsoló", symbol: "alkatreszek/switch.svg", image: "alkatreszek/images/switch.png", description: "Áramkör nyitására vagy zárására szolgál", example: "Lámpák be- és kikapcsolására" },
+    { name: "Nyomógomb", symbol: "alkatreszek/pushbutton.svg", image: "alkatreszek/images/pushbutton.png", description: "Ideiglenesen zárja az áramkört", example: "Kapucsengőkben használják" },
+    { name: "Izzó", symbol: "alkatreszek/bulb.svg", image: "alkatreszek/images/bulb.png", description: "Fényt és hőt termel áram hatására", example: "Régi típusú lámpákban" },
+    { name: "Ampermérő", symbol: "alkatreszek/ammeter.svg", image: "alkatreszek/images/ammeter.png", description: "Áramerősség mérésére szolgáló műszer", example: "Motor áramfelvételének vizsgálata" },
+    { name: "Voltmérő", symbol: "alkatreszek/voltmeter.svg", image: "alkatreszek/images/voltmeter.png", description: "Feszültség mérésére szolgáló műszer", example: "Tápegység kimenetének ellenőrzése" }
   ],
   medium: [
-    { name: "Akkumulátor", symbol: "alkatreszek/battery.svg", description: "Újratölthető elektromos energiát biztosít", example: "Okostelefonokban és laptopokban" },
-    { name: "Ellenállás", symbol: "alkatreszek/resistor.svg", description: "Áramot korlátozza", example: "Feszültségosztó" },
-    { name: "Biztosíték", symbol: "alkatreszek/fuse.svg", description: "Védi az áramkört a túláramtól az olvadással", example: "Mérőmüszerek védelmére " },
-    { name: "Kondenzátor", symbol: "alkatreszek/capacitor.svg", description: "Elektromos töltést tárol", example: "Szűrőáramkör" },
-    { name: "Dióda", symbol: "alkatreszek/diode.svg", description: "Egyirányú áramot enged", example: "Tápegység" },
-    { name: "LED", symbol: "alkatreszek/led.svg", description: "Fényt bocsát ki áram hatására", example: "Jelzőfények" },
-    { name: "Tranzisztor", symbol: "alkatreszek/transistor.svg", description: "Felerősíti a jelet", example: "Erősítő áramkör" }
+    { name: "Akkumulátor", symbol: "alkatreszek/battery.svg", image: "alkatreszek/images/battery.png", description: "Újratölthető elektromos energiát biztosít", example: "Okostelefonokban és laptopokban" },
+    { name: "Ellenállás", symbol: "alkatreszek/resistor.svg", image: "alkatreszek/images/resistor.png", description: "Áramot korlátozza", example: "Feszültségosztó" },
+    { name: "Biztosíték", symbol: "alkatreszek/fuse.svg", image: "alkatreszek/images/fuse.png", description: "Védi az áramkört a túláramtól az olvadással", example: "Mérőműszerek védelmére" },
+    { name: "Kondenzátor", symbol: "alkatreszek/capacitor.svg", image: "alkatreszek/images/capacitor.png", description: "Elektromos töltést tárol", example: "Szűrőáramkör" },
+    { name: "Dióda", symbol: "alkatreszek/diode.svg", image: "alkatreszek/images/diode.png", description: "Egyirányú áramot enged", example: "Tápegység" },
+    { name: "LED", symbol: "alkatreszek/led.svg", image: "alkatreszek/images/led.png", description: "Fényt bocsát ki áram hatására", example: "Jelzőfények" },
+    { name: "Tranzisztor", symbol: "alkatreszek/transistor.svg", image: "alkatreszek/images/transistor.png", description: "Felerősíti a jelet", example: "Erősítő áramkör" }
   ],
   hard: [
-    { name: "Hálózati áramforrás", symbol: "alkatreszek/ac_source.svg", description: "Váltakozó feszültséget biztosít az áramkör számára", example: "230V-os konnektor" },
-    { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabályzó" },
-    { name: "Fényérzékeny ellenállás", symbol: "alkatreszek/ldr.svg", description: "Ellenállása a fény intenzitásának megfelelően változik", example: "Automatikus világításvezérléshez" },
-    { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" },
-    { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba, napelemekbe" },
-    { name: "Tekercs", symbol: "alkatreszek/coil.svg", description: "Mágneses mezőt hoz létre áram hatására, vagy tárolja az energiát", example: "Szűrőáramkörök" }
+    { name: "Hálózati áramforrás", symbol: "alkatreszek/ac_source.svg", image: "alkatreszek/images/ac_source.png", description: "Váltakozó feszültséget biztosít az áramkör számára", example: "230V-os konnektor" },
+    { name: "Változtatható ellenállás", symbol: "alkatreszek/potentiometer.svg", image: "alkatreszek/images/potentiometer.png", description: "Az ellenállás értéke mechanikusan vagy elektronikusan szabályozható", example: "Hangerőszabályozáshoz" },
+    { name: "Fényérzékeny ellenállás", symbol: "alkatreszek/ldr.svg", image: "alkatreszek/images/ldr.png", description: "Ellenállása a fény intenzitásának megfelelően változik", example: "Automatikus világításvezérléshez" },
+    { name: "Transzformátor", symbol: "alkatreszek/transformer.svg", image: "alkatreszek/images/transformer.png", description: "Feszültség vagy áramerősség átalakítására szolgál két tekercs segítségével", example: "Tápegységek" },
+    { name: "Fotódióda", symbol: "alkatreszek/photodiode.svg", image: "alkatreszek/images/photodiode.png", description: "Fényenergiát elektromos árammá alakít át", example: "Vonalkódolvasókba, napelemekbe" },
+    { name: "Tekercs", symbol: "alkatreszek/coil.svg", image: "alkatreszek/images/coil.png", description: "Mágneses mezőt hoz létre áram hatására, vagy tárolja az energiát", example: "Szűrőáramkörök" }
   ]
 };
 
