@@ -164,7 +164,7 @@ const taskTypes = [
     const correctAnswer = (options.indexOf(component.name) + 1).toString();
 
     return {
-      display: `Mi az alkatrész neve a képen látható alkatrész alapján? <span class="blue-percent"><img src="${imgSrc}" alt="${component.name} kép" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
+      display: `Mi a képen látható alkatrész neve? <span class="blue-percent"><img src="${imgSrc}" alt="${component.name} kép" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
       answer: correctAnswer,
       answerType: "number",
       options: options
