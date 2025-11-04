@@ -138,6 +138,37 @@ const taskTypes = [
     };
   }
 },
+
+  // --- ÚJ FELADATTÍPUS: Alkatrész név (kép alapján) ---
+// Illeszd be ezt az objektumot a taskTypes tömbödbe (pl. ugyanoda, ahol a többi taskType van).
+// A generate(difficulty, forcedComponent = null) aláírás kompatibilis azzal a logikával,
+// amely forcedComponent-ot ad át (használd ugyanúgy, mint a többi típusnál).
+
+{
+  name: "Alkatrész – név (kép alapján)",
+  value: "alkatresz_nev_kep_alapjan",
+  generate: (difficulty, forcedComponent = null) => {
+    const selectedComponents = components[difficulty] || components.easy;
+    // ha forcedComponent át van adva, használjuk azt; különben véletlenül választunk
+    const component = forcedComponent || selectedComponents[getRandomInt(0, selectedComponents.length - 1)];
+
+    // Kép forrás: előnyben részesítjük component.image vagy component.photo mezőt (te adod meg majd),
+    // ha nincs, visszaesünk a component.symbol-re (SVG), így a kód kompatibilis a meglévő komponensekkel.
+    const imgSrc = component.image || component.photo || component.symbol || 'alkatreszek/fallback.svg';
+
+    // Opciók generálása: helyes név + 3 helytelen név
+    const wrongNames = selectedComponents.map(c => c.name).filter(n => n !== component.name);
+    const options = shuffleArray([component.name, ...shuffleArray(wrongNames).slice(0, 3)]);
+    const correctAnswer = (options.indexOf(component.name) + 1).toString();
+
+    return {
+      display: `Mi az alkatrész neve a képen látható alkatrész alapján? <span class="blue-percent"><img src="${imgSrc}" alt="${component.name} kép" class="question-symbol" onerror="this.onerror=null; this.src='alkatreszek/fallback.svg';"></span>`,
+      answer: correctAnswer,
+      answerType: "number",
+      options: options
+    };
+  }
+},
   
   // --- FELADATTÍPUS: Elektronikai alkatrészek (módosítva: elfogad forcedComponent paramétert) ---
   {
