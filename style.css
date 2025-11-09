@@ -546,5 +546,9 @@ body.dark .option-btn .option-text {
   color: #000000 !important;
 }
 
-/* Ha a gomb belsejében <button> belső szövegként nincs .option-text osztály,
-   a fenti .option-btn selector is lefedi; ha inline <img> van, a képhez nem szükséges változtatás. */
+/* ==== Add at the end of style.css ====
+   Make displayed PNG images 2x larger without affecting SVGs */
+img.question-symbol[src$=".png"] {
+  max-width: 360px; /* korábban 180px -> 2x */
+  max-height: 180px; /* korábban 90px -> 2x */
+}
