@@ -38,7 +38,8 @@ const components = {
     { name: "Elem", symbol: "alkatreszek/cell.svg" },
     { name: "Akkumulátor", symbol: "alkatreszek/battery.svg" },
     { name: "Kapcsoló", symbol: "alkatreszek/switch.svg" },
-    { name: "Izzó", symbol: "alkatreszek/bulb.svg" }
+    { name: "Izzó", symbol: "alkatreszek/bulb.svg" },
+    { name: "Biztosíték", symbol: "alkatreszek/fuse.svg" }
   ],
   medium: [
     { name: "Ellenállás", symbol: "alkatreszek/resistor.svg" },
